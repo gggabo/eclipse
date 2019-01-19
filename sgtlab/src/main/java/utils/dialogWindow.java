@@ -14,8 +14,6 @@ import com.vaadin.ui.themes.ValoTheme;
 public class dialogWindow extends Window implements Serializable {
 	private static final long serialVersionUID = 3180695715553484812L;
 
-
-	//private VaadinIcons icon;
 	private VerticalLayout v = new VerticalLayout();
 	private HorizontalLayout footer = new HorizontalLayout();
 	private Button okButton = new Button("Aceptar", VaadinIcons.CHECK_CIRCLE_O);
