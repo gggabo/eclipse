@@ -64,9 +64,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 	
 	public Grid<Usuario> gridUsuario = new Grid<>();
 	public List<Usuario> listUsuarios = new ArrayList<>();
-	
-	//private UsuarioController usuarioController;
-	
+		
 	public Component buildUI() {
 		
 		
