@@ -46,7 +46,8 @@ public class Usuario implements Serializable {
 	private String telefono;
 	
 	@Lob
-    @Column(name="IMAGEN", nullable=false, columnDefinition="mediumblob")
+  //  @Column(name="IMAGEN", nullable=false, columnDefinition="mediumblob")
+	@Column(name="IMAGEN", columnDefinition="mediumblob")
     private byte[] imagen;
 		
 	@Column(name = "NOMBRE_USUARIO")

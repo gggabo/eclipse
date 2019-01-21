@@ -193,27 +193,28 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 						message.warringMessage("Hay errores en los campos de texto");
 						return;
 					}
-					Usuario us = new Usuario(cedula.getValue(),nombre_uno.getValue().toUpperCase(), nombre_dos.getValue().toUpperCase(), 
-							apellido_paterno.getValue().toUpperCase(), apellido_materno.getValue().toUpperCase(),
-							correo.getValue(), telefono.getValue(), uploadField.getValue(),nombre_usuario.getValue().toLowerCase(), clave.getValue(),1);
+
+					Usuario us = new Usuario(cedula.getValue().toUpperCase().trim(),nombre_uno.getValue().toUpperCase().trim(), 
+							nombre_dos.getValue().toUpperCase().trim(), apellido_paterno.getValue().toUpperCase().trim(), 
+							apellido_materno.getValue().toUpperCase().trim(),correo.getValue().trim(), telefono.getValue().trim(), 
+							uploadField.getValue(),nombre_usuario.getValue().toLowerCase().trim(), clave.getValue().trim(),1);
 					us.setNombre_uno(nombre_uno.getValue().toUpperCase());
 					UsuarioController.save(us);
-					//listUsuarios.add(us);
 				}else {
-					user.setCedula(cedula.getValue().toUpperCase());
-					user.setApellido_paterno(apellido_paterno.getValue().toUpperCase());
-					user.setApellido_materno(apellido_materno.getValue().toUpperCase());
-					user.setNombre_uno(nombre_uno.getValue().toUpperCase());
-					user.setNombre_dos(nombre_dos.getValue().toUpperCase());
-					user.setCorreo(correo.getValue());
-					user.setTelefono(telefono.getValue());
+					user.setCedula(cedula.getValue().toUpperCase().trim());
+					user.setApellido_paterno(apellido_paterno.getValue().toUpperCase().trim());
+					user.setApellido_materno(apellido_materno.getValue().toUpperCase().trim());
+					user.setNombre_uno(nombre_uno.getValue().toUpperCase().trim());
+					user.setNombre_dos(nombre_dos.getValue().toUpperCase().trim());
+					user.setCorreo(correo.getValue().trim());
+					user.setTelefono(telefono.getValue().trim());
 					user.setImagen(uploadField.getValue());
-					user.setNombre_usuario(nombre_usuario.getValue().toLowerCase());
-					user.setClave(clave.getValue());
+					user.setNombre_usuario(nombre_usuario.getValue().toLowerCase().trim());
+					user.setClave(clave.getValue().trim());
 					UsuarioController.update(user);
 				}
-					cargarUsuarios();
-				//gridUsuario.setItems(listUsuarios);
+				
+				cargarUsuarios();
 				dialogWindow.close();
 			}
 		});
