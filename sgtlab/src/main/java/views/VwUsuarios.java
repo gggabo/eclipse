@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.codec.cli.Digest;
+import org.apache.commons.codec.digest.DigestUtils;
+
 import com.vaadin.data.Binder;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.icons.VaadinIcons;
@@ -41,6 +44,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		setMaxLengthText();
 		addValidation();
 		cargarUsuarios();
+		buildUser();
 	}
 	
 	public VerticalLayout mainLayout = new VerticalLayout();
@@ -90,9 +94,9 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		mainMenu.addItem("Imprimir", VaadinIcons.PRINT, null);				
 		mainMenu.addItem("Importar usuarios", VaadinIcons.INSERT, null);
 		
-		listUsuarios.add(new Usuario("1313253575","GABRIEL", "GREGORIO", "SALVATIERRA", 
+		/*listUsuarios.add(new Usuario("1313253575","GABRIEL", "GREGORIO", "SALVATIERRA", 
 				"TUMBACO", "gsalvatierra3575@gmail.com", "0988171984", null, "gsalvatierra3575", "123456",1));
-		gridUsuario.setItems(listUsuarios);
+		gridUsuario.setItems(listUsuarios);*/
 		gridUsuario.addColumn(Usuario::getCedula).setCaption("Cedula");
 		gridUsuario.addColumn(Usuario -> Usuario.getNombre_uno() +" "+ Usuario.getNombre_dos()+" "+
 				Usuario.getApellido_paterno() +" "+ Usuario.getApellido_materno()).setCaption("NOMBRES Y APELLIDOS");
@@ -112,7 +116,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 				correo.setValue(Usuario.getCorreo()); 
 				telefono.setValue(Usuario.getTelefono());
 				nombre_usuario.setValue(Usuario.getNombre_usuario());
-				clave.setValue(Usuario.getClave());
+				clave.setValue("");
 				uploadField.setValue(Usuario.getImagen());
 				
 				accion = "modificar";
@@ -160,6 +164,10 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		
 	}
 	
+	String varApellido="";
+	String varNombreUno="";
+	String varCedula="";
+	
 	public void userNewEdit(Usuario user) {
 		limpiar(); 
 		mainFrm = new FormLayout();
@@ -197,7 +205,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 					Usuario us = new Usuario(cedula.getValue().toUpperCase().trim(),nombre_uno.getValue().toUpperCase().trim(), 
 							nombre_dos.getValue().toUpperCase().trim(), apellido_paterno.getValue().toUpperCase().trim(), 
 							apellido_materno.getValue().toUpperCase().trim(),correo.getValue().trim(), telefono.getValue().trim(), 
-							uploadField.getValue(),nombre_usuario.getValue().toLowerCase().trim(), clave.getValue().trim(),1);
+							uploadField.getValue(),nombre_usuario.getValue().toLowerCase().trim(), DigestUtils.sha1Hex(clave.getValue().trim()),1);
 					us.setNombre_uno(nombre_uno.getValue().toUpperCase());
 					UsuarioController.save(us);
 				}else {
@@ -210,7 +218,11 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 					user.setTelefono(telefono.getValue().trim());
 					user.setImagen(uploadField.getValue());
 					user.setNombre_usuario(nombre_usuario.getValue().toLowerCase().trim());
-					user.setClave(clave.getValue().trim());
+					
+					if(!clave.getValue().isEmpty()) {
+						user.setClave(DigestUtils.sha1Hex(clave.getValue().trim()));
+					}
+					
 					UsuarioController.update(user);
 				}
 				
@@ -263,8 +275,6 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		nombre_usuario.setValue("");
 		clave.setValue("");
 		uploadField.clear();
-		
-		validator.removeBean();
 	}
 	
 	Binder<Usuario> validator = new Binder<>();
@@ -287,6 +297,64 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		.withValidator(new EmailValidator("Error en formato de correo"))
 		.bind(Usuario::getCorreo, Usuario::setCorreo);
 				
+	}
+	
+	private void buildUser() {
+		cedula.addValueChangeListener(e ->{
+			clave.setValue(e.getValue());
+			
+			if(!nombre_uno.getValue().isEmpty() && nombre_uno.getValue().trim().length() >=1) {
+				varNombreUno =  nombre_uno.getValue().substring(0,1);
+			}else {
+				varNombreUno = "";
+			}
+			
+			if(!cedula.getValue().isEmpty() && cedula.getValue().length() >=4) {
+				varCedula = cedula.getValue().substring(cedula.getValue().trim().length() - 4 , cedula.getValue().trim().length());//4 ULTIMOS DÍGITOS DE CEDULA
+			}else {
+				varCedula = "";
+			}
+			
+			varApellido = apellido_paterno.getValue().trim();
+					
+			nombre_usuario.setValue(varNombreUno+varApellido+varCedula);
+		});
+		
+		apellido_paterno.addValueChangeListener(e->{
+			if(!nombre_uno.getValue().isEmpty() && nombre_uno.getValue().trim().length() >=1) {
+				varNombreUno =  nombre_uno.getValue().substring(0,1);
+			}else {
+				varNombreUno = "";
+			}
+			
+			if(!cedula.getValue().isEmpty() && cedula.getValue().length() >=4) {
+				varCedula = cedula.getValue().substring(cedula.getValue().trim().length() - 4 , cedula.getValue().trim().length());//4 ULTIMOS DÍGITOS DE CEDULA
+			}else {
+				varCedula = "";
+			}
+			
+			varApellido = apellido_paterno.getValue().trim();
+					
+			nombre_usuario.setValue(varNombreUno+varApellido+varCedula);
+		});
+		
+		nombre_uno.addValueChangeListener(e->{
+			if(!nombre_uno.getValue().isEmpty() && nombre_uno.getValue().trim().length() >=1) {
+				varNombreUno =  nombre_uno.getValue().substring(0,1);
+			}else {
+				varNombreUno = "";
+			}
+			
+			if(!cedula.getValue().isEmpty() && cedula.getValue().length() >=4) {
+				varCedula = cedula.getValue().substring(cedula.getValue().trim().length() - 4 , cedula.getValue().trim().length());//4 ULTIMOS DÍGITOS DE CEDULA
+			}else {
+				varCedula = "";
+			}
+			
+			varApellido = apellido_paterno.getValue().trim();
+					
+			nombre_usuario.setValue(varNombreUno+varApellido+varCedula);
+		});
 	}
 
 }
