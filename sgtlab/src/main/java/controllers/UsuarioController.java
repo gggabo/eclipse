@@ -1,11 +1,13 @@
 package controllers;
 
+import java.io.Serializable;
 import java.util.List;
 
 import models.Usuario;
 import services.JPAService;
 
-public class UsuarioController {
+public class UsuarioController implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	public static void save (Usuario usuario) {
 		JPAService.runInTransaction(em ->{

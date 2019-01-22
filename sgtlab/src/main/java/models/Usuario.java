@@ -1,14 +1,22 @@
 package models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Where;
@@ -55,6 +63,12 @@ public class Usuario implements Serializable {
 	
 	@Column(name = "CLAVE")
 	private String clave;
+	
+	@ManyToMany(fetch = FetchType.EAGER)
+	//@OrderBy("apellido_paterno, apellido_materno")
+	@JoinTable(name = "TBL_USUARIO_ROL", joinColumns= @JoinColumn(name = "ID_USUARIO"), 
+	inverseJoinColumns = @JoinColumn(name ="ID_ROL"))
+	private List<Rol> roles = new ArrayList<>();
 	
 	@Column(name = "ESTADO") 
 	private int estado; 
@@ -157,6 +171,26 @@ public class Usuario implements Serializable {
 
 	public void setClave(String clave) {
 		this.clave = clave;
+	}
+	
+	public List<Rol> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<Rol> roles) {
+		this.roles = roles;
+	}
+	
+	public void addUsuarioRol(Rol rol) {
+		if(!roles.contains(rol)) {
+			roles.add(rol);
+		}
+	}
+	
+	public void removeRolUsuario(Rol rol) {
+		if(roles.contains(rol)) {
+			roles.remove(rol);
+		}
 	}
 
 	public int getEstado() {
