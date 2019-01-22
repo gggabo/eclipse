@@ -101,7 +101,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		mainMenu.addItem("Imprimir", VaadinIcons.PRINT, null);				
 		mainMenu.addItem("Importar usuarios", VaadinIcons.INSERT, null);
 		
-		gridUsuario.addColumn(Usuario::getCedula).setCaption("Cedula");
+		gridUsuario.addColumn(Usuario::getCedula).setCaption("CÉDULA/DNI");
 		gridUsuario.addColumn(Usuario -> Usuario.getNombre_uno() +" "+ Usuario.getNombre_dos()+" "+
 				Usuario.getApellido_paterno() +" "+ Usuario.getApellido_materno()).setCaption("NOMBRES Y APELLIDOS");
 		gridUsuario.addColumn(Usuario::getNombre_usuario).setCaption("USUARIO");
@@ -121,11 +121,8 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 				telefono.setValue(Usuario.getTelefono());
 				nombre_usuario.setValue(Usuario.getNombre_usuario());
 				clave.setValue("");
-				uploadField.setValue(Usuario.getImagen());
-				
-				System.out.println(Usuario.getRoles());
-				
-				//gridRol.setItems(Usuario.getRoles());
+				uploadField.setValue(Usuario.getImagen());				 
+				gridRol.setItems(Usuario.getRoles());
 				accion = "modificar";
 				
 			});
@@ -136,6 +133,8 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 			b2.addClickListener(clickb2 ->{
 				listUsuarios.remove(Usuario);
 				gridUsuario.setItems(listUsuarios);
+				Usuario.setEstado(0);
+				UsuarioController.update(Usuario);
 				message.warringMessage("Usuario eliminado");
 			});
 			b2.setStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
@@ -168,7 +167,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		nombre_usuario.setStyleName(ValoTheme.TEXTFIELD_SMALL);
 		clave.setStyleName(ValoTheme.TEXTFIELD_SMALL);
 		cmbRol.setStyleName(ValoTheme.COMBOBOX_TINY);
-		btnAddRol.addStyleName(ValoTheme.BUTTON_TINY);
+		btnAddRol.addStyleName(ValoTheme.BUTTON_SMALL);
 		btnAddRol.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
 		gridRol.addStyleName(ValoTheme.TABLE_SMALL);
 		gridRol.addStyleName(ValoTheme.TABLE_COMPACT); 
@@ -177,7 +176,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 	private void initComponents() {
 		uploadField.setFileSizeLimit(2.0F);
 		
-		gridRol.addColumn(Rol::getNombre).setCaption("Rol asignado");
+		gridRol.addColumn(Rol::getNombre).setCaption("ROL ASIGNADO");
 		gridRol.setWidth("160px");
 		gridRol.setHeight("100px");
 	}
@@ -188,7 +187,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 	
 	HorizontalLayout layoutRol = new HorizontalLayout();
 	VerticalLayout layoutRolGrid = new VerticalLayout();
-	Button btnAddRol = new Button(VaadinIcons.ARROW_FORWARD);
+	Button btnAddRol = new Button(VaadinIcons.ARROW_CIRCLE_RIGHT_O);
 	
 	public void userNewEdit(Usuario user) {
 		limpiar(); 
@@ -223,7 +222,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		
 		VerticalLayout layoutUpload = new VerticalLayout();
 		layoutUpload.addComponents(uploadField, gridRol);
-		layoutUpload.setCaption("Foto de perfil (Max 5Mb)");
+		layoutUpload.setCaption("Foto de perfil (Max 3Mb)");
 		layoutUpload.setSpacing(true);
 		layoutUpload.setMargin(false);
 		
@@ -269,6 +268,8 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 					if(!clave.getValue().isEmpty()) {
 						user.setClave(DigestUtils.sha1Hex(clave.getValue().trim()));
 					}
+					
+					user.setRoles(listGridRol);
 					
 					UsuarioController.update(user);
 				}
