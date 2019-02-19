@@ -21,7 +21,6 @@ import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "TBL_USUARIO")
-@Where(clause = "ESTADO = 1")
 public class Usuario implements Serializable {
 	private static final long serialVersionUID = 1L;
 	

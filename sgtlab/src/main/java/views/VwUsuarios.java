@@ -246,6 +246,11 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 						return;
 					}
 
+					if(UsuarioController.DBcontainsUser(cedula.getValue())) {
+						message.warringMessage("El usuario ya se encuentra registrado");
+						return;
+					}
+					
 					Usuario us = new Usuario(cedula.getValue().toUpperCase().trim(),nombre_uno.getValue().toUpperCase().trim(), 
 							nombre_dos.getValue().toUpperCase().trim(), apellido_paterno.getValue().toUpperCase().trim(), 
 							apellido_materno.getValue().toUpperCase().trim(),correo.getValue().trim(), telefono.getValue().trim(), 
@@ -278,6 +283,11 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 				dialogWindow.close();
 			}
 		});
+		
+		dialogWindow.getCancelButton().addClickListener(e->{
+			dialogWindow.close();
+		});
+		
 		dialogWindow.setResponsive(true);
 		dialogWindow.addComponentBody(layoutFormImg);
 		UI.getCurrent().addWindow(dialogWindow);
@@ -381,7 +391,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 				varCedula = "";
 			}
 			
-			varApellido = apellido_paterno.getValue().trim();
+			varApellido = apellido_paterno.getValue().trim().replace(" ", "");
 					
 			nombre_usuario.setValue(varNombreUno+varApellido+varCedula);
 		});
@@ -399,7 +409,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 				varCedula = "";
 			}
 			
-			varApellido = apellido_paterno.getValue().trim();
+			varApellido = apellido_paterno.getValue().trim().replace(" ", "");;
 					
 			nombre_usuario.setValue(varNombreUno+varApellido+varCedula);
 		});
@@ -417,7 +427,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 				varCedula = "";
 			}
 			
-			varApellido = apellido_paterno.getValue().trim();
+			varApellido = apellido_paterno.getValue().trim().replace(" ", "");;
 					
 			nombre_usuario.setValue(varNombreUno+varApellido+varCedula);
 		});
