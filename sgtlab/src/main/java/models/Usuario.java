@@ -17,8 +17,6 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Where;
-
 @Entity
 @Table(name = "TBL_USUARIO")
 public class Usuario implements Serializable {
@@ -60,7 +58,7 @@ public class Usuario implements Serializable {
 	
 	@Column(name = "CLAVE")
 	private String clave;
-	
+	 
 	@ManyToMany(fetch = FetchType.EAGER)
 	//@OrderBy("apellido_paterno, apellido_materno")
 	@JoinTable(name = "TBL_USUARIO_ROL", joinColumns= @JoinColumn(name = "ID_USUARIO"), 

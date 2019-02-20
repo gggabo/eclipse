@@ -105,12 +105,14 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		gridUsuario.addColumn(Usuario -> Usuario.getNombre_uno() +" "+ Usuario.getNombre_dos()+" "+
 				Usuario.getApellido_paterno() +" "+ Usuario.getApellido_materno()).setCaption("NOMBRES Y APELLIDOS");
 		gridUsuario.addColumn(Usuario::getNombre_usuario).setCaption("USUARIO");
+		//gridUsuario.addColumn(Usuario -> Usuario.getRoles().toString()).setCaption("ROLES");
+		
 		gridUsuario.setWidth("100%");
 		gridUsuario.setSelectionMode(SelectionMode.NONE);
 		gridUsuario.addComponentColumn(Usuario -> {
-	
+	 
 			Button b = new Button("Editar");
-			b.addClickListener(clickb ->{
+			b.addClickListener(clickb ->{ 
 				userNewEdit(Usuario);
 				cedula.setValue(Usuario.getCedula());
 				apellido_paterno.setValue(Usuario.getApellido_paterno());
@@ -121,8 +123,12 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 				telefono.setValue(Usuario.getTelefono());
 				nombre_usuario.setValue(Usuario.getNombre_usuario());
 				clave.setValue("");
-				uploadField.setValue(Usuario.getImagen());				 
-				gridRol.setItems(Usuario.getRoles());
+				uploadField.setValue(Usuario.getImagen());	
+				
+				listGridRol.addAll(Usuario.getRoles());
+				
+				gridRol.setItems(listGridRol);
+	
 				accion = "modificar";
 				
 			});
@@ -177,7 +183,20 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		uploadField.setFileSizeLimit(2.0F);
 		
 		gridRol.addColumn(Rol::getNombre).setCaption("ROL ASIGNADO");
-		gridRol.setWidth("160px");
+		gridRol.addComponentColumn(Rol -> {
+			Button b = new Button();
+			b.addClickListener(clickb2 ->{
+				listGridRol.remove(Rol);
+				gridRol.setItems(listGridRol);
+			});
+			b.setStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
+			b.addStyleName(ValoTheme.BUTTON_SMALL);
+			b.setIcon(VaadinIcons.CLOSE_CIRCLE);
+			return b;
+		}).setStyleGenerator(Rol -> "v-align-left");
+		
+		gridRol.setSelectionMode(SelectionMode.NONE);
+		gridRol.setWidth("160px"); 
 		gridRol.setHeight("100px");
 	}
 	
@@ -258,7 +277,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 					
 					us.setRoles(listGridRol);
 					
-					UsuarioController.save(us);
+					UsuarioController.save(us); 
 				}else {
 					user.setCedula(cedula.getValue().toUpperCase().trim());
 					user.setApellido_paterno(apellido_paterno.getValue().toUpperCase().trim());
@@ -273,7 +292,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 					if(!clave.getValue().isEmpty()) {
 						user.setClave(DigestUtils.sha1Hex(clave.getValue().trim()));
 					}
-					
+										
 					user.setRoles(listGridRol);
 					
 					UsuarioController.update(user);
@@ -301,11 +320,21 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		cmbRol.setItems(listRol);
 	    cmbRol.setItemCaptionGenerator(Rol::getNombre);
 		
-	}
+	} 
 	
 	private void addRol() {
-		if(!listGridRol.contains(cmbRol.getValue())) {
-			listGridRol.add(cmbRol.getValue());
+				
+		Rol rol = cmbRol.getValue();
+		boolean c = false;
+		
+		for(Rol r:listGridRol) {
+			if(r.getIdRol() == rol.getIdRol()) {
+				c=true;
+				break;
+			}
+		}
+		if(!c) {
+			listGridRol.add(rol);
 			gridRol.setItems(listGridRol);
 		}
 		
