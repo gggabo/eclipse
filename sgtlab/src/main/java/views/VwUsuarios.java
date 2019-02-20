@@ -98,8 +98,18 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 			}
 		});		
 		
-		mainMenu.addItem("Imprimir", VaadinIcons.PRINT, null);				
-		mainMenu.addItem("Importar usuarios", VaadinIcons.INSERT, null);
+		mainMenu.addItem("Imprimir", VaadinIcons.PRINT, null);		
+		
+		mainMenu.addItem("Importar usuarios", VaadinIcons.INSERT, new Command() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void menuSelected(MenuItem selectedItem) {
+				importUserView();
+				
+				/*userNewEdit(null);
+				accion="guardar";*/
+			}
+		});
 		
 		gridUsuario.addColumn(Usuario::getCedula).setCaption("CÉDULA/DNI");
 		gridUsuario.addColumn(Usuario -> Usuario.getNombre_uno() +" "+ Usuario.getNombre_dos()+" "+
@@ -312,6 +322,13 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		UI.getCurrent().addWindow(dialogWindow);
 	}
 		
+	private void importUserView() {
+		dialogWindow dialogWindow = new dialogWindow("Ingreso de usuarios", VaadinIcons.USERS);
+		dialogWindow.setResponsive(true);
+		//dialogWindow.addComponentBody(layoutFormImg);
+		UI.getCurrent().addWindow(dialogWindow);
+	}
+	
 	private void cargarDatos() {
 		listUsuarios = UsuarioController.findAll();
 		gridUsuario.setItems(listUsuarios);
