@@ -18,7 +18,7 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.UI;
 
-public class imageUtils implements Serializable{
+public class uploadUtils implements Serializable{
 
 	private classGeneradorCodigo genCod = new classGeneradorCodigo();
 	
@@ -56,7 +56,7 @@ public class imageUtils implements Serializable{
 	}
 	
 	public File bytesToFile(byte[] data) {
-		File f = new File(rutas.RUTA_IMAGEN+genCod.generarCodigoImg());
+		File f = new File(rutas.RUTA_UPLOAD+genCod.generarCodigoImg());
 		try {
 			FileUtils.writeByteArrayToFile(f, data);
 		} catch (IOException e1) {

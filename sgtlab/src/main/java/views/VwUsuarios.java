@@ -323,7 +323,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 	}
 		
 	private void importUserView() {
-		dialogWindow dialogWindow = new dialogWindow("Ingreso de usuarios", VaadinIcons.USERS);
+		dialogWindow dialogWindow = new dialogWindow("Importación de usuarios", VaadinIcons.USERS);
 		dialogWindow.setResponsive(true);
 		//dialogWindow.addComponentBody(layoutFormImg);
 		UI.getCurrent().addWindow(dialogWindow);

@@ -85,7 +85,7 @@ public class UploadImage extends HorizontalLayout implements Receiver {
 		
 		upload.addSucceededListener(e->{
 			data = byteArrayOutputStream.toByteArray();
-			image.setSource(imageUtils.byteToImg(data));
+			image.setSource(uploadUtils.byteToImg(data));
 			message.normalMessage("Archivo subido con exito");
 		});
 		
@@ -159,7 +159,7 @@ public class UploadImage extends HorizontalLayout implements Receiver {
 			image.setSource(new ThemeResource("images/NO_USER.png"));
 		}else {
 			this.data = data;
-			image.setSource(imageUtils.byteToImg(data));			
+			image.setSource(uploadUtils.byteToImg(data));			
 		}
 		
 	}
