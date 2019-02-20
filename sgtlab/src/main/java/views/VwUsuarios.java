@@ -318,7 +318,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		});
 		
 		dialogWindow.setResponsive(true);
-		dialogWindow.addComponentBody(layoutFormImg);
+		dialogWindow.addComponentBody(layoutFormImg); 
 		UI.getCurrent().addWindow(dialogWindow);
 	}
 		
