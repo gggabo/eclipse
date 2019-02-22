@@ -5,11 +5,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.vaadin.server.Page;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Notification;
@@ -19,6 +22,8 @@ import com.vaadin.ui.Upload.Receiver;
 
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+
+import models.Usuario;
 
 public class uploadXls extends HorizontalLayout implements Receiver {
 	private static final long serialVersionUID = 1L;
@@ -30,6 +35,9 @@ public class uploadXls extends HorizontalLayout implements Receiver {
 	private String filename;
 	public File file;
 	private Button btnClear = new Button();
+	private Grid<Usuario> gridUsuarioImport = new Grid<>();
+	private List<Usuario> listUsuariosImport = new ArrayList<>();
+	private readXlsUsers readXlsUsers = new readXlsUsers();
 	
 	private final String XLS = "application/vnd.ms-excel";
 	/*private final String GIF = "image/gif";
@@ -80,6 +88,8 @@ public class uploadXls extends HorizontalLayout implements Receiver {
 				upload.interruptUpload();
 				message.warringMessage("Tipo de archivo no admitido");
 			}
+		    listUsuariosImport.clear();
+		    gridUsuarioImport.setItems(listUsuariosImport);
 		});
 		
 	    upload.addProgressListener((long readBytes, long contentLength) -> {
@@ -89,13 +99,22 @@ public class uploadXls extends HorizontalLayout implements Receiver {
 		    }
         });
 		
+	    
 		upload.addSucceededListener(e->{
 			/*data = byteArrayOutputStream.toByteArray();*/
 			image.setSource(new ThemeResource("images/xlsOk.png"));
 			message.normalMessage("Archivo subido con exito");
+			
+			readXlsUsers.setFile(file);
+			listUsuariosImport=readXlsUsers.getXlsUsersResultList();
+			
+			//listUsuariosImport.add(new Usuario("1313253575", "GABRIEL", "GABRIEL", "GABRIEL", "GABRIEL", "GABRIEL", "GABRIEL", null, "gsalvatierra", "123456", 1));
+			
+			gridUsuarioImport.setItems(listUsuariosImport);
+			
 		});
-		
-		upload.addFinishedListener(e->{
+		 
+		upload.addFinishedListener(e->{ 
 
 		});
 		
@@ -165,6 +184,8 @@ public class uploadXls extends HorizontalLayout implements Receiver {
 		file = null;
 		image.setSource(new ThemeResource("images/xlsCancel.png"));
 	    progress.setVisible(false);
+	    listUsuariosImport.clear();
+	    gridUsuarioImport.setItems(listUsuariosImport);
 	}
 	
 	public void setVisiblePreview(boolean visible) {
@@ -180,6 +201,22 @@ public class uploadXls extends HorizontalLayout implements Receiver {
 			image.setSource(new ThemeResource("images/xlsOk.png"));			
 		}
 		
+	}
+	
+	public Grid<Usuario> getGridUsuarioImport() {
+		return gridUsuarioImport;
+	}
+
+	public void setGridUsuarioImport(Grid<Usuario> gridUsuarioImport) {
+		this.gridUsuarioImport = gridUsuarioImport;
+	}
+
+	public List<Usuario> getListUsuariosImport() {
+		return listUsuariosImport;
+	}
+
+	public void setListUsuariosImport(List<Usuario> listUsuariosImport) {
+		this.listUsuariosImport = listUsuariosImport;
 	}
 	
 }

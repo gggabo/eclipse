@@ -2,9 +2,11 @@ package views;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.hibernate.query.criteria.internal.expression.function.UpperFunction;
 
 import com.vaadin.data.Binder;
 import com.vaadin.data.validator.EmailValidator;
@@ -79,6 +81,9 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 	public Grid<Usuario> gridUsuario = new Grid<>();
 	public List<Usuario> listUsuarios = new ArrayList<>();
 		
+	public Grid<Usuario> gridUsuarioImport = new Grid<>();
+	public List<Usuario> listUsuariosImport = new ArrayList<>();
+	
 	public Component buildUI() {
 				
 		toolbar.setWidth("100%");
@@ -210,6 +215,16 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		gridRol.setSelectionMode(SelectionMode.NONE);
 		gridRol.setWidth("160px"); 
 		gridRol.setHeight("100px");
+		
+		gridUsuarioImport.addColumn(Usuario::getCedula).setCaption("CÉDULA/DNI");
+		gridUsuarioImport.addColumn(Usuario -> Usuario.getNombre_uno() +" "+ Usuario.getNombre_dos()+" "+
+				Usuario.getApellido_paterno() +" "+ Usuario.getApellido_materno()).setCaption("NOMBRES Y APELLIDOS");
+		gridUsuarioImport.addColumn(Usuario::getNombre_usuario).setCaption("USUARIO");
+		//gridUsuario.addColumn(Usuario -> Usuario.getRoles().toString()).setCaption("ROLES");
+		
+		gridUsuarioImport.setWidth("600px");
+		gridUsuarioImport.setSelectionMode(SelectionMode.NONE);
+		
 	}
 	
 	String varApellido="";
@@ -323,12 +338,43 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		dialogWindow.addComponentBody(layoutFormImg); 
 		UI.getCurrent().addWindow(dialogWindow);
 	}
-		
+	
 	private void importUserView() {
+		
+		uploadXls.clear();
+		
 		dialogWindow dialogWindow = new dialogWindow("Importación de usuarios", VaadinIcons.USERS);
 		dialogWindow.setResponsive(true);
 		
-		dialogWindow.addComponentBody(uploadXls);
+		uploadXls.setGridUsuarioImport(gridUsuarioImport);
+		//uploadXls.setListUsuariosImport(listUsuariosImport);
+		
+		VerticalLayout rootLayout = new VerticalLayout();
+		rootLayout.addComponents(uploadXls,gridUsuarioImport);
+		
+		dialogWindow.getOkButton().addClickListener(e ->{
+			
+			//System.out.println(uploadXls.getListUsuariosImport());
+			 
+			Iterator<Usuario> u = uploadXls.getListUsuariosImport().iterator();
+			Usuario ureg;
+			while(u.hasNext()) {
+				ureg = u.next();
+				if(!UsuarioController.DBcontainsUser(ureg.getCedula())) {
+					UsuarioController.save(ureg);
+				}/*else {
+					ureg.setEstado(1);
+					UsuarioController.update(ureg);
+				}*/
+			}
+			
+			message.normalMessage("Importación realizada con éxito");
+			
+			cargarDatos();
+			dialogWindow.close();
+		});
+		
+		dialogWindow.addComponentBody(rootLayout);
 		
 		//dialogWindow.addComponentBody(layoutFormImg);
 		UI.getCurrent().addWindow(dialogWindow);
@@ -420,9 +466,9 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		.asRequired("Dato requerido")
 		.bind(Usuario::getNombre_uno, Usuario::setNombre_uno);
 		
-		validator.forField(correo).asRequired("Dato requerido")
+		/*validator.forField(correo).asRequired("Dato requerido")
 		.withValidator(new EmailValidator("Error en formato de correo"))
-		.bind(Usuario::getCorreo, Usuario::setCorreo);
+		.bind(Usuario::getCorreo, Usuario::setCorreo);*/
 				
 	}
 	
