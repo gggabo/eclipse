@@ -1,13 +1,18 @@
 package utils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 
+import com.vaadin.server.Page;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.Receiver;
@@ -20,29 +25,30 @@ public class uploadXls extends HorizontalLayout implements Receiver {
 
 	private byte[] data;
 	private Upload upload = new Upload(null, this);
-	private Image image = new Image(null,new ThemeResource("images/NO_USER.png"));
+	private Image image = new Image(null,new ThemeResource("images/xlsCancel.png"));
 	private float fileSizeLimit = 1.0f; // 1MB
 	private String filename;
+	public File file;
 	private Button btnClear = new Button();
 	
-	private final String PNG = "image/png";
-	private final String GIF = "image/gif";
+	private final String XLS = "application/vnd.ms-excel";
+	/*private final String GIF = "image/gif";
 	private final String JPG = "image/jpg";
-	private final String JPEG = "image/jpeg";
+	private final String JPEG = "image/jpeg";*/
 	
 	private ProgressBar progress = new ProgressBar();
-	private ByteArrayOutputStream byteArrayOutputStream;
-	private VerticalLayout rootLayout;
+	//private ByteArrayOutputStream byteArrayOutputStream;
+	private HorizontalLayout rootLayout;
 	
 	public uploadXls() { 
 		
 		progress.setIndeterminate(true);
 		progress.setVisible(false);
 		
-		image.setWidth("120px"); 
-		image.setHeight("160px");
-		image.addStyleName("v-image-upload");
-		image.setSource(new ThemeResource("images/NO_USER.png"));
+		image.setWidth("50px"); 
+		image.setHeight("60px");
+		image.addStyleName("v-image-upload"); 
+		image.setSource(new ThemeResource("images/xlsCancel.png"));
 		
 		btnClear.setCaption("Borrar");
 		btnClear.addStyleName(ValoTheme.BUTTON_DANGER);
@@ -58,7 +64,7 @@ public class uploadXls extends HorizontalLayout implements Receiver {
 		hl.setSpacing(false);
 		hl.addComponents(upload,btnClear);
 		
-		rootLayout = new VerticalLayout(image,progress, hl);
+		rootLayout = new HorizontalLayout(image,progress, hl);
 		rootLayout.setSpacing(false);
 		rootLayout.setMargin(false);
 		rootLayout.setComponentAlignment(image, Alignment.MIDDLE_CENTER);
@@ -84,8 +90,8 @@ public class uploadXls extends HorizontalLayout implements Receiver {
         });
 		
 		upload.addSucceededListener(e->{
-			data = byteArrayOutputStream.toByteArray();
-			image.setSource(uploadUtils.byteToImg(data));
+			/*data = byteArrayOutputStream.toByteArray();*/
+			image.setSource(new ThemeResource("images/xlsOk.png"));
 			message.normalMessage("Archivo subido con exito");
 		});
 		
@@ -100,18 +106,30 @@ public class uploadXls extends HorizontalLayout implements Receiver {
 	
 	@Override
 	public OutputStream receiveUpload(String filename, String mimeType) {
-		byteArrayOutputStream = new ByteArrayOutputStream();
+		/*byteArrayOutputStream = new ByteArrayOutputStream();
 		this.filename = filename;
-		return byteArrayOutputStream;
+		return byteArrayOutputStream;*/
+		FileOutputStream fos = null; 
+		try {
+			setFilename(uploadUtils.generarCodigoXls());
+			//ABRIR EL ARCHIVO PARA GUARDARLO
+			file = new File(rutas.RUTA_UPLOAD+getFilename()); 
+			fos = new FileOutputStream(file);
+		} catch (final IOException e) {
+			new Notification("No se pudo abrir el archivo",e.getMessage(),Notification.Type.ERROR_MESSAGE).show(Page.getCurrent());
+			return null;
+		}
+		return fos;
+		
 	}
 	
 	private boolean isAllowed(String MIMEType)
     {
         return (
-                MIMEType.equalsIgnoreCase(this.JPEG) ||
+               /* MIMEType.equalsIgnoreCase(this.JPEG) ||
                 MIMEType.equalsIgnoreCase(this.JPG) ||
-                MIMEType.equalsIgnoreCase(this.GIF) ||
-                MIMEType.equalsIgnoreCase(this.PNG)
+                MIMEType.equalsIgnoreCase(this.GIF) ||*/
+                MIMEType.equalsIgnoreCase(this.XLS)
                 );
     }
 	
@@ -144,8 +162,8 @@ public class uploadXls extends HorizontalLayout implements Receiver {
 	}
 	
 	public void clear() {
-		data = null;
-		image.setSource(new ThemeResource("images/NO_USER.png"));
+		file = null;
+		image.setSource(new ThemeResource("images/xlsCancel.png"));
 	    progress.setVisible(false);
 	}
 	
@@ -153,13 +171,13 @@ public class uploadXls extends HorizontalLayout implements Receiver {
 		image.setVisible(visible);
 	}
 	
-	public void setValue(byte[] data) {
+	public void setValue(File data) {
 		if(data == null) {
 			this.data = null;
-			image.setSource(new ThemeResource("images/NO_USER.png"));
+			image.setSource(new ThemeResource("images/xlsCancel.png"));
 		}else {
-			this.data = data;
-			image.setSource(uploadUtils.byteToImg(data));			
+			this.file = data;
+			image.setSource(new ThemeResource("images/xlsOk.png"));			
 		}
 		
 	}

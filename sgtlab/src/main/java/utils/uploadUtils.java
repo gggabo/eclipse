@@ -103,6 +103,15 @@ public class uploadUtils implements Serializable{
         photoCode = "IMG-" +date+".jpg";   
         return photoCode;
      }
+	
+	public static String generarCodigoXls(){ 
+        String photoCode; 
+        Calendar fecha_sistema = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String date = dateFormat.format(fecha_sistema.getTime());
+        photoCode = "datos-" +date+".xls";   
+        return photoCode;
+     }
 
 	public String base64Encoder(File file) {
 

@@ -36,6 +36,7 @@ import models.Usuario;
 import utils.UploadImage;
 import utils.dialogWindow;
 import utils.message;
+import utils.uploadXls;
 public class VwUsuarios extends VerticalLayout implements View, Serializable{
 	private static final long serialVersionUID = 1L;
 
@@ -67,6 +68,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 	public Button btnGuardar = new Button("Guardar");
 	public MenuBar mainMenu = new MenuBar();
 	public UploadImage uploadField = new UploadImage();
+	public uploadXls uploadXls = new uploadXls();
 	public String accion = "guardar"; 
 	
 	public ComboBox<Rol> cmbRol = new ComboBox<>();
@@ -325,6 +327,9 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 	private void importUserView() {
 		dialogWindow dialogWindow = new dialogWindow("Importación de usuarios", VaadinIcons.USERS);
 		dialogWindow.setResponsive(true);
+		
+		dialogWindow.addComponentBody(uploadXls);
+		
 		//dialogWindow.addComponentBody(layoutFormImg);
 		UI.getCurrent().addWindow(dialogWindow);
 	}
