@@ -44,6 +44,28 @@ public class UsuarioController implements Serializable {
 			return false;
 	}
 	
+	static	Usuario us;
+	public static  Usuario getSpecificUserDisable(String cedula) {
+		/*return (Usuario) JPAService.runInTransaction(em ->
+			em.createQuery("select u from Usuario u where u.Cedula = ?1 and u.estado = 0")
+			.setParameter(1, cedula).getResultList().get(0)
+		);*/
+		
+		JPAService.runInTransaction(em ->{
+			Query query = em.createQuery("select u from Usuario u where u.Cedula = ?1 and u.estado = 0");
+			query.setParameter(1, cedula);
+
+			if(query.getResultList().size()>0) {
+				us = (Usuario) query.getSingleResult();
+			}
+			
+			return null;
+		}
+        ); 
+		
+		return us;
+		
+	}
 		
 	
 }

@@ -357,18 +357,28 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 			//System.out.println(uploadXls.getListUsuariosImport());
 			 
 			Iterator<Usuario> u = uploadXls.getListUsuariosImport().iterator();
-			Usuario ureg;
+			Usuario ureg, udis;
+			
 			while(u.hasNext()) {
 				ureg = u.next();
+				
 				if(!UsuarioController.DBcontainsUser(ureg.getCedula())) {
 					UsuarioController.save(ureg);
-				}/*else {
-					ureg.setEstado(1);
-					UsuarioController.update(ureg);
-				}*/
+					
+				}	
+				
+				udis = UsuarioController.getSpecificUserDisable(ureg.getCedula());
+
+				if(udis.getEstado()==0) {
+					//System.out.println(UsuarioController.getSpecificUserDisable(ureg.getCedula()));
+					udis.setEstado(1); 
+					UsuarioController.update(udis);
+				}
+				
 			}
 			
 			message.normalMessage("Importación realizada con éxito");
+			uploadXls.clear();
 			
 			cargarDatos();
 			dialogWindow.close();
