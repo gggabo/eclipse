@@ -3,7 +3,10 @@ package controllers;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.Query;
+
 import models.Rol;
+import models.Usuario;
 import services.JPAService;
 
 public class RolController implements Serializable {
@@ -30,5 +33,22 @@ public class RolController implements Serializable {
         );
 	}
 	
+	static	Rol us;
+	public static  Rol getSpecificRolById(long rol) {		
+		JPAService.runInTransaction(em ->{
+			Query query = em.createQuery("select r from Rol r where r.idRol = ?1");
+			query.setParameter(1, rol);
+
+			if(query.getResultList().size()>0) {
+				us = (Rol) query.getSingleResult();
+			}
+			
+			return null;
+		}
+        ); 
+		
+		return us;
+		
+	}
 		
 }

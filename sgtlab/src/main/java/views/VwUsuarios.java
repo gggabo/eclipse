@@ -368,13 +368,15 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 				}	
 				
 				udis = UsuarioController.getSpecificUserDisable(ureg.getCedula());
-
-				if(udis.getEstado()==0) {
-					//System.out.println(UsuarioController.getSpecificUserDisable(ureg.getCedula()));
-					udis.setEstado(1); 
-					UsuarioController.update(udis);
+				if(udis != null) {
+					if(udis.getEstado()==0 ) {
+						//System.out.println(UsuarioController.getSpecificUserDisable(ureg.getCedula()));
+						udis.setEstado(1); 
+						UsuarioController.update(udis);
+					}
 				}
 				
+				 
 			}
 			
 			message.normalMessage("Importación realizada con éxito");

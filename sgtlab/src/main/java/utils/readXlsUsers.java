@@ -8,12 +8,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 
+import controllers.RolController;
 import models.Rol;
 import models.Usuario;
 
@@ -36,6 +38,7 @@ public class readXlsUsers {
 		Cell cell;
 		int i =0;
 		List<Rol> roles = new ArrayList<>();
+		roles.add(RolController.getSpecificRolById(3L));
 		try {
 			FileInputStream xls = new FileInputStream(file);
 		    @SuppressWarnings("resource")
@@ -71,7 +74,7 @@ public class readXlsUsers {
 			    				
 			    				if(i==0) {
 			    					user.setCedula(cell.getStringCellValue());
-			    					user.setClave(cell.getStringCellValue());
+			    					user.setClave(DigestUtils.sha1Hex(cell.getStringCellValue()));
 			    				}else if(i==1) {
 			    					user.setApellido_paterno(cell.getStringCellValue());
 			    				}else if(i==2) {
@@ -85,8 +88,7 @@ public class readXlsUsers {
 			    					user.setEstado(1);
 			    					user.setCorreo("");
 			    					user.setTelefono("");
-			    					//roles.add(new Rol().setIdRol(1L));
-			    					//user.setRoles();
+			    					user.setRoles(roles);
 			    				}
 			    				
 			    				i++;
