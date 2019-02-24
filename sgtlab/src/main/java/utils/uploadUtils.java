@@ -14,6 +14,8 @@ import org.apache.commons.io.FileUtils;
 
 import com.vaadin.server.ConnectorResource;
 import com.vaadin.server.StreamResource;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.UI;
@@ -21,6 +23,7 @@ import com.vaadin.ui.UI;
 public class uploadUtils implements Serializable{
 
 	private classGeneradorCodigo genCod = new classGeneradorCodigo();
+	private static String path = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath() + "/VAADIN/themes/dashboard/";
 	
 	private static final long serialVersionUID = 1L;
 
@@ -43,7 +46,7 @@ public class uploadUtils implements Serializable{
 		}*/
 	}
 
-	public byte[] imgToByte(File file) {
+	public static byte[] imgToByte(File file) {
 		byte[] fileByte = null;
 		try {
 			if(file==null)
@@ -66,14 +69,26 @@ public class uploadUtils implements Serializable{
 	}
 	
 	// FUNCION PARA OBTENER IMAGENES DESDE LA BASE DE DATOS
-	public static StreamResource byteToImg(final byte[] imagen) {
+	
+	static byte[] imagenResult= null;
+	
+	public static StreamResource byteToImg(byte[] imagen) {
+		
+		if(imagen == null) {
+			 /*File directory = new File("./");
+			    System.out.println(directory.getAbsolutePath());*/
+			imagenResult = imgToByte(new File(path+"/images/NO_USER.png"));
+		}else {
+			imagenResult = imagen;
+		}
+		
 		StreamResource.StreamSource imageSource = null;
 		imageSource = new StreamResource.StreamSource() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public InputStream getStream() {
-				return new ByteArrayInputStream(imagen);
+				return new ByteArrayInputStream(imagenResult);
 			}
 		};
 		StreamResource imageResource = new StreamResource(imageSource, generarCodigoImg());

@@ -2,18 +2,14 @@ package com.example.sgtlab;
 
 import javax.servlet.annotation.WebServlet;
 
-import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.Viewport;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 import views.MainView;
@@ -38,7 +34,17 @@ public class MainUI extends UI {
     	setLocale(vaadinRequest.getLocale());
     	getPage().setTitle("SGTLAB");
     	
-    	setContent(new vwLogin(MainUI.this));
+    	//setContent(new vwLogin(MainUI.this));
+    	
+    	if(VaadinSession.getCurrent().getAttribute("LOGIN")!=null) {
+			/*MainView vwprincipal = new MainView(ui)
+			UI.getCurrent().setContent(vwprincipal);*/
+			showMainView();		
+		}else {
+			
+	        setContent(new vwLogin(MainUI.this));
+	        
+		}
     	
     	//showMainView();
     	

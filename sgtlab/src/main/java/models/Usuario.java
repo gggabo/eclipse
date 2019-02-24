@@ -26,7 +26,7 @@ public class Usuario implements Serializable {
 	@Column(name = "ID_USUARIO")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
+
 	@Column(name = "CEDULA")
 	private String Cedula;
 
@@ -195,6 +195,15 @@ public class Usuario implements Serializable {
 	public void setEstado(int estado) {
 		this.estado = estado;
 	}
+	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
 	
 	@Override
 	public String toString() {

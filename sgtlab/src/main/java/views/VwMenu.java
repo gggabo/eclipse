@@ -9,6 +9,7 @@ import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -20,7 +21,10 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.MenuBar.MenuItem;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
+
+import controllers.LoginController;
 
 public class VwMenu extends CssLayout implements Serializable {
 	private static final long serialVersionUID = 4798824184709302432L;
@@ -31,6 +35,9 @@ public class VwMenu extends CssLayout implements Serializable {
     private Navigator navigator;
     private Map<String, Button> viewButtons = new HashMap<String, Button>();
 
+    private String nombrePersona = (String) VaadinSession.getCurrent().getAttribute("NOMBRE_PERSONA");
+    private long idUsuario = (long) VaadinSession.getCurrent().getAttribute("ID_USUARIO");
+    
     CssLayout contenArea = new CssLayout();
 	CssLayout menuArea = new CssLayout();
 	VerticalLayout menu = new VerticalLayout();
@@ -73,7 +80,7 @@ public class VwMenu extends CssLayout implements Serializable {
         MenuBar inf = new MenuBar();
         inf.addStyleName("user-menu");
         
-        MenuItem infItem = inf.addItem("Gabriel Salvatierra Tumbaco", new ThemeResource("images/logo.png"),null);
+        MenuItem infItem = inf.addItem(nombrePersona, LoginController.getImgUser(idUsuario),null);
         rol = infItem.addItem("Cambiar rol",VaadinIcons.REFRESH ,comand);
         clave = infItem.addItem("Editar usuario",VaadinIcons.USER_CHECK ,comand);
         infItem.addSeparator();
@@ -202,10 +209,10 @@ public class VwMenu extends CssLayout implements Serializable {
 		@Override
 		public void menuSelected(MenuItem selectedItem) {
 			if(selectedItem == cs ){
-				//UI.getCurrent().getPage().setLocation(
-				//		"/tesisUnir/");
+				UI.getCurrent().getPage().setLocation(
+						"/sgtlab/");
 				//vaciarMenu();
-				//UI.getCurrent().getSession().close();
+				UI.getCurrent().getSession().close();
 				//JPAUtil.shutdown();
 			}
 			if(selectedItem == clave) {

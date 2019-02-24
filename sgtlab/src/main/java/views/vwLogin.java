@@ -21,10 +21,14 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
+import controllers.LoginController;
+import de.steinwedel.messagebox.ButtonOption;
+import de.steinwedel.messagebox.MessageBox;
+
 
 public class vwLogin extends CssLayout implements Serializable {
-	private static final long serialVersionUID = -301088759286324156L;
-
+	private static final long serialVersionUID = 1L;
+	
 	private TextField username;
     private PasswordField password;
     private Button login;
@@ -33,10 +37,12 @@ public class vwLogin extends CssLayout implements Serializable {
    /* public ctrlLogin cLogin = new ctrlLogin();
     public vwPrincipal vwprincipal;*/
     
-    private MainUI UI;
+    public MainView mainView;
+    
+    private MainUI UIistance;
     
     public vwLogin(MainUI UI) {
-    	this.UI = UI;
+    	this.UIistance = UI;
     	buildUI();
         username.focus();
 	}
@@ -158,7 +164,33 @@ public class vwLogin extends CssLayout implements Serializable {
 	
     private void login() {
     	
-    	UI.showMainView();
+    	if(LoginController.login(username.getValue(), password.getValue())) {
+    		mainView = new MainView(UIistance);
+    		UIistance.setContent(mainView);
+    	}else {
+    		/*ConfirmDialog.show(UIistance, "Información", "Usuario o clave incorrecta",
+					"Aceptar","Cancelar", new ConfirmDialog.Listener() {
+						private static final long serialVersionUID = 1L;
+
+						public void onClose(ConfirmDialog dialog) {
+							if (dialog.isConfirmed()) {
+								
+							} else {
+								// User did not confirm
+								// feedback(dialog.isConfirmed());
+							}
+						}
+					});*/
+    		MessageBox.createError()
+    		.withCaption("Información")
+    		.withMessage("Usuario o clave incorrecta")
+    		.withOkButton(ButtonOption.caption("Aceptar"))
+    		.open();
+    		
+    		
+    	}
+    	
+    	//UI.showMainView();
     	
     	/*if(cLogin.login(username.getValue(), password.getValue())) {
     		vwprincipal = new vwPrincipal();
