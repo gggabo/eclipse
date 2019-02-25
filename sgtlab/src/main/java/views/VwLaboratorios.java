@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import com.vaadin.data.Binder;
-import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.ui.Button;
@@ -25,23 +24,24 @@ import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.themes.ValoTheme;
 
+import controllers.LabotatorioController;
 import controllers.RolController;
 import controllers.UsuarioController;
+import models.Laboratorio;
 import models.Rol;
 import models.Usuario;
 import utils.UploadImage;
 import utils.dialogWindow;
 import utils.message;
 import utils.uploadXls;
-public class VwUsuarios extends VerticalLayout implements View, Serializable{
+public class VwLaboratorios extends VerticalLayout implements View, Serializable{
 	private static final long serialVersionUID = 1L;
 
-	public VwUsuarios() {
+	public VwLaboratorios() {
 		addComponent(buildUI()); 
 		setCss();
 		setPlaceHolder();
@@ -56,6 +56,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 	public Panel pnlPrincipal = new Panel();
 	public FormLayout mainFrm;
 	public HorizontalLayout toolbar = new HorizontalLayout();
+	
 	public VerticalLayout usuarioLayout = new VerticalLayout();
 	public TextField nombre_uno = new TextField("Primer nombre");
 	public TextField nombre_dos = new TextField("Segundo nombre");
@@ -72,8 +73,9 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 	public uploadXls uploadXls = new uploadXls();
 	public String accion = "guardar"; 
 	
+	public ComboBox<Laboratorio> cmbLaboratorio = new ComboBox<>();
 	public ComboBox<Rol> cmbRol = new ComboBox<>();
-	public List<Rol> listRol = new ArrayList<>();
+	public List<Laboratorio> listRol = new ArrayList<>();
 	public Grid<Rol> gridRol = new Grid<>();
 	public List<Rol> listGridRol = new ArrayList<>();
 	
@@ -90,12 +92,13 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		toolbar.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
 		toolbar.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
 		toolbar.setResponsive(true);
-		toolbar.addComponents(mainMenu);
+		toolbar.addComponents(cmbLaboratorio,mainMenu);
 		
 		mainMenu.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
 		mainMenu.addStyleName(ValoTheme.MENUBAR_SMALL);
 		mainMenu.setResponsive(true);
-		mainMenu.addItem("Nuevo usuario", VaadinIcons.USER_CHECK, new Command() {
+		
+		/*mainMenu.addItem("Nuevo usuario", VaadinIcons.USER_CHECK, new Command() {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
@@ -103,24 +106,22 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 				accion="guardar";
 			}
 		});		
-		
-		mainMenu.addItem("Imprimir", VaadinIcons.PRINT, null);		
+		*/
+		/*mainMenu.addItem("Imprimir", VaadinIcons.PRINT, null);		
 		
 		mainMenu.addItem("Importar usuarios", VaadinIcons.INSERT, new Command() {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
 				importUserView();
-				
-				/*userNewEdit(null);
-				accion="guardar";*/
 			}
-		});
+		});*/
 		
 		gridUsuario.addColumn(Usuario::getCedula).setCaption("CÉDULA/DNI");
 		gridUsuario.addColumn(Usuario -> Usuario.getNombre_uno() +" "+ Usuario.getNombre_dos()+" "+
-				Usuario.getApellido_paterno() +" "+ Usuario.getApellido_materno()).setCaption("NOMBRES Y APELLIDOS").setId("NOMBRES");
+				Usuario.getApellido_paterno() +" "+ Usuario.getApellido_materno()).setCaption("NOMBRES Y APELLIDOS");
 		gridUsuario.addColumn(Usuario::getNombre_usuario).setCaption("USUARIO");
+		//gridUsuario.addColumn(Usuario -> Usuario.getRoles().toString()).setCaption("ROLES");
 		
 		gridUsuario.setWidth("100%");
 		gridUsuario.setSelectionMode(SelectionMode.NONE);
@@ -169,8 +170,8 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		usuarioLayout.addComponents(toolbar,gridUsuario);
 		usuarioLayout.setMargin(false);
 		
-		pnlPrincipal.setCaption("Gestión de usuarios");
-		pnlPrincipal.setIcon(VaadinIcons.USERS);
+		pnlPrincipal.setCaption("Gestión de laboratorios");
+		pnlPrincipal.setIcon(VaadinIcons.FLASK);
 		pnlPrincipal.setContent(usuarioLayout);
 		
 		mainLayout.addComponents(pnlPrincipal);
@@ -393,13 +394,11 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 	
 	private void cargarDatos() {
 		listUsuarios = UsuarioController.findAll();
-		gridUsuario.setItems(listUsuarios);
+		gridUsuario.setItems(listUsuarios); 
 		
-		
-		
-		listRol = RolController.findAll();
-		cmbRol.setItems(listRol);
-	    cmbRol.setItemCaptionGenerator(Rol::getNombre);
+		listRol = LabotatorioController.findAll(); 
+		cmbLaboratorio.setItems(listRol);
+		cmbLaboratorio.setItemCaptionGenerator(Laboratorio::getNombre);
 		
 	} 
 	

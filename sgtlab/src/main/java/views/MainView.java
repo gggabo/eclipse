@@ -29,8 +29,8 @@ public class MainView extends HorizontalLayout implements Serializable {
 		menu.addView(new VwProyectos(), "inicio", "Inicio", VaadinIcons.HOME);
 		menu.addView(new VwProyectos(), VwProyectos.VIEW_NAME, VwProyectos.VIEW_NAME, VaadinIcons.NOTEBOOK);
 		menu.addView(new VwUsuarios(), "usuarios", "Usuarios", VaadinIcons.USERS);
-		menu.addView(new VwProyectos(), "categorias-cursos", "Categorias y cursos", VaadinIcons.ACADEMY_CAP);
-		menu.addView(new VwProyectos(), "laboratorios", "Laboratorios", VaadinIcons.FLASK);
+		//menu.addView(new VwProyectos(), "categorias-cursos", "Categorias y cursos", VaadinIcons.ACADEMY_CAP);
+		menu.addView(new VwLaboratorios(), "laboratorios", "Laboratorios", VaadinIcons.FLASK);
 		
 		navigator.addViewChangeListener(viewChangeListener);
 		

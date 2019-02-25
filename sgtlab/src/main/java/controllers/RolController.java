@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import models.Laboratorio;
 import models.Rol;
-import models.Usuario;
 import services.JPAService;
 
 public class RolController implements Serializable {
@@ -50,5 +50,7 @@ public class RolController implements Serializable {
 		return us;
 		
 	}
+	
+	
 		
 }
