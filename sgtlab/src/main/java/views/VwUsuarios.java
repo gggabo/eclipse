@@ -6,10 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.hibernate.query.criteria.internal.expression.function.UpperFunction;
-
 import com.vaadin.data.Binder;
-import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.ui.Button;
@@ -350,6 +347,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		//uploadXls.setListUsuariosImport(listUsuariosImport);
 		
 		VerticalLayout rootLayout = new VerticalLayout();
+	    rootLayout.setMargin(false);
 		rootLayout.addComponents(uploadXls,gridUsuarioImport);
 		
 		dialogWindow.getOkButton().addClickListener(e ->{

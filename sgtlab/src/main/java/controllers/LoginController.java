@@ -1,6 +1,7 @@
 package controllers;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -10,6 +11,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.VaadinSession;
 
+import models.Rol;
 import models.Usuario;
 import services.JPAService;
 import utils.uploadUtils;
@@ -19,6 +21,7 @@ public class LoginController implements Serializable {
 	
 	public static Usuario u;
 	public static Query query;
+	public static List<Rol> roles;
 	public static boolean loginStatus = false;
 	
 	public static boolean login(String usuario, String clave) {
@@ -37,10 +40,11 @@ public class LoginController implements Serializable {
 				VaadinSession.getCurrent().setAttribute("TIPO_USUARIO", u.getRoles());
 				VaadinSession.getCurrent().setAttribute("CLAVE", u.getClave());
 				VaadinSession.getCurrent().setAttribute("LOGIN", u.getNombre_usuario());
+				roles = u.getRoles();
 				
 				System.out.println(VaadinSession.getCurrent().getAttribute("NOMBRE_USUARIO")
 						+" "+VaadinSession.getCurrent().getAttribute("ID_USUARIO")+" "
-				+VaadinSession.getCurrent().getAttribute("NOMBRE_PERSONA")+" "+VaadinSession.getCurrent().getAttribute("TIPO_USUARIO"));
+				+VaadinSession.getCurrent().getAttribute("NOMBRE_PERSONA")+" "+VaadinSession.getCurrent().getAttribute("TIPO_USUARIO"));		
 				
 				loginStatus = true;
 			}else {
