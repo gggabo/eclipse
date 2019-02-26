@@ -1,6 +1,5 @@
 package utils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,7 +19,6 @@ import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.Receiver;
 
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 import models.Usuario;

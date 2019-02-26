@@ -14,7 +14,6 @@ import org.apache.commons.io.FileUtils;
 
 import com.vaadin.server.ConnectorResource;
 import com.vaadin.server.StreamResource;
-import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Image;
