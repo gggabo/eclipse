@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import com.vaadin.data.Binder;
-import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.shared.ui.ValueChangeMode;
@@ -27,7 +26,6 @@ import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.themes.ValoTheme;
@@ -52,6 +50,8 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		cargarDatos();
 		buildUser();
 		initComponents();
+		
+		addStyleName("custom-margin-layout");
 	}
 	
 	public VerticalLayout mainLayout = new VerticalLayout();

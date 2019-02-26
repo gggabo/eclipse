@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 //import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -19,7 +20,8 @@ import controllers.RolController;
 import models.Rol;
 import models.Usuario;
 
-public class readXlsUsers {
+public class readXlsUsers implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private File file;
 	private List<Usuario> listUsuariosImport = new ArrayList<>();
 	

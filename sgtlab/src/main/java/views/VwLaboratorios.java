@@ -9,6 +9,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import com.vaadin.data.Binder;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -19,17 +20,17 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.MenuBar;
+import com.vaadin.ui.MenuBar.Command;
+import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.MenuBar.Command;
-import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.themes.ValoTheme;
 
 import controllers.LabotatorioController;
-import controllers.RolController;
 import controllers.UsuarioController;
 import models.Laboratorio;
 import models.Rol;
@@ -50,6 +51,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		cargarDatos();
 		buildUser();
 		initComponents();
+		addStyleName("custom-margin-layout");
 	}
 	
 	public VerticalLayout mainLayout = new VerticalLayout();
@@ -57,7 +59,20 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 	public FormLayout mainFrm;
 	public HorizontalLayout toolbar = new HorizontalLayout();
 	
-	public VerticalLayout usuarioLayout = new VerticalLayout();
+	public TabSheet tabSheet = new TabSheet();
+	
+	public Panel pnlReactivos = new Panel();
+	public HorizontalLayout toolbarReactivo = new HorizontalLayout();
+	public VerticalLayout laboratorioReactivoLayout = new VerticalLayout();
+	public MenuBar mainMenuRectivo = new MenuBar();
+	
+	public Panel pnlEquipos = new Panel();
+	public HorizontalLayout toolbarEquipos = new HorizontalLayout();
+	public VerticalLayout laboratorioEquipoLayout = new VerticalLayout();
+	public MenuBar mainMenuEquipo = new MenuBar();
+	public Grid<Usuario> gridEquipo= new Grid<>(Usuario.class);
+	
+	public VerticalLayout laboratorioLayout = new VerticalLayout();
 	public TextField nombre_uno = new TextField("Primer nombre");
 	public TextField nombre_dos = new TextField("Segundo nombre");
 	public TextField apellido_paterno = new TextField("Apellido paterno");
@@ -69,17 +84,18 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 	public PasswordField clave = new PasswordField("Clave");
 	public Button btnGuardar = new Button("Guardar");
 	public MenuBar mainMenu = new MenuBar();
+	public MenuItem subMenu;
 	public UploadImage uploadField = new UploadImage();
 	public uploadXls uploadXls = new uploadXls();
 	public String accion = "guardar"; 
 	
 	public ComboBox<Laboratorio> cmbLaboratorio = new ComboBox<>();
 	public ComboBox<Rol> cmbRol = new ComboBox<>();
-	public List<Laboratorio> listRol = new ArrayList<>();
+	public List<Laboratorio> listLab = new ArrayList<>();
 	public Grid<Rol> gridRol = new Grid<>();
 	public List<Rol> listGridRol = new ArrayList<>();
 	
-	public Grid<Usuario> gridUsuario = new Grid<>();
+	public Grid<Usuario> gridReactivo = new Grid<>(Usuario.class);
 	public List<Usuario> listUsuarios = new ArrayList<>();
 		
 	public Grid<Usuario> gridUsuarioImport = new Grid<>();
@@ -92,40 +108,23 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		toolbar.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
 		toolbar.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
 		toolbar.setResponsive(true);
-		toolbar.addComponents(cmbLaboratorio,mainMenu);
-		
+		toolbar.addComponents(mainMenu);
+				
 		mainMenu.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
 		mainMenu.addStyleName(ValoTheme.MENUBAR_SMALL);
-		mainMenu.setResponsive(true);
+		mainMenu.setResponsive(true); 
 		
-		/*mainMenu.addItem("Nuevo usuario", VaadinIcons.USER_CHECK, new Command() {
-			private static final long serialVersionUID = 1L;
-			@Override
-			public void menuSelected(MenuItem selectedItem) {
-				userNewEdit(null);
-				accion="guardar";
-			}
-		});		
-		*/
-		/*mainMenu.addItem("Imprimir", VaadinIcons.PRINT, null);		
-		
-		mainMenu.addItem("Importar usuarios", VaadinIcons.INSERT, new Command() {
-			private static final long serialVersionUID = 1L;
-			@Override
-			public void menuSelected(MenuItem selectedItem) {
-				importUserView();
-			}
-		});*/
-		
-		gridUsuario.addColumn(Usuario::getCedula).setCaption("CÉDULA/DNI");
-		gridUsuario.addColumn(Usuario -> Usuario.getNombre_uno() +" "+ Usuario.getNombre_dos()+" "+
+		subMenu = mainMenu.addItem("Laboratorios", VaadinIcons.GRID_BIG_O, null);	
+		mainMenu.addItem("", VaadinIcons.PLUS_CIRCLE, null); 
+ 
+		/*gridReactivo.addColumn(Usuario::getCedula).setCaption("CÉDULA/DNI");
+		gridReactivo.addColumn(Usuario -> Usuario.getNombre_uno() +" "+ Usuario.getNombre_dos()+" "+
 				Usuario.getApellido_paterno() +" "+ Usuario.getApellido_materno()).setCaption("NOMBRES Y APELLIDOS");
-		gridUsuario.addColumn(Usuario::getNombre_usuario).setCaption("USUARIO");
-		//gridUsuario.addColumn(Usuario -> Usuario.getRoles().toString()).setCaption("ROLES");
+		gridReactivo.addColumn(Usuario::getNombre_usuario).setCaption("USUARIO");
 		
-		gridUsuario.setWidth("100%");
-		gridUsuario.setSelectionMode(SelectionMode.NONE);
-		gridUsuario.addComponentColumn(Usuario -> {
+		gridReactivo.setWidth("100%");
+		gridReactivo.setSelectionMode(SelectionMode.NONE);
+		gridReactivo.addComponentColumn(Usuario -> {
 	 
 			Button b = new Button("Editar");
 			b.addClickListener(clickb ->{ 
@@ -154,7 +153,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 			Button b2 = new Button("Eliminar");
 			b2.addClickListener(clickb2 ->{
 				listUsuarios.remove(Usuario);
-				gridUsuario.setItems(listUsuarios);
+				gridReactivo.setItems(listUsuarios);
 				Usuario.setEstado(0);
 				UsuarioController.update(Usuario);
 				message.warringMessage("Usuario eliminado");
@@ -166,13 +165,74 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 			hl.addComponents(b,b2);
 			return hl;			
 		}).setCaption("Opciones");
+        */
+		 
+		tabSheet.addTab(pnlReactivos,"Reactivos",new ThemeResource("images/quimica.png"));
+		tabSheet.addTab(pnlEquipos,"Equipos",new ThemeResource("images/microscopio.png"));
+		tabSheet.addTab(new VerticalLayout(),"Materiales",new ThemeResource("images/mortero.png"));
+		 
+		
+		//**REACTIVO**//
+		toolbarReactivo.setWidth("100%");
+		toolbarReactivo.setSpacing(true);
+		toolbarReactivo.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
+		toolbarReactivo.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
+		toolbarReactivo.setResponsive(true);
+		toolbarReactivo.addComponents(mainMenuRectivo);
+		
+		mainMenuRectivo.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
+		mainMenuRectivo.addStyleName(ValoTheme.MENUBAR_SMALL);
+		mainMenuRectivo.setResponsive(true); 
+		
+		mainMenuRectivo.addItem("Nuevo reactivo" , VaadinIcons.PLUS_CIRCLE, null);	
+		
+		gridReactivo.setColumns("apellido_paterno");
+		
+		gridReactivo.setWidth("100%");
+		gridReactivo.setSelectionMode(SelectionMode.NONE);
+		
+		pnlReactivos.setCaption("Gestión de reactivos");
+		pnlReactivos.setIcon(VaadinIcons.FLASK);
+		pnlReactivos.setContent(laboratorioReactivoLayout); 
+		
+		laboratorioReactivoLayout.addComponents(toolbarReactivo,gridReactivo);
+		laboratorioReactivoLayout.setMargin(false);
+		//**FIN REACTIVO**//
+		
+		//**EQUIPO**//
+		toolbarEquipos.setWidth("100%");
+		toolbarEquipos.setSpacing(true);
+		toolbarEquipos.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
+		toolbarEquipos.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
+		toolbarEquipos.setResponsive(true);
+		toolbarEquipos.addComponents(mainMenuEquipo);
 
-		usuarioLayout.addComponents(toolbar,gridUsuario);
-		usuarioLayout.setMargin(false);
+		mainMenuEquipo.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
+		mainMenuEquipo.addStyleName(ValoTheme.MENUBAR_SMALL);
+		mainMenuEquipo.setResponsive(true); 
+
+		mainMenuEquipo.addItem("Nuevo equipo" , VaadinIcons.PLUS_CIRCLE, null);	
+
+		gridEquipo.setColumns("apellido_paterno");
+
+		gridEquipo.setWidth("100%");
+		gridEquipo.setSelectionMode(SelectionMode.NONE);
+
+		pnlEquipos.setCaption("Gestión de equipos");
+		pnlEquipos.setIcon(VaadinIcons.FLASK);
+		pnlEquipos.setContent(laboratorioEquipoLayout); 
+
+		laboratorioReactivoLayout.addComponents(toolbarEquipos,gridEquipo);
+		laboratorioReactivoLayout.setMargin(false);
+		//**FIN EQUIPO**//
+
 		
 		pnlPrincipal.setCaption("Gestión de laboratorios");
 		pnlPrincipal.setIcon(VaadinIcons.FLASK);
-		pnlPrincipal.setContent(usuarioLayout);
+		pnlPrincipal.setContent(laboratorioLayout);
+		
+		laboratorioLayout.addComponents(toolbar, tabSheet);
+		laboratorioLayout.setMargin(false);
 		
 		mainLayout.addComponents(pnlPrincipal);
 		return mainLayout;
@@ -193,6 +253,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		btnAddRol.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
 		gridRol.addStyleName(ValoTheme.TABLE_SMALL);
 		gridRol.addStyleName(ValoTheme.TABLE_COMPACT); 
+		cmbLaboratorio.addStyleName(ValoTheme.COMBOBOX_SMALL);
 	}
 	
 	private void initComponents() {
@@ -393,14 +454,26 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 	}
 	
 	private void cargarDatos() {
-		listUsuarios = UsuarioController.findAll();
-		gridUsuario.setItems(listUsuarios); 
+		/*listUsuarios = UsuarioController.findAll();
+		gridReactivo.setItems(listUsuarios); */
 		
-		listRol = LabotatorioController.findAll(); 
-		cmbLaboratorio.setItems(listRol);
-		cmbLaboratorio.setItemCaptionGenerator(Laboratorio::getNombre);
+		listLab = LabotatorioController.findAll(); 
+		createMenu();
+		/*cmbLaboratorio.setItems(listLab);
+		cmbLaboratorio.setItemCaptionGenerator(Laboratorio::getNombre);*/
 		
 	} 
+	
+	private void createMenu() {
+        Iterator<Laboratorio> iteratorLab = listLab.iterator();
+		
+		Laboratorio lab;
+		
+		while(iteratorLab.hasNext()) {
+			lab = iteratorLab.next();
+			subMenu.addItem(lab.getNombre(), VaadinIcons.FLASK, null);
+		}
+	}
 	
 	private void addRol() {
 				
