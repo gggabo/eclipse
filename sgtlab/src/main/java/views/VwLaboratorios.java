@@ -72,6 +72,12 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 	public MenuBar mainMenuEquipo = new MenuBar();
 	public Grid<Usuario> gridEquipo= new Grid<>(Usuario.class);
 	
+	public Panel pnlMateriales = new Panel();
+	public HorizontalLayout toolbarMateriales = new HorizontalLayout();
+	public VerticalLayout laboratorioMaterialesLayout = new VerticalLayout();
+	public MenuBar mainMenuMateriales = new MenuBar();
+	public Grid<Usuario> gridMaterial= new Grid<>(Usuario.class);
+	
 	public VerticalLayout laboratorioLayout = new VerticalLayout();
 	public TextField nombre_uno = new TextField("Primer nombre");
 	public TextField nombre_dos = new TextField("Segundo nombre");
@@ -169,7 +175,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		 
 		tabSheet.addTab(pnlReactivos,"Reactivos",new ThemeResource("images/quimica.png"));
 		tabSheet.addTab(pnlEquipos,"Equipos",new ThemeResource("images/microscopio.png"));
-		tabSheet.addTab(new VerticalLayout(),"Materiales",new ThemeResource("images/mortero.png"));
+		tabSheet.addTab(pnlMateriales,"Materiales",new ThemeResource("images/mortero.png"));
 		 
 		
 		//**REACTIVO**//
@@ -222,10 +228,37 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		pnlEquipos.setIcon(VaadinIcons.FLASK);
 		pnlEquipos.setContent(laboratorioEquipoLayout); 
 
-		laboratorioReactivoLayout.addComponents(toolbarEquipos,gridEquipo);
-		laboratorioReactivoLayout.setMargin(false);
+		laboratorioEquipoLayout.addComponents(toolbarEquipos,gridEquipo);
+		laboratorioEquipoLayout.setMargin(false);
 		//**FIN EQUIPO**//
 
+		//**MATERIAL**//
+		toolbarMateriales.setWidth("100%");
+		toolbarMateriales.setSpacing(true);
+		toolbarMateriales.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
+		toolbarMateriales.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
+		toolbarMateriales.setResponsive(true);
+		toolbarMateriales.addComponents(mainMenuMateriales);
+
+		mainMenuMateriales.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
+		mainMenuMateriales.addStyleName(ValoTheme.MENUBAR_SMALL);
+		mainMenuMateriales.setResponsive(true); 
+
+		mainMenuMateriales.addItem("Nuevo material" , VaadinIcons.PLUS_CIRCLE, null);	
+
+		gridMaterial.setColumns("apellido_paterno");
+
+		gridMaterial.setWidth("100%");
+		gridMaterial.setSelectionMode(SelectionMode.NONE);
+
+		pnlMateriales.setCaption("Gestión de materiales");
+		pnlMateriales.setIcon(VaadinIcons.FLASK);
+		pnlMateriales.setContent(laboratorioMaterialesLayout); 
+
+		laboratorioMaterialesLayout.addComponents(toolbarMateriales,gridMaterial);
+		laboratorioMaterialesLayout.setMargin(false);
+		//**FIN MATERIAL**// 
+		
 		
 		pnlPrincipal.setCaption("Gestión de laboratorios");
 		pnlPrincipal.setIcon(VaadinIcons.FLASK);
