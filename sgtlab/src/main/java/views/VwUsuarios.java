@@ -10,11 +10,13 @@ import com.vaadin.data.Binder;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
+import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
@@ -77,6 +79,9 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 	public Grid<Rol> gridRol = new Grid<>();
 	public List<Rol> listGridRol = new ArrayList<>();
 	
+	public CssLayout filtering = new CssLayout();
+	public Button clearFilter = new Button(VaadinIcons.CLOSE_CIRCLE);
+	public TextField filtertxt = new TextField();
 	public Grid<Usuario> gridUsuario = new Grid<>();
 	public List<Usuario> listUsuarios = new ArrayList<>();
 		
@@ -117,9 +122,27 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 			}
 		});
 		
+		filtertxt.setPlaceholder("Buscar por nombres o cedula");
+		filtertxt.setValueChangeMode(ValueChangeMode.LAZY);
+		filtertxt.setSizeFull();
+		filtertxt.addValueChangeListener(e ->{
+			listUsuarios.clear();
+			listUsuarios.addAll(UsuarioController.search(filtertxt.getValue()));
+			gridUsuario.setItems(listUsuarios);
+		}); 
+		
+		clearFilter.addClickListener(e->{
+			filtertxt.clear();
+		});
+		
+		filtering.addComponents(filtertxt,clearFilter);
+		filtering.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
+		filtering.addStyleName("custom-margins");
+				   
 		gridUsuario.addColumn(Usuario::getCedula).setCaption("CÉDULA/DNI");
-		gridUsuario.addColumn(Usuario -> Usuario.getNombre_uno() +" "+ Usuario.getNombre_dos()+" "+
-				Usuario.getApellido_paterno() +" "+ Usuario.getApellido_materno()).setCaption("NOMBRES Y APELLIDOS").setId("NOMBRES");
+		gridUsuario.addColumn(Usuario -> Usuario.getApellido_paterno() +" "+ Usuario.getApellido_materno() +" "+
+		Usuario.getNombre_uno() +" "+ Usuario.getNombre_dos()
+				).setCaption("NOMBRES Y APELLIDOS").setId("NOMBRES");
 		gridUsuario.addColumn(Usuario::getNombre_usuario).setCaption("USUARIO");
 		
 		gridUsuario.setWidth("100%");
@@ -166,7 +189,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 			return hl;			
 		}).setCaption("Opciones");
 
-		usuarioLayout.addComponents(toolbar,gridUsuario);
+		usuarioLayout.addComponents(toolbar,filtering,gridUsuario);
 		usuarioLayout.setMargin(false);
 		
 		pnlPrincipal.setCaption("Gestión de usuarios");
@@ -192,7 +215,12 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		btnAddRol.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
 		gridRol.addStyleName(ValoTheme.TABLE_SMALL);
 		gridRol.addStyleName(ValoTheme.TABLE_COMPACT); 
-	}
+		filtertxt.addStyleName(ValoTheme.TEXTFIELD_SMALL);
+		filtertxt.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+		filtertxt.setIcon(VaadinIcons.SEARCH);
+		//clearFilter.addStyleName(ValoTheme.BUTTON_DANGER);
+		clearFilter.addStyleName(ValoTheme.BUTTON_SMALL);
+	} 
 	
 	private void initComponents() {
 		uploadField.setFileSizeLimit(2.0F);
