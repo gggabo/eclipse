@@ -4,17 +4,21 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import com.vaadin.data.Binder;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.ui.ValueChangeMode;
+import com.vaadin.shared.ui.grid.ColumnResizeMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
@@ -28,11 +32,14 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
 import controllers.LabotatorioController;
+import controllers.ReactivoController;
 import controllers.UsuarioController;
 import models.Laboratorio;
+import models.Reactivo;
 import models.Rol;
 import models.Usuario;
 import utils.UploadImage;
@@ -65,6 +72,11 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 	public HorizontalLayout toolbarReactivo = new HorizontalLayout();
 	public VerticalLayout laboratorioReactivoLayout = new VerticalLayout();
 	public MenuBar mainMenuRectivo = new MenuBar();
+	public CssLayout filteringReactivo = new CssLayout();
+	public Button clearReactivoFilter = new Button(VaadinIcons.CLOSE_CIRCLE);
+	public TextField filterReactivotxt = new TextField();
+	public Grid<Reactivo> gridReactivo = new Grid<>();
+	public List<Reactivo> listReactivos = new ArrayList<>();
 	
 	public Panel pnlEquipos = new Panel();
 	public HorizontalLayout toolbarEquipos = new HorizontalLayout();
@@ -100,9 +112,6 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 	public List<Laboratorio> listLab = new ArrayList<>();
 	public Grid<Rol> gridRol = new Grid<>();
 	public List<Rol> listGridRol = new ArrayList<>();
-	
-	public Grid<Usuario> gridReactivo = new Grid<>(Usuario.class);
-	public List<Usuario> listUsuarios = new ArrayList<>();
 		
 	public Grid<Usuario> gridUsuarioImport = new Grid<>();
 	public List<Usuario> listUsuariosImport = new ArrayList<>();
@@ -114,14 +123,28 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		toolbar.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
 		toolbar.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
 		toolbar.setResponsive(true);
-		toolbar.addComponents(mainMenu);
-				
-		mainMenu.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
-		mainMenu.addStyleName(ValoTheme.MENUBAR_SMALL);
-		mainMenu.setResponsive(true); 
+		toolbar.addComponents(cmbLaboratorio);
 		
-		subMenu = mainMenu.addItem("Laboratorios", VaadinIcons.GRID_BIG_O, null);	
-		mainMenu.addItem("", VaadinIcons.PLUS_CIRCLE, null); 
+		cmbLaboratorio.setWidth("35%");
+		cmbLaboratorio.setEmptySelectionCaption("Seleccionar laboratorio");
+		
+		cmbLaboratorio.addValueChangeListener(e ->{
+			listReactivos.clear();
+			if(cmbLaboratorio.getValue()==null) {
+				
+				return;
+			}
+			
+			listReactivos.addAll(ReactivoController.getAllReactiveByLaboratory(cmbLaboratorio.getValue().getIdLaboratorio()));
+			gridReactivo.setItems(listReactivos);
+		});
+		
+		/*mainMenu.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
+		mainMenu.addStyleName(ValoTheme.MENUBAR_SMALL);
+		mainMenu.setResponsive(true); */
+		
+		/*subMenu = mainMenu.addItem("Laboratorios", VaadinIcons.GRID_BIG_O, null);	
+		mainMenu.addItem("", VaadinIcons.PLUS_CIRCLE, null);*/ 
  
 		/*gridReactivo.addColumn(Usuario::getCedula).setCaption("CÉDULA/DNI");
 		gridReactivo.addColumn(Usuario -> Usuario.getNombre_uno() +" "+ Usuario.getNombre_dos()+" "+
@@ -130,47 +153,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		
 		gridReactivo.setWidth("100%");
 		gridReactivo.setSelectionMode(SelectionMode.NONE);
-		gridReactivo.addComponentColumn(Usuario -> {
-	 
-			Button b = new Button("Editar");
-			b.addClickListener(clickb ->{ 
-				userNewEdit(Usuario);
-				cedula.setValue(Usuario.getCedula());
-				apellido_paterno.setValue(Usuario.getApellido_paterno());
-				apellido_materno.setValue(Usuario.getApellido_materno());
-				nombre_uno.setValue(Usuario.getNombre_uno());
-				nombre_dos.setValue(Usuario.getNombre_dos());
-				correo.setValue(Usuario.getCorreo()); 
-				telefono.setValue(Usuario.getTelefono());
-				nombre_usuario.setValue(Usuario.getNombre_usuario());
-				clave.setValue("");
-				uploadField.setValue(Usuario.getImagen());	
-				
-				listGridRol.addAll(Usuario.getRoles());
-				
-				gridRol.setItems(listGridRol);
-	
-				accion = "modificar";
-				
-			});
-			b.setStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
-			b.setIcon(VaadinIcons.EDIT);
-			
-			Button b2 = new Button("Eliminar");
-			b2.addClickListener(clickb2 ->{
-				listUsuarios.remove(Usuario);
-				gridReactivo.setItems(listUsuarios);
-				Usuario.setEstado(0);
-				UsuarioController.update(Usuario);
-				message.warringMessage("Usuario eliminado");
-			});
-			b2.setStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
-			b2.setIcon(VaadinIcons.ERASER);
-			
-			HorizontalLayout hl = new HorizontalLayout();
-			hl.addComponents(b,b2);
-			return hl;			
-		}).setCaption("Opciones");
+		
         */
 		 
 		tabSheet.addTab(pnlReactivos,"Reactivos",new ThemeResource("images/quimica.png"));
@@ -192,7 +175,92 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		
 		mainMenuRectivo.addItem("Nuevo reactivo" , VaadinIcons.PLUS_CIRCLE, null);	
 		
-		gridReactivo.setColumns("apellido_paterno");
+		filterReactivotxt.setPlaceholder("Buscar por codigo o nombre");
+		filterReactivotxt.setValueChangeMode(ValueChangeMode.LAZY);
+		filterReactivotxt.setSizeFull();
+		filterReactivotxt.addValueChangeListener(e ->{
+			/*listUsuarios.clear();
+			listUsuarios.addAll(UsuarioController.search(filtertxt.getValue()));
+			gridUsuario.setItems(listUsuarios);*/
+			
+			listReactivos.clear();
+			listReactivos.addAll(ReactivoController.searchReactiveByLaboratory(cmbLaboratorio.getValue(),filterReactivotxt.getValue() ));
+			System.out.println(listReactivos);
+			gridReactivo.setItems(listReactivos);
+		}); 
+		
+		clearReactivoFilter.addClickListener(e->{
+			filterReactivotxt.clear();
+		});
+		
+		filteringReactivo.addComponents(filterReactivotxt,clearReactivoFilter);
+		filteringReactivo.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
+		filteringReactivo.addStyleName("custom-margins");
+		
+		gridReactivo.addColumn(Reactivo::getCodigo).setCaption("CÓDIGO").setId("CODIGO");
+		gridReactivo.addColumn(Reactivo::getNombre).setCaption("NOMBRE");
+		gridReactivo.addColumn(Reactivo-> Reactivo.getEntrada()+" "+Reactivo.getUnidad().getNombre().toLowerCase()).setCaption("ENTRADA").setId("ENTRADA");
+		gridReactivo.addColumn(Reactivo-> Reactivo.getGasto()+" "+Reactivo.getUnidad().getNombre().toLowerCase()).setCaption("GASTO").setId("GASTO");
+		gridReactivo.addColumn(Reactivo-> Reactivo.getSaldo()+" "+Reactivo.getUnidad().getNombre().toLowerCase()).setCaption("SALDO").setId("SALDO");
+		gridReactivo.addColumn(Reactivo-> Reactivo.getFechaCaducidad(), new DateRenderer("%1$td/%1$tm/%1$tY")).setCaption("F. CADUCIDAD").setId("FCADUCIDAD");
+		 
+		gridReactivo.getColumn("CODIGO").setMaximumWidth(90);
+		gridReactivo.getColumn("CODIGO").setResizable(false);
+		
+		gridReactivo.getColumn("ENTRADA").setMaximumWidth(100);
+		gridReactivo.getColumn("ENTRADA").setResizable(false);
+		
+		gridReactivo.getColumn("GASTO").setMaximumWidth(100);
+		gridReactivo.getColumn("GASTO").setResizable(false);
+		
+		gridReactivo.getColumn("SALDO").setMaximumWidth(100);
+		gridReactivo.getColumn("SALDO").setResizable(false);
+		
+		gridReactivo.getColumn("FCADUCIDAD").setMaximumWidth(130);
+		gridReactivo.getColumn("FCADUCIDAD").setResizable(false);
+		
+		gridReactivo.addComponentColumn(Usuario -> {
+			 
+			Button b = new Button("Editar"); 
+			b.addClickListener(clickb ->{ 
+				
+				/*cedula.setValue(Usuario.getCedula());
+				apellido_paterno.setValue(Usuario.getApellido_paterno());
+				apellido_materno.setValue(Usuario.getApellido_materno());
+				nombre_uno.setValue(Usuario.getNombre_uno());
+				nombre_dos.setValue(Usuario.getNombre_dos());
+				correo.setValue(Usuario.getCorreo()); 
+				telefono.setValue(Usuario.getTelefono());
+				nombre_usuario.setValue(Usuario.getNombre_usuario());
+				clave.setValue("");
+				uploadField.setValue(Usuario.getImagen());	
+				
+				listGridRol.addAll(Usuario.getRoles());
+				
+				gridRol.setItems(listGridRol);
+	
+				accion = "modificar";*/
+				
+			});
+			b.setStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
+			b.setIcon(VaadinIcons.EDIT);
+			
+			Button b2 = new Button("Eliminar");
+			b2.addClickListener(clickb2 ->{
+				/*listUsuarios.remove(Usuario);
+				gridReactivo.setItems(listUsuarios);
+				Usuario.setEstado(0);
+				UsuarioController.update(Usuario);
+				message.warringMessage("Usuario eliminado");*/
+			});
+			b2.setStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
+			b2.setIcon(VaadinIcons.ERASER);
+			
+			HorizontalLayout hl = new HorizontalLayout();
+			hl.setSpacing(false);
+			hl.addComponents(b,b2);
+			return hl;			
+		}).setCaption("Opciones");
 		
 		gridReactivo.setWidth("100%");
 		gridReactivo.setSelectionMode(SelectionMode.NONE);
@@ -201,7 +269,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		pnlReactivos.setIcon(VaadinIcons.FLASK);
 		pnlReactivos.setContent(laboratorioReactivoLayout); 
 		
-		laboratorioReactivoLayout.addComponents(toolbarReactivo,gridReactivo);
+		laboratorioReactivoLayout.addComponents(toolbarReactivo, filteringReactivo,gridReactivo);
 		laboratorioReactivoLayout.setMargin(false);
 		//**FIN REACTIVO**//
 		
@@ -287,10 +355,15 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		gridRol.addStyleName(ValoTheme.TABLE_SMALL);
 		gridRol.addStyleName(ValoTheme.TABLE_COMPACT); 
 		cmbLaboratorio.addStyleName(ValoTheme.COMBOBOX_SMALL);
+		cmbLaboratorio.addStyleName(ValoTheme.COMBOBOX_BORDERLESS);
+		filterReactivotxt.addStyleName(ValoTheme.TEXTFIELD_SMALL);
+		filterReactivotxt.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+		filterReactivotxt.setIcon(VaadinIcons.SEARCH);
+		clearReactivoFilter.addStyleName(ValoTheme.BUTTON_SMALL);
 	}
 	
 	private void initComponents() {
-		uploadField.setFileSizeLimit(2.0F);
+	/*	uploadField.setFileSizeLimit(2.0F);
 		
 		gridRol.addColumn(Rol::getNombre).setCaption("ROL ASIGNADO");
 		gridRol.addComponentColumn(Rol -> {
@@ -316,7 +389,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		//gridUsuario.addColumn(Usuario -> Usuario.getRoles().toString()).setCaption("ROLES");
 		
 		gridUsuarioImport.setWidth("600px");
-		gridUsuarioImport.setSelectionMode(SelectionMode.NONE);
+		gridUsuarioImport.setSelectionMode(SelectionMode.NONE);*/
 		
 	}
 	
@@ -502,10 +575,12 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		
 		Laboratorio lab;
 		
-		while(iteratorLab.hasNext()) {
-			lab = iteratorLab.next();
-			subMenu.addItem(lab.getNombre(), VaadinIcons.FLASK, null);
-		}
+		//while(iteratorLab.hasNext()) {
+			cmbLaboratorio.setItems(listLab);
+			cmbLaboratorio.setItemCaptionGenerator(Laboratorio::getNombre);
+			/*lab = iteratorLab.next();
+			subMenu.addItem(lab.getNombre(), VaadinIcons.FLASK, null);*/
+		//}
 	}
 	
 	private void addRol() {

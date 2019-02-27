@@ -67,12 +67,9 @@ public class UsuarioController implements Serializable {
 		return JPAService.runInTransaction(em->{
 			Query query = em.createQuery("SELECT u from Usuario u where "
 					+ "concat (u.apellido_paterno,' ',u.apellido_materno,' ',u.nombre_uno,' ',u.nombre_dos) LIKE ?1 "
-				//	+ "or concat (u.apellido_paterno,' ',u.nombre_uno) LIKE ?1"
 					+ "or cedula LIKE ?1 "
 					+ "order by concat (u.apellido_paterno,' ',u.apellido_materno,' ',u.nombre_uno,' ',u.nombre_dos)");
 			query.setParameter(1, "%" + searchField + "%");
-			/*query.setParameter(2, "%" + searchField + "%");
-			query.setParameter(3, "%" + searchField + "%");*/
 			
 			return query.getResultList();
 		});

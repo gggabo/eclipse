@@ -218,7 +218,6 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		filtertxt.addStyleName(ValoTheme.TEXTFIELD_SMALL);
 		filtertxt.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
 		filtertxt.setIcon(VaadinIcons.SEARCH);
-		//clearFilter.addStyleName(ValoTheme.BUTTON_DANGER);
 		clearFilter.addStyleName(ValoTheme.BUTTON_SMALL);
 	} 
 	

@@ -1,12 +1,17 @@
 package models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity 
@@ -24,6 +29,24 @@ public class Laboratorio implements Serializable {
 	
 	@Column(name = "DESCRIPCIÓN")
 	private String descripcion;
+	
+	@OneToMany(mappedBy = "laboratorio", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Reactivo>  reactivos = new ArrayList<>();
+
+	@SuppressWarnings("unused")
+	private void addReactivo(Reactivo reactivo) {
+		if(!reactivos.contains(reactivo)) {
+			reactivos.add(reactivo);
+			reactivo.setLaboratorio(this);
+		}
+	}
+	
+	public void removeReactivo(Reactivo reactivo) {
+		if(reactivos.contains(reactivo)) {
+			reactivos.remove(reactivo);
+			reactivo.setLaboratorio(null);
+		}
+	}
 	
 	public Laboratorio() {
 		// TODO Auto-generated constructor stub
@@ -59,6 +82,13 @@ public class Laboratorio implements Serializable {
 		this.descripcion = descripcion;
 	}
 	
+	public List<Reactivo> getReactivos() {
+		return reactivos;
+	}
+
+	public void setReactivos(List<Reactivo> reactivos) {
+		this.reactivos = reactivos;
+	}
 	
 
 }
