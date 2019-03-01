@@ -1,6 +1,7 @@
 package models;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -35,8 +36,8 @@ public class Reactivo implements Serializable {
 	private float entrada;
 	
 	@Column(name = "FECHA_CADUCIDAD")
-	private Date fechaCaducidad;
-		
+	private LocalDate fechaCaducidad;
+			
 	@Lob
 	@Column(name="IMAGEN", columnDefinition="mediumblob")
 	private byte[] imagen;
@@ -59,7 +60,7 @@ public class Reactivo implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Reactivo(String codigo, String nombre, float entrada, Date fechaCaducidad, byte[] imagen, float gasto,
+	public Reactivo(String codigo, String nombre, float entrada, LocalDate fechaCaducidad, byte[] imagen, float gasto,
 			float saldo, Unidad unidad, Laboratorio laboratorio) {
 		super();
 		this.codigo = codigo;
@@ -107,11 +108,11 @@ public class Reactivo implements Serializable {
 		this.entrada = entrada;
 	}
 
-	public Date getFechaCaducidad() {
+	public LocalDate getFechaCaducidad() {
 		return fechaCaducidad;
 	}
 
-	public void setFechaCaducidad(Date fechaCaducidad) {
+	public void setFechaCaducidad(LocalDate fechaCaducidad) {
 		this.fechaCaducidad = fechaCaducidad;
 	}
 

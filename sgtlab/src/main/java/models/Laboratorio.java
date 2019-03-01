@@ -61,7 +61,7 @@ public class Laboratorio implements Serializable {
 	public long getIdLaboratorio() {
 		return idLaboratorio;
 	}
-
+ 
 	public void setIdLaboratorio(long idLaboratorio) {
 		this.idLaboratorio = idLaboratorio;
 	}

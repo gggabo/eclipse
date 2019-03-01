@@ -56,9 +56,6 @@ public class ReactivoController implements Serializable {
 		JPAService.runInTransaction(em ->{
 			lab = em.find(Laboratorio.class, idLab);
 			lab.getReactivos().size();
-		    /*em.createQuery("select r from Reactivo r where r.idLaboratorio = ?1")
-			.setParameter(1, idLaborario)
-			.getResultList()*/
 			
 			return null;
 			
@@ -70,13 +67,6 @@ public class ReactivoController implements Serializable {
 	
 	@SuppressWarnings("unchecked")
 	public static List<Reactivo> searchReactiveByLaboratory(Laboratorio laboratorio,String searchField) {		
-	/*	return JPAService.runInTransaction(em ->
-			lab = em.find(Laboratorio.class, idLab);
-			lab.getReactivos().size();
-		    em.createQuery("select r from Reactivo r where Laboratorio = ?1")
-			.setParameter(1, laboratorio)
-			.getResultList()
-		); */ 
 		
 		return JPAService.runInTransaction(em->{
 			Query query = em.createQuery("select r from Reactivo r where laboratorio = ?1 "
@@ -90,10 +80,6 @@ public class ReactivoController implements Serializable {
 			return query.getResultList();
 		});
 	
-		
-		//return lab.getReactivos();
 	}
 	
-	
-		
 }
