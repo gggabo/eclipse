@@ -8,18 +8,20 @@ import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 public class MainView extends HorizontalLayout implements Serializable {
-	private static final long serialVersionUID = -6826161044686784696L;
-	
+	private static final long serialVersionUID = 1L;
 	private VwMenu menu;
 	
 	public MainView(MainUI ui) {
 		setSpacing(false);
 		setStyleName("main-screen");
 		
-		CssLayout viewContainer = new CssLayout();
-		viewContainer.addStyleName("valo-conten");
+		VerticalLayout viewContainer = new VerticalLayout();
+		viewContainer.addStyleName("v-scrollable");
+		viewContainer.addStyleName("custom-margin-layout");
 		viewContainer.setSizeFull();
 		
 		final Navigator navigator = new Navigator(ui, viewContainer);
@@ -40,6 +42,7 @@ public class MainView extends HorizontalLayout implements Serializable {
 		addComponent(viewContainer);
 		setExpandRatio(viewContainer, 1);
 		setSizeFull();
+		addStyleName("custom-margin-layout");
 		
 	}
 	

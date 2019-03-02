@@ -37,7 +37,6 @@ public class VwMenu extends CssLayout implements Serializable {
     private String nombrePersona = (String) VaadinSession.getCurrent().getAttribute("NOMBRE_PERSONA");
     private long idUsuario = (long) VaadinSession.getCurrent().getAttribute("ID_USUARIO");
     
-    CssLayout contenArea = new CssLayout();
 	CssLayout menuArea = new CssLayout();
 	VerticalLayout menu = new VerticalLayout();
 	VerticalLayout menuItemLayout = new VerticalLayout();

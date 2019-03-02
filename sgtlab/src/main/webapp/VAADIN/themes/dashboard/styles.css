@@ -16719,19 +16719,19 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .dashboard .custom-margin-layout .v-margin-left {
-	padding-left: 15px;
+	padding-left: 10px;
 }
 
 .dashboard .custom-margin-layout .v-margin-right {
-	padding-right: 15px;
+	padding-right: 10px;
 }
 
 .dashboard .custom-margin-layout .v-margin-top {
-	padding-top: 10px;
+	padding-top: 5px;
 }
 
 .dashboard .custom-margin-layout .v-margin-bottom {
-	padding-bottom: 10px;
+	padding-bottom: 5px;
 }
 
 .dashboard .custom-margins {

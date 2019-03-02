@@ -38,9 +38,9 @@ public class Reactivo implements Serializable {
 	@Column(name = "FECHA_CADUCIDAD")
 	private LocalDate fechaCaducidad;
 			
-	@Lob
+	/*@Lob
 	@Column(name="IMAGEN", columnDefinition="mediumblob")
-	private byte[] imagen;
+	private byte[] imagen;*/
 		
 	@Column(name = "GASTO")
 	private float gasto;
@@ -56,22 +56,26 @@ public class Reactivo implements Serializable {
 	@JoinColumn(name = "ID_LABORATORIO")
 	private Laboratorio laboratorio;
 		
+	@Column(name = "ESTADO")
+	private int estado;
+	
 	public Reactivo() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Reactivo(String codigo, String nombre, float entrada, LocalDate fechaCaducidad, byte[] imagen, float gasto,
-			float saldo, Unidad unidad, Laboratorio laboratorio) {
+	public Reactivo(String codigo, String nombre, float entrada, LocalDate fechaCaducidad,float gasto,
+			float saldo, Unidad unidad, Laboratorio laboratorio, int estado) {
 		super();
 		this.codigo = codigo;
 		this.nombre = nombre;
 		this.entrada = entrada;
 		this.fechaCaducidad = fechaCaducidad;
-		this.imagen = imagen;
+		//this.imagen = imagen;
 		this.gasto = gasto;
 		this.saldo = saldo;
 		this.unidad = unidad;
 		this.laboratorio = laboratorio;
+		this.estado = estado;
 	}
 
 
@@ -116,13 +120,13 @@ public class Reactivo implements Serializable {
 		this.fechaCaducidad = fechaCaducidad;
 	}
 
-	public byte[] getImagen() {
+	/*public byte[] getImagen() {
 		return imagen;
 	}
 
 	public void setImagen(byte[] imagen) {
 		this.imagen = imagen;
-	}
+	}*/
 
 	public float getGasto() {
 		return gasto;
@@ -156,7 +160,15 @@ public class Reactivo implements Serializable {
 		this.laboratorio = laboratorio;
 	}
 
+	
 
+	public int getEstado() {
+		return estado;
+	}
+
+	public void setEstado(int estado) {
+		this.estado = estado;
+	}
 
 	@Override
 	public int hashCode() {
@@ -167,7 +179,7 @@ public class Reactivo implements Serializable {
 		result = prime * result + ((fechaCaducidad == null) ? 0 : fechaCaducidad.hashCode());
 		result = prime * result + Float.floatToIntBits(gasto);
 		result = prime * result + (int) (idReactivo ^ (idReactivo >>> 32));
-		result = prime * result + Arrays.hashCode(imagen);
+		//result = prime * result + Arrays.hashCode(imagen);
 		result = prime * result + ((laboratorio == null) ? 0 : laboratorio.hashCode());
 		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
 		result = prime * result + Float.floatToIntBits(saldo);
@@ -202,8 +214,8 @@ public class Reactivo implements Serializable {
 			return false;
 		if (idReactivo != other.idReactivo)
 			return false;
-		if (!Arrays.equals(imagen, other.imagen))
-			return false;
+		/*if (!Arrays.equals(imagen, other.imagen))
+			return false;*/
 		if (laboratorio == null) {
 			if (other.laboratorio != null)
 				return false;
@@ -229,7 +241,7 @@ public class Reactivo implements Serializable {
 	@Override
 	public String toString() {
 		return "Reactivo [idReactivo=" + idReactivo + ", codigo=" + codigo + ", nombre=" + nombre + ", entrada="
-				+ entrada + ", fechaCaducidad=" + fechaCaducidad + ", imagen=" + Arrays.toString(imagen) + ", gasto="
+				+ entrada + ", fechaCaducidad=" + fechaCaducidad + ", imagen=" + ", gasto="
 				+ gasto + ", saldo=" + saldo + ", unidad=" + unidad + ", laboratorio=" + laboratorio + "]";
 	}
 	

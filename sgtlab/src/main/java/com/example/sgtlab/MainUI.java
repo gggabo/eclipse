@@ -31,6 +31,7 @@ public class MainUI extends UI {
     protected void init(VaadinRequest vaadinRequest) {
       	 
     	Responsive.makeResponsive(this);
+    	addStyleName(ValoTheme.UI_WITH_MENU);
     	setLocale(vaadinRequest.getLocale());
     	getPage().setTitle("SGTLAB");
     	
@@ -51,7 +52,6 @@ public class MainUI extends UI {
     }
     
     public void showMainView() {
-        addStyleName(ValoTheme.UI_WITH_MENU);
         setContent(new MainView(MainUI.this));
         getNavigator().navigateTo(getNavigator().getState());
     }

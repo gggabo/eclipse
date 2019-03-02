@@ -51,7 +51,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		buildUser();
 		initComponents();
 		
-		addStyleName("custom-margin-layout");
+		//addStyleName("custom-margin-layout");
 	}
 	
 	public VerticalLayout mainLayout = new VerticalLayout();
@@ -349,6 +349,8 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 					
 					UsuarioController.update(user);
 				}
+				
+				message.normalMessage("Acción realizada con éxito");
 				
 				cargarDatos();
 				dialogWindow.close();

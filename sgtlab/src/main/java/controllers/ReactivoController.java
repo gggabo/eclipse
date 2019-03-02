@@ -29,7 +29,7 @@ public class ReactivoController implements Serializable {
 	@SuppressWarnings("unchecked")
 	public static List<Laboratorio> findAll() {
 		return JPAService.runInTransaction(em ->
-        em.createQuery("select r from Reactivo r").getResultList()
+        em.createQuery("select r from Reactivo r where r.estado=1").getResultList()
         );
 	}
 	
@@ -51,6 +51,18 @@ public class ReactivoController implements Serializable {
 		
 	}
 	
+	public static boolean DBcontainsCodReactivo(String cod) {
+		if(!JPAService.runInTransaction(em ->{
+			Query query = em.createQuery("select 1 from Reactivo r where r.codigo = ?1 and (r.estado = 1 or r.estado = 0)");
+			query.setParameter(1, cod);
+			//System.out.println(query.getResultList());
+			return query.getResultList();
+		}).isEmpty()) 
+			return true;
+		else 
+			return false;
+	}
+	
 	static Laboratorio lab;
 	public static List<Reactivo> getAllReactiveByLaboratory(long idLab) {		
 		JPAService.runInTransaction(em ->{
@@ -70,7 +82,7 @@ public class ReactivoController implements Serializable {
 		
 		return JPAService.runInTransaction(em->{
 			Query query = em.createQuery("select r from Reactivo r where laboratorio = ?1 "
-					+ "and r.nombre LIKE ?2");
+					+ "and r.nombre LIKE ?2 or r.codigo LIKE ?2");
 				//	+ "concat (u.apellido_paterno,' ',u.apellido_materno,' ',u.nombre_uno,' ',u.nombre_dos) LIKE ?1 "
 				//	+ "or cedula LIKE ?1 "
 				//	+ "order by concat (u.apellido_paterno,' ',u.apellido_materno,' ',u.nombre_uno,' ',u.nombre_dos)");
