@@ -6,10 +6,8 @@ import com.example.sgtlab.MainUI;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.ValoTheme;
 
 public class MainView extends HorizontalLayout implements Serializable {
 	private static final long serialVersionUID = 1L;

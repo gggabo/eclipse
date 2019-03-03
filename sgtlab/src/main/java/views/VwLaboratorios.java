@@ -1,10 +1,13 @@
 package views;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import org.vaadin.ui.NumberField;
+
 import com.vaadin.data.Binder;
 import com.vaadin.data.converter.StringToFloatConverter;
 import com.vaadin.icons.VaadinIcons;
@@ -86,8 +89,8 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 	public FormLayout formLayoutReactivo = new FormLayout();
 	public TextField codigoReactivo = new TextField("Código");
 	public TextField nombreReactivo = new TextField("Nombre");
-	public TextField entradaReactivo = new TextField("Entrada");
-	public TextField gastoRectivo = new TextField("Gasto");
+	public NumberField entradaReactivo = new NumberField("Entrada");
+	public NumberField gastoRectivo = new NumberField("Gasto");
 	public TextField saldoRectivo = new TextField("Saldo");
 	public ComboBox<Unidad> cmbUnidad = new ComboBox<>();
 	public List<Unidad> listUnidad = new ArrayList<>();
@@ -258,7 +261,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 
 			});
 			b.setStyleName(ValoTheme.BUTTON_FRIENDLY);
-			// b.addStyleName(ValoTheme.BUTTON_TINY);
+			b.addStyleName(ValoTheme.BUTTON_SMALL);
 			b.setIcon(VaadinIcons.EDIT);
 
 			Button b2 = new Button("Eliminar");
@@ -267,10 +270,11 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 				 gridReactivo.setItems(listReactivos);
 				 Reactivo.setEstado(0); 
 				 ReactivoController.update(Reactivo);
-				 message.warringMessage("Reactivo eliminado");
+				 
+				 message.normalMessage("Reactivo eliminado");
 			});
 			b2.setStyleName(ValoTheme.BUTTON_DANGER);
-			// b2.addStyleName(ValoTheme.BUTTON_TINY);
+			b2.addStyleName(ValoTheme.BUTTON_SMALL);
 			b2.setIcon(VaadinIcons.ERASER);
 
 			HorizontalLayout hl = new HorizontalLayout();
@@ -371,7 +375,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		hl.setSpacing(false);
 		hl.setMargin(false);
 		hl.addComponents(cmbUnidad, btnAddUnidad);
-
+		 
 		formLayoutReactivo.setSpacing(false);
 		formLayoutReactivo.setMargin(false);
 		formLayoutReactivo.addComponents(codigoReactivo, nombreReactivo, entradaReactivo, gastoRectivo, saldoRectivo,
@@ -453,10 +457,6 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		fechaCaducidadRectivo.setValue(LocalDate.now());
 	}
 
-	public void userNewEdit(Usuario user) {
-
-	}
-
 	private void initComponents() {
 		// tabSheet.setEnabled(false);
 
@@ -500,8 +500,23 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		codigoReactivo.setStyleName(ValoTheme.TEXTFIELD_SMALL);
 		nombreReactivo.setStyleName(ValoTheme.TEXTFIELD_SMALL);
 		entradaReactivo.setStyleName(ValoTheme.TEXTFIELD_SMALL);
+		entradaReactivo.setDecimalPrecision(2);
+		entradaReactivo.setDecimalSeparator('.');
+		entradaReactivo.setGroupingSeparator(',');
+		entradaReactivo.setMinimumFractionDigits(2);
+		//entradaReactivo.setMinValue(0); 
+		entradaReactivo.setDecimalSeparatorAlwaysShown(true);
+		
 		gastoRectivo.setStyleName(ValoTheme.TEXTFIELD_SMALL);
+		gastoRectivo.setDecimalPrecision(2);
+		gastoRectivo.setDecimalSeparator('.');
+		gastoRectivo.setGroupingSeparator(',');  
+		gastoRectivo.setMinimumFractionDigits(2);
+		gastoRectivo.setDecimalSeparatorAlwaysShown(true);
 		saldoRectivo.setStyleName(ValoTheme.TEXTFIELD_SMALL);
+		saldoRectivo.setReadOnly(true);
+		saldoRectivo.addStyleName(ValoTheme.TEXTFIELD_ALIGN_RIGHT);
+		
 		cmbUnidad.addStyleName(ValoTheme.COMBOBOX_TINY);
 		btnAddUnidad.addStyleName(ValoTheme.BUTTON_SMALL);
 		btnAddUnidad.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
@@ -510,6 +525,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		filterReactivotxt.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
 		filterReactivotxt.setIcon(VaadinIcons.SEARCH);
 		clearReactivoFilter.addStyleName(ValoTheme.BUTTON_SMALL);
+		
 
 		// EQUIPO
 
@@ -569,7 +585,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 	Binder<Reactivo> validatorReactivo = new Binder<>();
 
 	private void addValidation() {
-
+		
 		validatorReactivo.forField(codigoReactivo).asRequired("Campo requerido").bind(Reactivo::getCodigo,
 				Reactivo::setCodigo);
 
@@ -577,11 +593,11 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 				Reactivo::setNombre);
 
 		validatorReactivo.forField(entradaReactivo).asRequired("Campo requerido").withNullRepresentation("")
-				.withConverter(new StringToFloatConverter("formato decimal 00.00"))
+				.withConverter(new StringToFloatConverter("formato decimal 0.00"))
 				.bind(Reactivo::getEntrada, Reactivo::setEntrada);
 
 		validatorReactivo.forField(gastoRectivo).asRequired("Campo requerido").withNullRepresentation("")
-				.withConverter(new StringToFloatConverter("formato decimal 00.00"))
+				.withConverter(new StringToFloatConverter("formato decimal 0.00"))
 				.bind(Reactivo::getGasto, Reactivo::setGasto);
 		
 		validatorReactivo.forField(cmbUnidad).asRequired("Campo requerido")
@@ -593,23 +609,51 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 	}
 
 	private void calcularSaldo() {
-		
 		entradaReactivo.addValueChangeListener(e -> {
-			if (!entradaReactivo.isEmpty() && !gastoRectivo.isEmpty()) {
-				saldoRectivo.setValue(String.valueOf(
-						Float.parseFloat(entradaReactivo.getValue()) - Float.parseFloat(gastoRectivo.getValue())));
-			} else {
-				saldoRectivo.setValue("0.00");
-			}
+			float entrada, gasto, saldo;
+			
+			DecimalFormatSymbols separadoresPersonalizados = new DecimalFormatSymbols();
+			separadoresPersonalizados.setDecimalSeparator('.');
+			
+			DecimalFormat format = new DecimalFormat("#0.00;-#",separadoresPersonalizados);
+			
+			if(!entradaReactivo.isEmpty()) 
+				entrada = Float.valueOf(entradaReactivo.getValue());
+			else
+				entrada = 0;
+			
+			if(!gastoRectivo.isEmpty()) 
+				gasto = Float.valueOf(gastoRectivo.getValue());
+			else
+				gasto = 0;
+			
+			saldo = entrada - gasto;
+			format.format(saldo);
+			saldoRectivo.setValue(format.format(saldo));
+			
 		});
 
 		gastoRectivo.addValueChangeListener(e -> {
-			if (!entradaReactivo.isEmpty() && !gastoRectivo.isEmpty()) {
-				saldoRectivo.setValue(String.valueOf(
-						Float.parseFloat(entradaReactivo.getValue()) - Float.parseFloat(gastoRectivo.getValue())));
-			} else {
-				saldoRectivo.setValue("0.00");
-			}
+			float entrada, gasto, saldo;
+			
+			DecimalFormatSymbols separadoresPersonalizados = new DecimalFormatSymbols();
+			separadoresPersonalizados.setDecimalSeparator('.');
+						
+			DecimalFormat format = new DecimalFormat("#0.00;-#",separadoresPersonalizados);
+			
+			if(!entradaReactivo.isEmpty()) 
+				entrada = Float.valueOf(entradaReactivo.getValue());
+			else
+				entrada = 0;
+			
+			if(!gastoRectivo.isEmpty()) 
+				gasto = Float.valueOf(gastoRectivo.getValue());
+			else
+				gasto = 0;
+			 
+			saldo = entrada - gasto;
+			
+			saldoRectivo.setValue(format.format(saldo));
 		});
 
 	}

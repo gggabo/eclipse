@@ -81,8 +81,8 @@ public class ReactivoController implements Serializable {
 	public static List<Reactivo> searchReactiveByLaboratory(Laboratorio laboratorio,String searchField) {		
 		
 		return JPAService.runInTransaction(em->{
-			Query query = em.createQuery("select r from Reactivo r where laboratorio = ?1 "
-					+ "and r.nombre LIKE ?2 or r.codigo LIKE ?2");
+			Query query = em.createQuery("select r from Reactivo r where laboratorio = ?1 and r.estado = 1 "
+					+ "and (r.nombre LIKE ?2 or r.codigo LIKE ?2)");
 				//	+ "concat (u.apellido_paterno,' ',u.apellido_materno,' ',u.nombre_uno,' ',u.nombre_dos) LIKE ?1 "
 				//	+ "or cedula LIKE ?1 "
 				//	+ "order by concat (u.apellido_paterno,' ',u.apellido_materno,' ',u.nombre_uno,' ',u.nombre_dos)");

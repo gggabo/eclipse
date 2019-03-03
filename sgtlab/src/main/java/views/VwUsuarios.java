@@ -170,7 +170,8 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 				accion = "modificar";
 				
 			});
-			b.setStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
+			b.setStyleName(ValoTheme.BUTTON_FRIENDLY);
+			b.addStyleName(ValoTheme.BUTTON_SMALL);
 			b.setIcon(VaadinIcons.EDIT);
 			
 			Button b2 = new Button("Eliminar");
@@ -181,7 +182,8 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 				UsuarioController.update(Usuario);
 				message.warringMessage("Usuario eliminado");
 			});
-			b2.setStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
+			b2.setStyleName(ValoTheme.BUTTON_DANGER);
+			b2.addStyleName(ValoTheme.BUTTON_SMALL);
 			b2.setIcon(VaadinIcons.ERASER);
 			
 			HorizontalLayout hl = new HorizontalLayout();
@@ -245,7 +247,6 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		gridUsuarioImport.addColumn(Usuario -> Usuario.getNombre_uno() +" "+ Usuario.getNombre_dos()+" "+
 				Usuario.getApellido_paterno() +" "+ Usuario.getApellido_materno()).setCaption("NOMBRES Y APELLIDOS");
 		gridUsuarioImport.addColumn(Usuario::getNombre_usuario).setCaption("USUARIO");
-		//gridUsuario.addColumn(Usuario -> Usuario.getRoles().toString()).setCaption("ROLES");
 		
 		gridUsuarioImport.setWidth("600px");
 		gridUsuarioImport.setSelectionMode(SelectionMode.NONE);
