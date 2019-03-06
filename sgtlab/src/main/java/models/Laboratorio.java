@@ -31,21 +31,9 @@ public class Laboratorio implements Serializable {
 	
 	@OneToMany(mappedBy = "laboratorio", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Reactivo>  reactivos = new ArrayList<>();
-
-	@SuppressWarnings("unused")
-	private void addReactivo(Reactivo reactivo) {
-		if(!reactivos.contains(reactivo)) {
-			reactivos.add(reactivo);
-			reactivo.setLaboratorio(this);
-		}
-	}
 	
-	public void removeReactivo(Reactivo reactivo) {
-		if(reactivos.contains(reactivo)) {
-			reactivos.remove(reactivo);
-			reactivo.setLaboratorio(null);
-		}
-	}
+	@OneToMany(mappedBy = "laboratorio", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Equipo>  equipos = new ArrayList<>();
 	
 	public Laboratorio() {
 		// TODO Auto-generated constructor stub
@@ -89,5 +77,42 @@ public class Laboratorio implements Serializable {
 		this.reactivos = reactivos;
 	}
 	
+	@SuppressWarnings("unused")
+	private void addReactivo(Reactivo reactivo) {
+		if(!reactivos.contains(reactivo)) {
+			reactivos.add(reactivo);
+			reactivo.setLaboratorio(this);
+		}
+	}
+	
+	public void removeReactivo(Reactivo reactivo) {
+		if(reactivos.contains(reactivo)) {
+			reactivos.remove(reactivo);
+			reactivo.setLaboratorio(null);
+		}
+	}
+	
+	public List<Equipo> getEquipos() {
+		return equipos;
+	}
+
+	public void setEquipos(List<Equipo> equipos) {
+		this.equipos = equipos;
+	}
+	
+	@SuppressWarnings("unused")
+	private void addEquipo(Equipo equipo) {
+		if(!equipos.contains(equipo)) {
+			equipos.add(equipo);
+			equipo.setLaboratorio(this);
+		}
+	}
+	
+	public void removeEquipo(Equipo equipo) {
+		if(equipos.contains(equipo)) {
+			equipos.remove(equipo);
+			equipo.setLaboratorio(null);
+		}
+	}
 
 }

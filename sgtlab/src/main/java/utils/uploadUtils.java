@@ -26,7 +26,7 @@ public class uploadUtils implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("unused")
+
 	public void redimensionar(File file) {
 		/*try {
 			Thumbnails.of(file).size(1000, 1000).toFile(new File(file.getAbsolutePath()));

@@ -43,7 +43,7 @@ public class readXlsUsers implements Serializable {
 		roles.add(RolController.getSpecificRolById(3L));
 		try {
 			FileInputStream xls = new FileInputStream(file);
-		    @SuppressWarnings("resource")
+
 			HSSFWorkbook workbook = new HSSFWorkbook(xls);
 		    
 		    HSSFSheet sheet = workbook.getSheetAt(1);
