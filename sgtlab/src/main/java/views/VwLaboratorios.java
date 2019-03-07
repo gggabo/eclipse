@@ -17,7 +17,6 @@ import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -163,6 +162,10 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		cmbLaboratorio.addValueChangeListener(e -> {
 			listReactivos.clear();
 			gridReactivo.setItems(listReactivos);
+			
+			listEquipos.clear();
+			gridEquipo.setItems(listEquipos);
+			
 			if (cmbLaboratorio.getValue() == null) {
 				// tabSheet.setEnabled(false);
 				return;
@@ -579,46 +582,42 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 			@Override
 			public void buttonClick(ClickEvent event) {
 				
-				/*if (!validatorReactivo.isValid()) {
-					validatorReactivo.validate();
+				if (!validatorEquipo.isValid()) {
+					validatorEquipo.validate();
 
 					message.warringMessage("Hay errores en los campos de texto");
 					return;
 				}
 
-				if (reactivoAction.equals("guardar")) {
+				if (equipoAction.equals("guardar")) {
 					
-					if (ReactivoController.DBcontainsCodReactivo(codigoReactivo.getValue())) {
-						message.warringMessage("El codigo del reactivo ya se encuentra registrado");
+					if (EquipoController.DBcontainsCodEquipo(codigoEquipo.getValue())) {
+						message.warringMessage("El codigo del equipo ya se encuentra registrado");
 						return;
 					}
 										
-					Reactivo react = new Reactivo(codigoReactivo.getValue().toUpperCase().trim(),
-							nombreReactivo.getValue().toUpperCase().trim(),
-							Float.parseFloat(entradaReactivo.getValue()), fechaCaducidadRectivo.getValue(),
-							Float.parseFloat(gastoRectivo.getValue()), Float.parseFloat(saldoRectivo.getValue()),
-							cmbUnidad.getValue(), cmbLaboratorio.getValue(), 1);
+					Equipo eq = new Equipo(codigoEquipo.getValue().toUpperCase().trim(),nombreEquipo.getValue().toUpperCase().trim(),
+							equipoMarca.getValue().toUpperCase().trim(),Integer.parseInt(cantidadEquipo.getValue()),rbEstadoEquipo.getValue(),
+							cmbLaboratorio.getValue(),1);
 
-					ReactivoController.save(react);
+					EquipoController.save(eq);
 				} else {
 
-					reactMod.setCodigo(codigoReactivo.getValue().toUpperCase().trim());
-					reactMod.setNombre(nombreReactivo.getValue().toUpperCase().trim());
-					reactMod.setEntrada(Float.parseFloat(entradaReactivo.getValue()));
-					reactMod.setFechaCaducidad(fechaCaducidadRectivo.getValue());
-					reactMod.setGasto(Float.parseFloat(gastoRectivo.getValue()));
-					reactMod.setSaldo(Float.parseFloat(saldoRectivo.getValue()));
-					reactMod.setUnidad(cmbUnidad.getValue());
-					reactMod.setLaboratorio(cmbLaboratorio.getValue());
+					equipo.setCodigo(codigoEquipo.getValue().toUpperCase().trim());
+					equipo.setNombre(nombreEquipo.getValue().toUpperCase().trim());
+					equipo.setMarca(equipoMarca.getValue().toUpperCase().trim());
+					equipo.setCantidad(Integer.parseInt(cantidadEquipo.getValue()));
+					equipo.setEstadoEquipo(rbEstadoEquipo.getValue());					
+					equipo.setLaboratorio(cmbLaboratorio.getValue());
 
-					ReactivoController.update(reactMod);
-					codigoReactivo.setReadOnly(false);
+					EquipoController.update(equipo);
+					codigoEquipo.setReadOnly(false);
 				}
 
 				message.normalMessage("Acción realizada con éxito");
 
-				cargarDatosReactivo();
-				dialogReactivoWindow.close();*/
+				cargarDatosEquipo();
+				dialogReactivoWindow.close();
 			}
 		});
 
@@ -632,21 +631,28 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		UI.getCurrent().addWindow(dialogReactivoWindow);
 	}
 
-	
+	public void limpiarEquipo() {
+		codigoEquipo.setValue("");
+		nombreEquipo.setValue("");
+		equipoMarca.setValue("");
+		cantidadEquipo.setValue("");
+		rbEstadoEquipo.setSelectedItem("BUENO");
+	}
 	
 	private void initComponents() {
-		// tabSheet.setEnabled(false);
 
-		// REACTIVO
 		setEvents();
 		fechaCaducidadRectivo.setDateFormat("dd/MM/yyyy");
-		// saldoRectivo.setReadOnly(true);
+
 		limpiarReactivo();
+		
+		rbEstadoEquipo.setItems("BUENO","REGULAR","MALO");
+		limpiarEquipo();
 	}
 
 	private void cargarDatosPrincipales() {
 		listLab = LabotatorioController.findAll();
-		createMenu();
+		createMenu(); 
 
 		listUnidad = UnidadController.findAll();
 		cmbUnidad.setItems(listUnidad);
@@ -712,6 +718,13 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 
 		// EQUIPO
 
+		codigoEquipo.addStyleName(ValoTheme.TEXTFIELD_SMALL);
+		nombreEquipo.addStyleName(ValoTheme.TEXTFIELD_SMALL);
+		equipoMarca.addStyleName(ValoTheme.TEXTFIELD_SMALL);
+		cantidadEquipo.addStyleName(ValoTheme.TEXTFIELD_SMALL);
+		rbEstadoEquipo.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
+		rbEstadoEquipo.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
+		
 		filterEquipotxt.addStyleName(ValoTheme.TEXTFIELD_SMALL);
 		filterEquipotxt.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
 		filterEquipotxt.setIcon(VaadinIcons.SEARCH);
@@ -772,9 +785,10 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 
 
 	Binder<Reactivo> validatorReactivo = new Binder<>();
+	Binder<Equipo> validatorEquipo = new Binder<>();
 
 	private void addValidation() {
-		
+		/*REACTIVO*/
 		validatorReactivo.forField(codigoReactivo).asRequired("Campo requerido").bind(Reactivo::getCodigo,
 				Reactivo::setCodigo);
 
@@ -794,6 +808,17 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 
 		validatorReactivo.forField(fechaCaducidadRectivo).asRequired("Campo requerido")
 				.bind(Reactivo::getFechaCaducidad, Reactivo::setFechaCaducidad);
+		/*FIN REACTIVO*/
+		
+		/*EQUIPO*/
+		validatorEquipo.forField(codigoEquipo).asRequired("Campo requerido").bind(Equipo::getCodigo,
+				Equipo::setCodigo);
+		validatorEquipo.forField(nombreEquipo).asRequired("Campo requerido").bind(Equipo::getNombre,
+				Equipo::setNombre);
+		validatorEquipo.forField(rbEstadoEquipo).asRequired("Campo requerido").bind(Equipo::getEstadoEquipo,
+				Equipo::setEstadoEquipo);
+		/*FIN EQUIPO*/
+		
 
 	}
 
