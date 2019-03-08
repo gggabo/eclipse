@@ -5,51 +5,52 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import models.Componente;
 import models.Equipo;
 import models.Laboratorio;
 import services.JPAService;
 
-public class EquipoController implements Serializable {
+public class ComponenteController implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	public static void save (Equipo equipo) {
+	public static void save (Componente componente) {
 		JPAService.runInTransaction(em ->{
-			em.persist(equipo);
+			em.persist(componente);
 			return null;
 		});
 	}
 	
-	public static void update (Equipo equipo) {
+	public static void update (Componente componente) {
 		JPAService.runInTransaction(em ->{
-			em.merge(equipo);
+			em.merge(componente);
 			return null;
 		});
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static List<Equipo> findAll() {
+	public static List<Componente> findAll() {
 		return JPAService.runInTransaction(em ->
-        em.createQuery("select e from Equipo e where e.estado=1").getResultList()
+        em.createQuery("select c from Componente c where c.estado=1").getResultList()
         );
 	}
 	
-	static Equipo eq;
-	public static Equipo getSpecificReactivoById(long idEquipo) {		
+	static Componente comp;
+	public static Componente getSpecificReactivoById(long idComponente) {		
 		JPAService.runInTransaction(em ->{
-			Query query = em.createQuery("select e from Equipo e where e.idEquipo = ?1");
-			query.setParameter(1, idEquipo);
+			Query query = em.createQuery("select c from Componente c where c.idComponente = ?1");
+			query.setParameter(1, idComponente);
 
 			if(query.getResultList().size()>0) {
-				eq = (Equipo) query.getSingleResult();
+				comp = (Componente) query.getSingleResult();
 			}
 			
 			return null;
 		}
         ); 
-		return eq;
+		return comp;
 	}
 	
-	public static boolean DBcontainsCodEquipo(String cod) {
+	/*public static boolean DBcontainsCodComponente(String cod) {
 		if(!JPAService.runInTransaction(em ->{
 			Query query = em.createQuery("select 1 from Equipo e where e.codigo = ?1 and (e.estado = 1 or e.estado = 0)");
 			query.setParameter(1, cod);
@@ -59,23 +60,23 @@ public class EquipoController implements Serializable {
 			return true;
 		else 
 			return false;
-	}
+	}*/
 	
-	static Laboratorio lab;
-	public static List<Equipo> getAllReactiveByLaboratory(long idLab) {		
+	static Equipo eq;
+	public static List<Componente> getAllComponentByEquipo(long idEquipo) {		
 		JPAService.runInTransaction(em ->{
-			lab = em.find(Laboratorio.class, idLab);
-			lab.getEquipos().size();
+			eq = em.find(Equipo.class, idEquipo);
+			eq.getComponentes().size();
 			
 			return null;
 			
 		}); 
 		
-		return lab.getEquipos();
+		return eq.getComponentes();
 	}
 	
 	
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	public static List<Equipo> searchEquipoByLaboratory(Laboratorio laboratorio,String searchField) {		
 		
 		return JPAService.runInTransaction(em->{
@@ -87,6 +88,6 @@ public class EquipoController implements Serializable {
 			return query.getResultList();
 		});
 	
-	}
+	}*/
 	
 }

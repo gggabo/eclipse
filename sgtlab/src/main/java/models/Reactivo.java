@@ -48,7 +48,7 @@ public class Reactivo implements Serializable {
 	@JoinColumn(name = "ID_UNIDAD")
 	private Unidad unidad;
 	
-	@ManyToOne//(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "ID_LABORATORIO")
 	private Laboratorio laboratorio;
 		

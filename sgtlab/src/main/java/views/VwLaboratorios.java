@@ -33,6 +33,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -118,7 +119,13 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 	public TextField nombreEquipo = new TextField("Nombre");
 	public TextField equipoMarca = new TextField("Marca");
 	public NumberField cantidadEquipo = new NumberField("Cantidad");
+	public TextArea equipoCaracteristicas = new TextArea("Características");
+	public TextArea equipoObservacion = new TextArea("Observación");
+	public DateField equipoFechaAdquisicion = new DateField("Fecha caducidad");
 	public RadioButtonGroup<String> rbEstadoEquipo = new RadioButtonGroup<>("Estado");
+	//EQUIPOS COMPUESTOS
+	
+	
 	/*FIN EQUIPO*/
 
 	public Panel pnlMateriales = new Panel();
@@ -211,6 +218,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
+				codigoReactivo.setReadOnly(false);
 				newEditReactivo(null);
 				reactivoAction = "guardar";
 			}
@@ -324,6 +332,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
+				codigoEquipo.setReadOnly(false);
 				newEditEquipo(null);
 				equipoAction = "guardar";
 			}
@@ -358,8 +367,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 			return lb;
 		}).setCaption("NOMBRE").setExpandRatio(0);
 
-		gridEquipo.addColumn(Equipo -> Equipo.getMarca().toLowerCase())
-				.setCaption("MARCA").setId("EQUIPOMARCA").setExpandRatio(0);
+		gridEquipo.addColumn(Equipo -> Equipo.getMarca()).setCaption("MARCA").setId("EQUIPOMARCA").setExpandRatio(0);
 		gridEquipo.addColumn(Equipo -> Equipo.getCantidad()).setCaption("CANTIDAD").setId("CANTIDADEQUIPO").setExpandRatio(0);
 		gridEquipo.addColumn(Equipo -> Equipo.getEstadoEquipo()).setCaption("ESTADO").setId("ESTADOEQUIPO").setExpandRatio(0);
 
@@ -375,7 +383,9 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 				equipoMarca.setValue(Equipo.getMarca());
 				cantidadEquipo.setValue(String.valueOf(Equipo.getCantidad()));
 				rbEstadoEquipo.setValue(Equipo.getEstadoEquipo());
-
+				equipoObservacion.setValue(Equipo.getObservacion());
+				equipoCaracteristicas.setValue(Equipo.getCaracteristicas());
+				equipoFechaAdquisicion.setValue(Equipo.getFechaAdquisicion());
 				equipoAction = "modificar";
 
 			});
@@ -568,13 +578,14 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 	}
 
 	public void newEditEquipo(Equipo equipo) {
-		limpiarReactivo();
+		limpiarEquipo();
 
 		dialogWindow dialogReactivoWindow = new dialogWindow("Gestión de equipos", VaadinIcons.FLASK);
 		 
 		formLayoutEquipo.setSpacing(false);
 		formLayoutEquipo.setMargin(false);
-		formLayoutEquipo.addComponents(codigoEquipo, nombreEquipo, equipoMarca, cantidadEquipo, rbEstadoEquipo);
+		formLayoutEquipo.addComponents(codigoEquipo, nombreEquipo, equipoMarca, cantidadEquipo,equipoObservacion,equipoCaracteristicas,
+				equipoFechaAdquisicion,rbEstadoEquipo);
 
 		dialogReactivoWindow.getOkButton().addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -597,8 +608,9 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 					}
 										
 					Equipo eq = new Equipo(codigoEquipo.getValue().toUpperCase().trim(),nombreEquipo.getValue().toUpperCase().trim(),
-							equipoMarca.getValue().toUpperCase().trim(),Integer.parseInt(cantidadEquipo.getValue()),rbEstadoEquipo.getValue(),
-							cmbLaboratorio.getValue(),1);
+							equipoMarca.getValue().toUpperCase().trim(),Integer.parseInt(cantidadEquipo.getValue()),
+							equipoObservacion.getValue().toUpperCase().trim(),equipoCaracteristicas.getValue().toUpperCase().trim(),
+							equipoFechaAdquisicion.getValue(),rbEstadoEquipo.getValue(),cmbLaboratorio.getValue(),1);
 
 					EquipoController.save(eq);
 				} else {
@@ -609,7 +621,9 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 					equipo.setCantidad(Integer.parseInt(cantidadEquipo.getValue()));
 					equipo.setEstadoEquipo(rbEstadoEquipo.getValue());					
 					equipo.setLaboratorio(cmbLaboratorio.getValue());
-
+					equipo.setObservacion(equipoObservacion.getValue().toUpperCase().trim());
+					equipo.setCaracteristicas(equipoCaracteristicas.getValue().toUpperCase().trim());
+					equipo.setFechaAdquisicion(equipoFechaAdquisicion.getValue());
 					EquipoController.update(equipo);
 					codigoEquipo.setReadOnly(false);
 				}
@@ -636,6 +650,9 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		nombreEquipo.setValue("");
 		equipoMarca.setValue("");
 		cantidadEquipo.setValue("");
+		equipoObservacion.setValue("");
+		equipoCaracteristicas.setValue("");
+		equipoFechaAdquisicion.setValue(LocalDate.now());
 		rbEstadoEquipo.setSelectedItem("BUENO");
 	}
 	
@@ -647,6 +664,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		limpiarReactivo();
 		
 		rbEstadoEquipo.setItems("BUENO","REGULAR","MALO");
+		equipoFechaAdquisicion.setDateFormat("dd/MM/yyyy");
 		limpiarEquipo();
 	}
 
@@ -722,6 +740,13 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		nombreEquipo.addStyleName(ValoTheme.TEXTFIELD_SMALL);
 		equipoMarca.addStyleName(ValoTheme.TEXTFIELD_SMALL);
 		cantidadEquipo.addStyleName(ValoTheme.TEXTFIELD_SMALL);
+		equipoObservacion.addStyleName(ValoTheme.TEXTAREA_SMALL);
+		equipoObservacion.setWidth("225px");
+		equipoObservacion.setHeight("55px");
+		equipoCaracteristicas.addStyleName(ValoTheme.TEXTAREA_SMALL);
+		equipoCaracteristicas.setWidth("225px");
+		equipoCaracteristicas.setHeight("55px");
+		equipoFechaAdquisicion.addStyleName(ValoTheme.DATEFIELD_SMALL);
 		rbEstadoEquipo.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
 		rbEstadoEquipo.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
 		
@@ -817,6 +842,8 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 				Equipo::setNombre);
 		validatorEquipo.forField(rbEstadoEquipo).asRequired("Campo requerido").bind(Equipo::getEstadoEquipo,
 				Equipo::setEstadoEquipo);
+		//LAB OPERACIONES UNITARES - COMPONENTES
+		
 		/*FIN EQUIPO*/
 		
 

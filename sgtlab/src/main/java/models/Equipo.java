@@ -1,6 +1,11 @@
 package models;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity 
@@ -32,12 +38,24 @@ public class Equipo implements Serializable {
 	@Column(name = "CANTIDAD")
 	private int cantidad;
 	
+	@Column(name = "OBSERVACION")
+	private String observacion;
+	
+	@Column(name = "CARACTERISTICAS")
+	private String caracteristicas;
+	
+	@Column(name = "FECHA_ADQUISICION")
+	private LocalDate fechaAdquisicion;
+	
 	@Column(name = "ESTADO_EQUIPO")
 	private String estadoEquipo;
 	
 	@ManyToOne//(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ID_LABORATORIO")
 	private Laboratorio laboratorio;
+	
+	@OneToMany(mappedBy = "equipo", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Componente>  componentes = new ArrayList<>();
 		
 	@Column(name = "ESTADO")
 	private int estado;
@@ -46,13 +64,16 @@ public class Equipo implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Equipo(String codigo, String nombre, String marca, int cANTIDAD, String estadoEquipo,
-			Laboratorio laboratorio, int estado) {
+	public Equipo(String codigo, String nombre, String marca, int cantidad, String observacion, String caracteristicas,
+			LocalDate fechaAdquisicion, String estadoEquipo, Laboratorio laboratorio, int estado) {
 		super();
 		this.codigo = codigo;
 		this.nombre = nombre;
 		this.marca = marca;
-		cantidad = cANTIDAD;
+		this.cantidad = cantidad;
+		this.observacion = observacion;
+		this.caracteristicas = caracteristicas;
+		this.fechaAdquisicion = fechaAdquisicion;
 		this.estadoEquipo = estadoEquipo;
 		this.laboratorio = laboratorio;
 		this.estado = estado;
@@ -122,17 +143,67 @@ public class Equipo implements Serializable {
 		this.estado = estado;
 	}
 
+	public String getObservacion() {
+		return observacion;
+	}
+
+	public void setObservacion(String observacion) {
+		this.observacion = observacion;
+	}
+
+	public String getCaracteristicas() {
+		return caracteristicas;
+	}
+
+	public void setCaracteristicas(String caracteristicas) {
+		this.caracteristicas = caracteristicas;
+	}
+
+	public LocalDate getFechaAdquisicion() {
+		return fechaAdquisicion;
+	}
+
+	public void setFechaAdquisicion(LocalDate fechaAdquisicion) {
+		this.fechaAdquisicion = fechaAdquisicion;
+	}
+
+	public List<Componente> getComponentes() {
+		return componentes;
+	}
+
+	public void setComponentes(List<Componente> componentes) {
+		this.componentes = componentes;
+	}
+	
+	@SuppressWarnings("unused")
+	private void addReactivo(Componente equipo) {
+		if(!componentes.contains(equipo)) {
+			componentes.add(equipo);
+			equipo.setEquipo(this);
+		}
+	}
+	
+	public void removeReactivo(Componente equipo) {
+		if(componentes.contains(equipo)) {
+			componentes.remove(equipo);
+			equipo.setEquipo(null);
+		}
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + cantidad;
+		result = prime * result + ((caracteristicas == null) ? 0 : caracteristicas.hashCode());
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
 		result = prime * result + estado;
 		result = prime * result + ((estadoEquipo == null) ? 0 : estadoEquipo.hashCode());
+		result = prime * result + ((fechaAdquisicion == null) ? 0 : fechaAdquisicion.hashCode());
 		result = prime * result + (int) (idEquipo ^ (idEquipo >>> 32));
 		result = prime * result + ((marca == null) ? 0 : marca.hashCode());
 		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
+		result = prime * result + ((observacion == null) ? 0 : observacion.hashCode());
 		return result;
 	}
 
@@ -147,6 +218,11 @@ public class Equipo implements Serializable {
 		Equipo other = (Equipo) obj;
 		if (cantidad != other.cantidad)
 			return false;
+		if (caracteristicas == null) {
+			if (other.caracteristicas != null)
+				return false;
+		} else if (!caracteristicas.equals(other.caracteristicas))
+			return false;
 		if (codigo == null) {
 			if (other.codigo != null)
 				return false;
@@ -158,6 +234,11 @@ public class Equipo implements Serializable {
 			if (other.estadoEquipo != null)
 				return false;
 		} else if (!estadoEquipo.equals(other.estadoEquipo))
+			return false;
+		if (fechaAdquisicion == null) {
+			if (other.fechaAdquisicion != null)
+				return false;
+		} else if (!fechaAdquisicion.equals(other.fechaAdquisicion))
 			return false;
 		if (idEquipo != other.idEquipo)
 			return false;
@@ -171,14 +252,20 @@ public class Equipo implements Serializable {
 				return false;
 		} else if (!nombre.equals(other.nombre))
 			return false;
+		if (observacion == null) {
+			if (other.observacion != null)
+				return false;
+		} else if (!observacion.equals(other.observacion))
+			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
 		return "Equipo [idEquipo=" + idEquipo + ", codigo=" + codigo + ", nombre=" + nombre + ", marca=" + marca
-				+ ", cantidad=" + cantidad + ", estadoEquipo=" + estadoEquipo + ", laboratorio=" + laboratorio
-				+ ", estado=" + estado + "]";
+				+ ", cantidad=" + cantidad + ", observacion=" + observacion + ", caracteristicas=" + caracteristicas
+				+ ", fechaAdquisicion=" + fechaAdquisicion + ", estadoEquipo=" + estadoEquipo + ", laboratorio="
+				+ laboratorio + ", estado=" + estado + "]";
 	}
 
 	
