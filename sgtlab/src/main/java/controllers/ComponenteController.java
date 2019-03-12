@@ -76,18 +76,16 @@ public class ComponenteController implements Serializable {
 	}
 	
 	
-	/*@SuppressWarnings("unchecked")
-	public static List<Equipo> searchEquipoByLaboratory(Laboratorio laboratorio,String searchField) {		
+	@SuppressWarnings("unchecked")
+	public static List<Componente> searchComponenteByEquipo(Equipo eq) {		
 		
 		return JPAService.runInTransaction(em->{
-			Query query = em.createQuery("select e from Equipo e where laboratorio = ?1 and e.estado = 1 "
-					+ "and (e.nombre LIKE ?2 or e.codigo LIKE ?2)");
-			query.setParameter(1, laboratorio);
-			query.setParameter(2, "%" + searchField + "%");
+			Query query = em.createQuery("select c from Componente c where equipo = ?1 and estado = 1");
+			query.setParameter(1, eq);
 			
 			return query.getResultList();
 		});
 	
-	}*/
+	}
 	
 }

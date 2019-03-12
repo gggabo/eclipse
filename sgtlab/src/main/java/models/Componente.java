@@ -46,10 +46,9 @@ public class Componente implements Serializable {
     
 	
 	
-	public Componente(long idComponente, String nombre, String marca, String capacidad, int cantidad, Equipo equipo,
+	public Componente( String nombre, String marca, String capacidad, int cantidad, Equipo equipo,
 			int estado) {
 		super();
-		this.idComponente = idComponente;
 		this.nombre = nombre;
 		this.marca = marca;
 		this.capacidad = capacidad;
