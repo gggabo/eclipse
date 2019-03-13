@@ -60,15 +60,16 @@ public class UsuarioController implements Serializable {
         ); 
 		
 		return us;
-	}
+	} 
 		
 	@SuppressWarnings("unchecked")
 	public static List<Usuario> search(String searchField){
 		return JPAService.runInTransaction(em->{
 			Query query = em.createQuery("SELECT u from Usuario u where u.estado = 1 and"
 					+ "(concat (u.apellido_paterno,' ',u.apellido_materno,' ',u.nombre_uno,' ',u.nombre_dos) LIKE ?1 "
-					+ "or cedula LIKE ?1 "
-					+ "order by concat (u.apellido_paterno,' ',u.apellido_materno,' ',u.nombre_uno,' ',u.nombre_dos))");
+					+ "or cedula LIKE ?1) "
+					//+ "order by concat (u.apellido_paterno,' ',u.apellido_materno,' ',u.nombre_uno,' ',u.nombre_dos))"
+					);
 			query.setParameter(1, "%" + searchField + "%");
 			
 			return query.getResultList();
