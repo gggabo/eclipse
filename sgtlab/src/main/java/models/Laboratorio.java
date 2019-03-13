@@ -35,6 +35,12 @@ public class Laboratorio implements Serializable {
 	@OneToMany(mappedBy = "laboratorio", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Equipo>  equipos = new ArrayList<>();
 	
+	@OneToMany(mappedBy = "laboratorio", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Material>  materiales = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "laboratorio", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<MedioCultivo>  mediosCultivos = new ArrayList<>();
+	
 	public Laboratorio() {
 		// TODO Auto-generated constructor stub
 	}
@@ -112,6 +118,52 @@ public class Laboratorio implements Serializable {
 		if(equipos.contains(equipo)) {
 			equipos.remove(equipo);
 			equipo.setLaboratorio(null);
+		}
+	}
+
+	public List<Material> getMateriales() {
+		return materiales;
+	}
+
+	public void setMateriales(List<Material> materiales) {
+		this.materiales = materiales;
+	}
+	
+	@SuppressWarnings("unused")
+	private void addMaterial(Material material) {
+		if(!materiales.contains(material)) {
+			materiales.add(material);
+			material.setLaboratorio(this);
+		}
+	}
+	
+	public void removeMaterial(Material material) {
+		if(materiales.contains(material)) {
+			materiales.remove(material);
+			material.setLaboratorio(null);
+		}
+	}
+
+	public List<MedioCultivo> getMediosCultivos() {
+		return mediosCultivos;
+	}
+
+	public void setMediosCultivos(List<MedioCultivo> mediosCultivos) {
+		this.mediosCultivos = mediosCultivos;
+	}
+	
+	@SuppressWarnings("unused")
+	private void addMedioCultivo(MedioCultivo medioCultivo) {
+		if(!mediosCultivos.contains(medioCultivo)) {
+			mediosCultivos.add(medioCultivo);
+			medioCultivo.setLaboratorio(this);
+		}
+	}
+	
+	public void removeMedioCultivo(MedioCultivo medioCultivo) {
+		if(mediosCultivos.contains(medioCultivo)) {
+			mediosCultivos.remove(medioCultivo);
+			medioCultivo.setLaboratorio(null);
 		}
 	}
 
