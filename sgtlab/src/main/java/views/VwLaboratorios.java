@@ -255,8 +255,8 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 					MedioCultivoController.searchMedioCultivoByLaboratory(cmbLaboratorio.getValue(), filterMedioCultivotxt.getValue()));
 			gridMedioCultivo.setItems(listMediosCultivos);
 			
-		});
-
+		});    
+  
 		toolbar.setWidth("100%");
 		toolbar.setSpacing(true);
 		toolbar.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
@@ -1510,8 +1510,8 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		validatorReactivo.forField(cmbUnidad).asRequired("Campo requerido")
 		.bind(Reactivo::getUnidad, Reactivo::setUnidad);
 
-		validatorReactivo.forField(fechaCaducidadRectivo).asRequired("Campo requerido")
-				.bind(Reactivo::getFechaCaducidad, Reactivo::setFechaCaducidad);
+		/*validatorReactivo.forField(fechaCaducidadRectivo).asRequired("Campo requerido")
+				.bind(Reactivo::getFechaCaducidad, Reactivo::setFechaCaducidad);*/
 		/*FIN REACTIVO*/
 		
 		/*EQUIPO*/

@@ -36,6 +36,7 @@ public class VwProyectos extends CssLayout implements View, Serializable {
 		addComponent(dashboardPanels);*/
 	}
 	
+	@SuppressWarnings("unused")
 	private Component createContentWrapper(final Component content) {
         final CssLayout slot = new CssLayout();
         slot.setWidth("100%");

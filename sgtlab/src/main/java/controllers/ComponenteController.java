@@ -7,7 +7,6 @@ import javax.persistence.Query;
 
 import models.Componente;
 import models.Equipo;
-import models.Laboratorio;
 import services.JPAService;
 
 public class ComponenteController implements Serializable {

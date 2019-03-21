@@ -7,7 +7,6 @@ import javax.persistence.Query;
 
 import models.Laboratorio;
 import models.Material;
-import models.Reactivo;
 import services.JPAService;
 
 public class MaterialController implements Serializable {

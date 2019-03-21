@@ -29,7 +29,7 @@ public class MainUI extends UI {
 
 	@Override
     protected void init(VaadinRequest vaadinRequest) {
-      	 
+      	  
     	Responsive.makeResponsive(this);
     	addStyleName(ValoTheme.UI_WITH_MENU);
     	setLocale(vaadinRequest.getLocale());
