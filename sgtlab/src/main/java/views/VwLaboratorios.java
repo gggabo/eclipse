@@ -229,7 +229,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 			gridEquipo.setItems(listEquipos);
 			
 			listMateriales.clear();
-			gridMaterial.setItems(listMateriales);
+			gridMaterial.setItems(listMateriales); 
 			
 			listMediosCultivos.clear();
 			gridMedioCultivo.setItems(listMediosCultivos);
@@ -269,7 +269,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		tabSheet.addTab(pnlMateriales, "Materiales", new ThemeResource("images/mortero.png"));
 		tabSheet.addTab(pnlMedioCultivo, "M. Cultivo", new ThemeResource("images/molecule.png"));
 
-		// **REACTIVO**//
+		// **REACTIVO**// 
 		toolbarReactivo.setWidth("100%");
 		toolbarReactivo.setSpacing(true);
 		toolbarReactivo.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);

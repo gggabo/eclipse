@@ -6,24 +6,43 @@ import java.util.Iterator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.themes.ValoTheme;
 
-public class VwProyectos extends CssLayout implements View, Serializable {
+import viewComponents.panelProyecto;
+
+public class VwProyectos extends VerticalLayout implements View, Serializable {
 	private static final long serialVersionUID = -5759789185491799696L;
 	
 	public static final String VIEW_NAME = "proyectos";
 	
+	public VerticalLayout mainLayout = new VerticalLayout();
+	public Panel pnlPrincipal = new Panel();
+	public FormLayout mainFrm;
+	public HorizontalLayout toolbar = new HorizontalLayout();
+	public HorizontalLayout layoutProyectos = new HorizontalLayout();
+	public VerticalLayout proyectoLayout = new VerticalLayout();
+	public MenuBar mainMenu = new MenuBar();
+	
 	 private CssLayout dashboardPanels = new CssLayout();
 	 public VwProyectos() {
-		// TODO Auto-generated constructor stub
+		 addComponent(buildUI());
+		 addStyleName("custom-margin-layout");
+		 
+		 
+		  
+		 // TODO Auto-generated constructor stub
 		
 		/*TextArea notes = new TextArea("Notes");
         notes.setValue("Remember to:\n· Zoom in and out in the Sales view\n· Filter the transactions and drag a set of them to the Reports tab\n· Create a new report\n· Change the schedule of the movie theater");
@@ -35,6 +54,86 @@ public class VwProyectos extends CssLayout implements View, Serializable {
         dashboardPanels.addComponent(panel);
 		addComponent(dashboardPanels);*/
 	}
+	 
+	public Component buildUI() {
+		
+		toolbar.setWidth("100%");
+		toolbar.setSpacing(true);
+		toolbar.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
+		toolbar.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
+		toolbar.setResponsive(true);
+		toolbar.addComponents(mainMenu);
+		
+		mainMenu.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
+		mainMenu.addStyleName(ValoTheme.MENUBAR_SMALL);
+		mainMenu.setResponsive(true);
+		mainMenu.addItem("Nuevo proyecto", VaadinIcons.USER_CHECK, new Command() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void menuSelected(MenuItem selectedItem) {
+				/*userNewEdit(null);
+				accion="guardar";*/
+			}
+		});		
+		
+		mainMenu.addItem("Imprimir", VaadinIcons.PRINT, null);		
+		
+		layoutProyectos.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
+		panelProyecto p1 = new panelProyecto();
+		//p1.addComponentBody(panelContent());
+		p1.setCaption("Proyecto integrador");
+		
+		panelProyecto p2 = new panelProyecto();
+		//p2.addComponentBody(panelContent());
+		p2.setCaption("Proyecto de clases");
+		 
+		panelProyecto p3 = new panelProyecto();
+		//p3.addComponentBody(panelContent());
+		p3.setCaption("Practica clases");
+		
+		panelProyecto p4 = new panelProyecto();
+		//p4.addComponentBody(panelContent());
+		p4.setCaption("Trabajo titulación");
+		
+		layoutProyectos.addComponents(p1,p2,p3,p4);
+		layoutProyectos.setMargin(true);
+		
+		proyectoLayout.addComponents(toolbar, layoutProyectos);
+		proyectoLayout.setMargin(false);
+		
+		pnlPrincipal.setCaption("Gestión de proyectos");
+		pnlPrincipal.setIcon(VaadinIcons.USERS);
+		pnlPrincipal.setContent(proyectoLayout);
+		
+		mainLayout.addComponents(pnlPrincipal);
+		return mainLayout;
+		
+	}
+	
+	
+	public Component buildUIProyect() {
+		
+		panelProyecto pnl = new panelProyecto();
+	    pnl.addComponentBody(panelContent());
+		pnl.setCaption("Proyecto integrador");
+		
+		return pnl;
+	} 
+	
+	 Component panelContent() {
+	        VerticalLayout layout = new VerticalLayout();
+	        layout.setSizeFull();
+	        Label content = new Label(
+	                "Suspendisse dictum feugiat nisl ut dapibus. Mauris iaculis porttitor posuere. Praesent id metus massa, ut blandit odio.");
+	        content.setWidth("10em");
+	       // content.setSizeFull();
+	      //  content.setSizeUndefined();
+	        layout.addComponent(content);
+	        Button button = new Button("Button");
+	        button.setSizeFull();
+	        layout.addComponent(button);
+	        return layout;
+	    }
 	
 	@SuppressWarnings("unused")
 	private Component createContentWrapper(final Component content) {

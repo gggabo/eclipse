@@ -16,7 +16,7 @@ public class MainView extends HorizontalLayout implements Serializable {
 	public MainView(MainUI ui) {
 		setSpacing(false);
 		setStyleName("main-screen");
-		
+		 
 		VerticalLayout viewContainer = new VerticalLayout();
 		viewContainer.addStyleName("v-scrollable");
 		viewContainer.addStyleName("custom-margin-layout");
@@ -27,7 +27,7 @@ public class MainView extends HorizontalLayout implements Serializable {
 		
 		menu = new VwMenu(navigator);
 		menu.addView(new VwProyectos(), "inicio", "Inicio", VaadinIcons.HOME);
-		menu.addView(new VwProyectos(), VwProyectos.VIEW_NAME, VwProyectos.VIEW_NAME, VaadinIcons.NOTEBOOK);
+		menu.addView(new VwProyectos(), "proyectos", "Proyectos", VaadinIcons.NOTEBOOK);
 		menu.addView(new VwUsuarios(), "usuarios", "Usuarios", VaadinIcons.USERS);
 		//menu.addView(new VwProyectos(), "categorias-cursos", "Categorias y cursos", VaadinIcons.ACADEMY_CAP);
 		menu.addView(new VwLaboratorios(), "laboratorios", "Laboratorios", VaadinIcons.FLASK);

@@ -1,5 +1,6 @@
 package models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,9 @@ import javax.persistence.Table;
 
 @Entity 
 @Table(name = "TBL_UNIDAD")
-public class Unidad {
+public class Unidad implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@Column(name = "ID_UNIDAD")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
