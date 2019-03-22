@@ -3,10 +3,13 @@ package viewComponents;
 import java.io.Serializable;
 
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
@@ -22,11 +25,14 @@ public class panelProyecto extends Panel implements Serializable {
 	private Label footerText = new Label("Opciones       ");
 	private VerticalLayout layoutComponent = new VerticalLayout();
 	private FormLayout form = new FormLayout();
-	private TextArea nombreProyecto = new TextArea("Tema");
+	private Label nombreProyecto = new Label();
+	private Label usuariosProyecto = new Label();
+	private Image qr = new Image();
 
 	public panelProyecto() {
 		setIcon(VaadinIcons.CLUSTER);
 		setStyleName("v-panel-proyecto-integrador");
+		addStyleName(ValoTheme.PANEL_SCROLL_INDICATOR);
 		
 		okButton.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		cancelButton.addStyleName(ValoTheme.BUTTON_DANGER);
@@ -43,7 +49,19 @@ public class panelProyecto extends Panel implements Serializable {
 		footer.setWidth("310px");
 		footer.setExpandRatio(footerText, 1);
 		
+		nombreProyecto.addStyleName(ValoTheme.LABEL_SMALL);
+		nombreProyecto.setCaption("Tema");
+		nombreProyecto.setSizeFull();
+		nombreProyecto.setContentMode(ContentMode.HTML);
 		nombreProyecto.setValue("Desarrollo e implementación de un sistema de trazabilidad");
+		
+		usuariosProyecto.addStyleName(ValoTheme.LABEL_SMALL);
+		usuariosProyecto.setCaption("Usuarios");
+		usuariosProyecto.setSizeFull();
+		usuariosProyecto.setContentMode(ContentMode.HTML);
+		usuariosProyecto.setValue("Salvatierra Tumbaco Gabriel<br>"
+				+ "Bravo Kevin Alex<br>"
+				+ "Sanchez Moreira Freddy<br>");
 		
 		form.addStyleName(ValoTheme.FORMLAYOUT_LIGHT);
 		form.setWidth("310px");
@@ -53,7 +71,12 @@ public class panelProyecto extends Panel implements Serializable {
 		lb1.setStyleName(ValoTheme.LABEL_COLORED);
         form.addComponent(lb1);
         
-		form.addComponent(nombreProyecto);
+        qr.setCaption("Codigo");
+        qr.setSource(new ThemeResource("images/qr.png"));
+        qr.setWidth("60px");
+        
+		form.addComponents(nombreProyecto,usuariosProyecto,qr);
+		form.setSpacing(true);
 		
 		layoutComponent.setSpacing(false);
 		layoutComponent.setMargin(false);
