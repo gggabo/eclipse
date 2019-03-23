@@ -2,20 +2,13 @@
 package utils;
 
 import java.io.Serializable;
-/**
- * @author Gabriel Gregorio Salvatierra Tumbaco
- * @author Carlos Alfredo Silva Villafuerte
- * @version 1.0
- */
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
 public class classGeneradorCodigo implements Serializable {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public String generarCodigoImg(){ 
@@ -34,5 +27,13 @@ public class classGeneradorCodigo implements Serializable {
 		String date = dateFormat.format(fecha_sistema.getTime());
 		codPdf=date;
 		return codPdf;
+	} 
+	
+	public static String genCode() {
+		SecureRandom random = new SecureRandom();
+		String code = new BigInteger(80, random).toString(32);		
+		return code;
 	}
+
+	
 }

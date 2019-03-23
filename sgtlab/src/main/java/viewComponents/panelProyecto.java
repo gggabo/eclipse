@@ -16,6 +16,8 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
+import fi.jasoft.qrcode.QRCode;
+
 public class panelProyecto extends Panel implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Button okButton = new Button("Editar", VaadinIcons.CHECK_CIRCLE_O);
@@ -27,7 +29,7 @@ public class panelProyecto extends Panel implements Serializable {
 	private FormLayout form = new FormLayout();
 	private Label nombreProyecto = new Label();
 	private Label usuariosProyecto = new Label();
-	private Image qr = new Image();
+	private QRCode qr = new QRCode();
 
 	public panelProyecto() {
 		setIcon(VaadinIcons.CLUSTER);
@@ -72,8 +74,9 @@ public class panelProyecto extends Panel implements Serializable {
         form.addComponent(lb1);
         
         qr.setCaption("Codigo");
-        qr.setSource(new ThemeResource("images/qr.png"));
-        qr.setWidth("60px");
+        qr.setValue("Ejemplo de QR - Gabriel");
+        qr.setWidth("100px");
+        qr.setHeight("100px");
         
 		form.addComponents(nombreProyecto,usuariosProyecto,qr);
 		form.setSpacing(true);

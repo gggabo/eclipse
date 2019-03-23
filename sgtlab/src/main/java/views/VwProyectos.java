@@ -5,8 +5,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.vaadin.ui.NumberField;
+
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -14,22 +18,32 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.themes.ValoTheme;
 
+import controllers.ComponenteController;
 import controllers.MaterialController;
+import controllers.UsuarioController;
+import fi.jasoft.qrcode.QRCode;
+import models.Componente;
+import models.Equipo;
 import models.Material;
+import models.Usuario;
+import utils.classGeneradorCodigo;
 import utils.dialogWindow;
 import utils.message;
 import viewComponents.panelProyecto;
@@ -51,20 +65,11 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	 public VwProyectos() {
 		 addComponent(buildUI());
 		 addStyleName("custom-margin-layout");
-		 
+		 initUI();
 		 setCss();
-		  
-		 // TODO Auto-generated constructor stub
+		 
+		 initBuscarUsuario();
 		
-		/*TextArea notes = new TextArea("Notes");
-        notes.setValue("Remember to:\n· Zoom in and out in the Sales view\n· Filter the transactions and drag a set of them to the Reports tab\n· Create a new report\n· Change the schedule of the movie theater");
-        notes.setSizeFull();
-        notes.addStyleName(ValoTheme.TEXTAREA_BORDERLESS);
-        Component panel = createContentWrapper(notes);
-        panel.addStyleName("notes");
-		
-        dashboardPanels.addComponent(panel);
-		addComponent(dashboardPanels);*/
 	}
 	 
 	public Component buildUI() {
@@ -103,7 +108,6 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		
 	}
 	
-	
 	public Component buildUIProyect() {
 		panelProyecto p1 = new panelProyecto();
 		//p1.addComponentBody(panelContent());
@@ -127,30 +131,154 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		
 		return layoutProyectos;
 	} 
+	
+	//PARTICIPANTE
+	public Panel pnlProyectoParticipante = new Panel();
+	public HorizontalLayout toolbarParticipante = new HorizontalLayout();
+	public VerticalLayout proyectoParticipanteLayout = new VerticalLayout();
+	public MenuBar mainMenuParticipante = new MenuBar();
+	public Grid<Usuario> gridParticipante = new Grid<>();
+	public List<Usuario> listParticipante = new ArrayList<>();
+	
+	//MATERIAS
+	public Panel pnlProyectoMateria = new Panel();
+	public HorizontalLayout toolbarMateria = new HorizontalLayout();
+	public VerticalLayout proyectoMateriaLayout = new VerticalLayout();
+	public MenuBar mainMenuMateria = new MenuBar();
+	public Grid<Usuario> gridMateria = new Grid<>();
+	public List<Usuario> listMateria = new ArrayList<>();
 
-	private VerticalLayout layoutProject = new VerticalLayout();
+	private void initUI() {
+		/*PARTICIPANTES*/
+		toolbarParticipante.setWidth("100%");
+		toolbarParticipante.setSpacing(true);
+		toolbarParticipante.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
+		toolbarParticipante.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
+		toolbarParticipante.setResponsive(true);
+		toolbarParticipante.addComponents(mainMenuParticipante);
+
+		mainMenuParticipante.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
+		mainMenuParticipante.addStyleName(ValoTheme.MENUBAR_SMALL);
+		mainMenuParticipante.setResponsive(true);
+
+		mainMenuParticipante.addItem("Agregar participante", VaadinIcons.PLUS_CIRCLE, new Command() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void menuSelected(MenuItem selectedItem) {
+				buscarUsuario();
+			}
+		});
+		
+		gridParticipante.setRowHeight(35.00); 
+		gridParticipante.setHeight("100px");
+		gridParticipante.addColumn(Estudiante -> Estudiante.getNombre_uno()+" "+Estudiante.getNombre_dos()
+		+" "+Estudiante.getApellido_paterno()+" "+Estudiante.getApellido_materno()).setCaption("NOMBRE").setExpandRatio(0);
+		gridParticipante.setWidth("100%");
+		gridParticipante.setSelectionMode(SelectionMode.NONE);
+		
+		gridParticipante.addComponentColumn(Participante -> {
+			Button b2 = new Button("Quitar");
+			b2.addClickListener(clickb2 -> {
+				listParticipante.remove(Participante);
+				gridParticipante.setItems(listParticipante);
+			});
+			b2.setStyleName(ValoTheme.BUTTON_DANGER);
+			b2.addStyleName(ValoTheme.BUTTON_SMALL);
+			b2.setIcon(VaadinIcons.ERASER);
+
+			HorizontalLayout hl = new HorizontalLayout();
+			hl.setSpacing(false);
+			hl.setSizeFull();
+			hl.addComponents(b2);
+			return hl;
+		}).setCaption("Opciones"); 
+		
+		proyectoParticipanteLayout.addComponents(toolbarParticipante, gridParticipante);
+		proyectoParticipanteLayout.setMargin(false);
+		
+		pnlProyectoParticipante.setCaption("Participantes del proyecto");
+		pnlProyectoParticipante.setIcon(VaadinIcons.GROUP);
+		pnlProyectoParticipante.setContent(proyectoParticipanteLayout);
+		/*FIN PARTICIPANTE*/
+		
+		/*PARTICIPANTES*/
+		toolbarMateria.setWidth("100%");
+		toolbarMateria.setSpacing(true);
+		toolbarMateria.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
+		toolbarMateria.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
+		toolbarMateria.setResponsive(true);
+		toolbarMateria.addComponents(mainMenuMateria);
+
+		mainMenuMateria.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
+		mainMenuMateria.addStyleName(ValoTheme.MENUBAR_SMALL);
+		mainMenuMateria.setResponsive(true);
+
+		mainMenuMateria.addItem("Agregar materia", VaadinIcons.PLUS_CIRCLE, new Command() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void menuSelected(MenuItem selectedItem) {
+				/*newEditComponente(null,equipo);
+				componenteAction = "guardar";*/
+			}
+		});
+		
+		gridMateria.setRowHeight(35.00); 
+		gridMateria.setHeight("100px");
+		gridMateria.addColumn(Estudiante -> Estudiante.getNombre_uno()+" "+Estudiante.getNombre_dos()
+		+" "+Estudiante.getApellido_paterno()+" "+Estudiante.getApellido_materno()).setCaption("NOMBRE").setExpandRatio(0);
+		gridMateria.setWidth("100%");
+		gridMateria.setSelectionMode(SelectionMode.NONE);
+		
+		gridMateria.addComponentColumn(Participante -> {
+			Button b2 = new Button("Quitar");
+			b2.addClickListener(clickb2 -> {
+				listParticipante.remove(Participante);
+				gridParticipante.setItems(listParticipante);
+			});
+			b2.setStyleName(ValoTheme.BUTTON_DANGER);
+			b2.addStyleName(ValoTheme.BUTTON_SMALL);
+			b2.setIcon(VaadinIcons.ERASER);
+
+			HorizontalLayout hl = new HorizontalLayout();
+			hl.setSpacing(false);
+			hl.setSizeFull();
+			hl.addComponents(b2);
+			return hl;
+		}).setCaption("Opciones"); 
+		
+		proyectoMateriaLayout.addComponents(toolbarMateria, gridMateria);
+		proyectoMateriaLayout.setMargin(false);
+		
+		pnlProyectoMateria.setCaption("Materias del proyecto involucradas");
+		pnlProyectoMateria.setIcon(VaadinIcons.BOOK);
+		pnlProyectoMateria.setContent(proyectoMateriaLayout);
+		/*FIN PARTICIPANTE*/
+		
+	}
+	
 	private FormLayout formProject = new FormLayout();
 	private List<String> listTipo = new ArrayList<>();
+	private TextField codigoProject = new TextField("codigo");
 	private ComboBox<String> cmbTipo = new ComboBox<>("Tipo");
 	private TextArea temaProject = new TextArea("Tema");
 	private TextArea descripcionProject = new TextArea("Descripción");
 	private Label lb1 = new Label("Información del proyecto");
-	
-	private List<?> listGridEstudianteProject = new ArrayList<>();
-	private Grid<?> gridEstudianteProject = new Grid<>();
-	
-	
+	private QRCode qr = new QRCode();
+		
 	private void buildNewProject() {
-		//limpiarMaterial();
-
+		limpiarProyecto();
+        
 		dialogWindow dialogReactivoWindow = new dialogWindow("Registro de proyectos", VaadinIcons.FLASK);
-		temaProject.setRows(2);
-		descripcionProject.setRows(2);
+		temaProject.setRows(1);
+		descripcionProject.setRows(1);
 		
 		listTipo.add("Proyecto integrador");
-		
-				
-		formProject.addComponents(lb1,cmbTipo,temaProject,descripcionProject);
+		cmbTipo.setItems(listTipo);
+		cmbTipo.setTextInputAllowed(false);
+						
+		formProject.addComponents(lb1,codigoProject,cmbTipo,temaProject,descripcionProject);
 		
 		/*formLayoutMaterial.setSpacing(false);
 		formLayoutMaterial.setMargin(false);
@@ -207,22 +335,161 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		});
 
 
+		HorizontalLayout infProyecto = new HorizontalLayout();
+		infProyecto.setMargin(false);
+		infProyecto.setSpacing(false);
+		infProyecto.addComponents(formProject,qr);
+		infProyecto.setExpandRatio(formProject, 1);
+		infProyecto.setSizeFull();
 		
 		VerticalLayout vroot = new VerticalLayout();
-		vroot.addComponents(formProject);
+		vroot.addComponents(infProyecto,pnlProyectoParticipante, pnlProyectoMateria);
 		vroot.setMargin(false);
+		vroot.setSpacing(false);
 		
 		dialogReactivoWindow.setResponsive(true);
-		dialogReactivoWindow.setWidth("35%");
+		dialogReactivoWindow.setWidth("50%");
 		dialogReactivoWindow.addComponentBody(vroot);
+		dialogReactivoWindow.getLayoutComponent().setMargin(false);
 		UI.getCurrent().addWindow(dialogReactivoWindow);
+	}
+	
+	private void cargarDatos() {
+		listUsuarios = UsuarioController.findAll();
+		gridUsuario.setItems(listUsuarios);
+	}
+	
+	private void limpiarProyecto() {
+		String cod = classGeneradorCodigo.genCode();
+		codigoProject.setValue(cod);
+		qr.setValue(cod);
+		temaProject.clear();
+		descripcionProject.clear();
+		listParticipante.clear();
+		gridParticipante.setItems(listParticipante);
+		listMateria.clear();
+		gridMateria.setItems(listMateria);
 	}
 	
 	private void setCss() {
 		formProject.addStyleName(ValoTheme.FORMLAYOUT_LIGHT);
 		lb1.setStyleName(ValoTheme.LABEL_H3);
 		lb1.setStyleName(ValoTheme.LABEL_COLORED);
+		toolbarParticipante.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
 		
+		qr.setWidth("140px");	
+		qr.setHeight("140px");
+	}
+	
+	public VerticalLayout usuarioLayout = new VerticalLayout();
+	public CssLayout filtering = new CssLayout();
+	public Button clearFilter = new Button(VaadinIcons.CLOSE_CIRCLE);
+	public TextField filtertxt = new TextField();
+	public Grid<Usuario> gridUsuario = new Grid<>();
+	public List<Usuario> listUsuarios = new ArrayList<>();
+	
+	private void initBuscarUsuario() {
+		filtertxt.setPlaceholder("Buscar por nombres o cedula");
+		filtertxt.setValueChangeMode(ValueChangeMode.LAZY);
+		filtertxt.setSizeFull();
+		filtertxt.addValueChangeListener(e ->{
+			listUsuarios.clear();
+			listUsuarios.addAll(UsuarioController.search(filtertxt.getValue()));
+			gridUsuario.setItems(listUsuarios);
+		}); 
+		
+		clearFilter.addClickListener(e->{
+			filtertxt.clear();
+		});
+		
+		filtering.addComponents(filtertxt,clearFilter);
+		filtering.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
+		filtering.addStyleName("custom-margins");
+				   
+		gridUsuario.addColumn(Usuario::getCedula).setCaption("CÉDULA/DNI");
+		gridUsuario.addColumn(Usuario -> Usuario.getApellido_paterno() +" "+ Usuario.getApellido_materno() +" "+
+		Usuario.getNombre_uno() +" "+ Usuario.getNombre_dos()
+				).setCaption("NOMBRES Y APELLIDOS").setId("NOMBRES");
+		gridUsuario.addColumn(Usuario::getNombre_usuario).setCaption("USUARIO");
+		
+		gridUsuario.setWidth("100%");
+		gridUsuario.setSelectionMode(SelectionMode.NONE);
+		gridUsuario.addComponentColumn(Usuario -> {
+	 
+			Button b = new Button("Seleccionar");
+			b.addClickListener(clickb ->{ 
+				
+				if(!listParticipante.contains(Usuario)) {
+				   listParticipante.add(Usuario);
+				   gridParticipante.setItems(listParticipante);
+				}else {
+					message.warringMessage("El registro ya está seleccionado");
+				}
+				
+				
+				/*userNewEdit(Usuario);
+				cedula.setValue(Usuario.getCedula());
+				apellido_paterno.setValue(Usuario.getApellido_paterno());
+				apellido_materno.setValue(Usuario.getApellido_materno());
+				nombre_uno.setValue(Usuario.getNombre_uno());
+				nombre_dos.setValue(Usuario.getNombre_dos());
+				correo.setValue(Usuario.getCorreo()); 
+				telefono.setValue(Usuario.getTelefono());
+				nombre_usuario.setValue(Usuario.getNombre_usuario());
+				clave.setValue("");
+				uploadField.setValue(Usuario.getImagen());	
+				
+				listGridRol.addAll(Usuario.getRoles());
+				
+				gridRol.setItems(listGridRol);
+	
+				accion = "modificar";*/
+				
+			});
+			b.setStyleName(ValoTheme.BUTTON_FRIENDLY);
+			b.addStyleName(ValoTheme.BUTTON_SMALL);
+			b.setIcon(VaadinIcons.EDIT);
+			
+			/*Button b2 = new Button("Eliminar");
+			b2.addClickListener(clickb2 ->{
+				listUsuarios.remove(Usuario);
+				gridUsuario.setItems(listUsuarios);
+				Usuario.setEstado(0);
+				UsuarioController.update(Usuario);
+				message.warringMessage("Usuario eliminado");
+			});
+			b2.setStyleName(ValoTheme.BUTTON_DANGER);
+			b2.addStyleName(ValoTheme.BUTTON_SMALL);
+			b2.setIcon(VaadinIcons.ERASER);*/
+			
+			HorizontalLayout hl = new HorizontalLayout();
+			hl.addComponents(b);
+			return hl;			
+		}).setCaption("Opciones");
+
+		usuarioLayout.addComponents(filtering,gridUsuario);
+		usuarioLayout.setMargin(false);
+	}
+	
+	private void buscarUsuario() {
+		cargarDatos();
+		dialogWindow dialogReactivoWindow = new dialogWindow("Registro de proyectos", VaadinIcons.FLASK);
+		
+		dialogReactivoWindow.getCancelButton().addClickListener(e -> {
+			dialogReactivoWindow.close();
+		});
+		
+		VerticalLayout vroot = new VerticalLayout();
+		vroot.addComponents(usuarioLayout);
+		vroot.setMargin(false);
+		vroot.setSpacing(false);
+		
+		dialogReactivoWindow.setResponsive(true);
+		dialogReactivoWindow.setWidth("75%");
+		dialogReactivoWindow.addComponentBody(vroot);
+		dialogReactivoWindow.getOkButton().setVisible(false);
+		dialogReactivoWindow.getLayoutComponent().setMargin(false);
+		UI.getCurrent().addWindow(dialogReactivoWindow);
 	}
 	
 	 Component panelContent() {
@@ -240,100 +507,6 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	        return layout;
 	    }
 	
-	@SuppressWarnings("unused")
-	private Component createContentWrapper(final Component content) {
-        final CssLayout slot = new CssLayout();
-        slot.setWidth("100%");
-        slot.addStyleName("dashboard-panel-slot");
 
-        CssLayout card = new CssLayout();
-        card.setWidth("100%");
-        card.addStyleName(ValoTheme.LAYOUT_CARD);
-
-        HorizontalLayout toolbar = new HorizontalLayout();
-        toolbar.addStyleName("dashboard-panel-toolbar");
-        toolbar.setWidth("100%");
-        toolbar.setSpacing(false);
-
-        Label caption = new Label(content.getCaption());
-        caption.addStyleName(ValoTheme.LABEL_H4);
-        caption.addStyleName(ValoTheme.LABEL_COLORED);
-        caption.addStyleName(ValoTheme.LABEL_NO_MARGIN);
-        content.setCaption(null);
-
-        MenuBar tools = new MenuBar();
-        tools.addStyleName(ValoTheme.MENUBAR_BORDERLESS);
-        MenuItem max = tools.addItem("", VaadinIcons.EXPAND, new Command() {
-
-            /**
-			 * 
-			 */
-			private static final long serialVersionUID = -3567305036949101199L;
-
-			@Override
-            public void menuSelected(final MenuItem selectedItem) {
-                if (!slot.getStyleName().contains("max")) {
-                    selectedItem.setIcon(VaadinIcons.COMPRESS);
-                    toggleMaximized(slot, true);
-                } else {
-                    slot.removeStyleName("max");
-                    selectedItem.setIcon(VaadinIcons.EXPAND);
-                    toggleMaximized(slot, false);
-                }
-            }
-        });
-        max.setStyleName("icon-only");
-        MenuItem root = tools.addItem("", VaadinIcons.COG, null);
-        root.addItem("Configure", new Command() {
-            /**
-			 * 
-			 */
-			private static final long serialVersionUID = -150057833968707994L;
-
-			@Override
-            public void menuSelected(final MenuItem selectedItem) {
-                Notification.show("Not implemented in this demo");
-            }
-        });
-        root.addSeparator();
-        root.addItem("Close", new Command() {
-            /**
-			 * 
-			 */
-			private static final long serialVersionUID = -7579904478147049889L;
-
-			@Override
-            public void menuSelected(final MenuItem selectedItem) {
-                Notification.show("Not implemented in this demo");
-            }
-        });
-
-        toolbar.addComponents(caption, tools);
-        toolbar.setExpandRatio(caption, 1);
-        toolbar.setComponentAlignment(caption, Alignment.MIDDLE_LEFT);
-
-        card.addComponents(toolbar, content);
-        slot.addComponent(card);
-        return slot;
-    }
-	
-	private void toggleMaximized(final Component panel, final boolean maximized) {
-        for (Iterator<Component> it = this.iterator(); it.hasNext();) {
-            it.next().setVisible(!maximized);
-        }
-        dashboardPanels.setVisible(true);
-
-        for (Iterator<Component> it = dashboardPanels.iterator(); it.hasNext();) {
-            Component c = it.next();
-            c.setVisible(!maximized);
-        }
-
-        if (maximized) {
-            panel.setVisible(true);
-            panel.addStyleName("max");
-        } else {
-            panel.removeStyleName("max");
-        }
-    }
 	
 }

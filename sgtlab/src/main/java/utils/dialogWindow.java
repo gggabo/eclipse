@@ -20,7 +20,7 @@ public class dialogWindow extends Window implements Serializable {
 	private Button cancelButton = new Button("Cancelar", VaadinIcons.CLOSE_CIRCLE_O);
 	private Label footerText = new Label("Guardar información");
 	private VerticalLayout layoutComponent = new VerticalLayout();
-	
+
 	public dialogWindow(String title, VaadinIcons icon) {
 		setCaption(title);
 		setIcon(icon);
@@ -73,6 +73,14 @@ public class dialogWindow extends Window implements Serializable {
 	public void setCancelButton(Button cancelButton) {
 		this.cancelButton = cancelButton;
 	}
+	public VerticalLayout getLayoutComponent() {
+		return layoutComponent;
+	}
+
+	public void setLayoutComponent(VerticalLayout layoutComponent) {
+		this.layoutComponent = layoutComponent;
+	}
+
 
 	
 	
