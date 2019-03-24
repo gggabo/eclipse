@@ -23,17 +23,32 @@ public class Materia implements Serializable {
 	private String nombre;
 	
 	@Column(name = "SEMESTRE")
-	private String semetres;
+	private String semetre;
 	
+	@Column(name = "ESTADO")
+	private int estado;
+		
 	public Materia() {
 		// TODO Auto-generated constructor stub
 	}
 
 		
-	public Materia(String nombre, String semetres) {
+	
+
+	public Materia(String nombre, String semetres, int estado) {
 		super();
 		this.nombre = nombre;
-		this.semetres = semetres;
+		this.semetre = semetres;
+		this.estado = estado;
+	}
+
+
+	public int getEstado() {
+		return estado;
+	}
+
+	public void setEstado(int estado) {
+		this.estado = estado;
 	}
 
 	public long getIdMateria() {
@@ -52,24 +67,29 @@ public class Materia implements Serializable {
 		this.nombre = nombre;
 	}
 
-	public String getSemetres() {
-		return semetres;
+	public String getSemetre() {
+		return semetre;
 	}
 
-	public void setSemetres(String semetres) {
-		this.semetres = semetres;
+	public void setSemetre(String semetre) {
+		this.semetre = semetre;
 	}
+
+
 
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + estado;
 		result = prime * result + (int) (idMateria ^ (idMateria >>> 32));
 		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
-		result = prime * result + ((semetres == null) ? 0 : semetres.hashCode());
+		result = prime * result + ((semetre == null) ? 0 : semetre.hashCode());
 		return result;
 	}
+
+
 
 
 	@Override
@@ -81,6 +101,8 @@ public class Materia implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Materia other = (Materia) obj;
+		if (estado != other.estado)
+			return false;
 		if (idMateria != other.idMateria)
 			return false;
 		if (nombre == null) {
@@ -88,20 +110,25 @@ public class Materia implements Serializable {
 				return false;
 		} else if (!nombre.equals(other.nombre))
 			return false;
-		if (semetres == null) {
-			if (other.semetres != null)
+		if (semetre == null) {
+			if (other.semetre != null)
 				return false;
-		} else if (!semetres.equals(other.semetres))
+		} else if (!semetre.equals(other.semetre))
 			return false;
 		return true;
 	}
 
 
+
+
 	@Override
 	public String toString() {
-		return "Materia [idMateria=" + idMateria + ", nombre=" + nombre + ", semetres=" + semetres + "]";
+		return "Materia [idMateria=" + idMateria + ", nombre=" + nombre + ", semetres=" + semetre + ", estado="
+				+ estado + "]";
 	}
-	
+
+
+
 	
 	
 	

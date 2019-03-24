@@ -7,6 +7,7 @@ import javax.persistence.Query;
 
 import models.Materia;
 import models.Rol;
+import models.Usuario;
 import services.JPAService;
 
 public class MateriaController implements Serializable {
@@ -49,6 +50,19 @@ public class MateriaController implements Serializable {
 		
 		return mat;
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<Materia> search(String searchField){
+		return JPAService.runInTransaction(em->{
+			Query query = em.createQuery("SELECT m from Materia m where m.estado = 1 and"
+					+ " nombre LIKE ?1) "
+					//+ "order by concat (u.apellido_paterno,' ',u.apellido_materno,' ',u.nombre_uno,' ',u.nombre_dos))"
+					);
+			query.setParameter(1, "%" + searchField + "%");
+			
+			return query.getResultList();
+		});
 	}
 	
 	

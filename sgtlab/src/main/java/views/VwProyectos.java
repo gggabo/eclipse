@@ -36,11 +36,13 @@ import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.themes.ValoTheme;
 
 import controllers.ComponenteController;
+import controllers.MateriaController;
 import controllers.MaterialController;
 import controllers.UsuarioController;
 import fi.jasoft.qrcode.QRCode;
 import models.Componente;
 import models.Equipo;
+import models.Materia;
 import models.Material;
 import models.Usuario;
 import utils.classGeneradorCodigo;
@@ -69,6 +71,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		 setCss();
 		 
 		 initBuscarUsuario();
+		 initBuscarMateria();
 		
 	}
 	 
@@ -145,8 +148,8 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	public HorizontalLayout toolbarMateria = new HorizontalLayout();
 	public VerticalLayout proyectoMateriaLayout = new VerticalLayout();
 	public MenuBar mainMenuMateria = new MenuBar();
-	public Grid<Usuario> gridMateria = new Grid<>();
-	public List<Usuario> listMateria = new ArrayList<>();
+	public Grid<Materia> gridMateria = new Grid<>();
+	public List<Materia> listMateria = new ArrayList<>();
 
 	private void initUI() {
 		/*PARTICIPANTES*/
@@ -202,7 +205,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		pnlProyectoParticipante.setContent(proyectoParticipanteLayout);
 		/*FIN PARTICIPANTE*/
 		
-		/*PARTICIPANTES*/
+		/*MATERIAS*/
 		toolbarMateria.setWidth("100%");
 		toolbarMateria.setSpacing(true);
 		toolbarMateria.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
@@ -219,23 +222,21 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
-				/*newEditComponente(null,equipo);
-				componenteAction = "guardar";*/
+				buscarMateria();
 			}
 		});
 		
 		gridMateria.setRowHeight(35.00); 
 		gridMateria.setHeight("100px");
-		gridMateria.addColumn(Estudiante -> Estudiante.getNombre_uno()+" "+Estudiante.getNombre_dos()
-		+" "+Estudiante.getApellido_paterno()+" "+Estudiante.getApellido_materno()).setCaption("NOMBRE").setExpandRatio(0);
+		gridMateria.addColumn(Materia -> Materia.getNombre()).setCaption("NOMBRE").setExpandRatio(0);
 		gridMateria.setWidth("100%");
 		gridMateria.setSelectionMode(SelectionMode.NONE);
 		
-		gridMateria.addComponentColumn(Participante -> {
+		gridMateria.addComponentColumn(Materia -> {
 			Button b2 = new Button("Quitar");
 			b2.addClickListener(clickb2 -> {
-				listParticipante.remove(Participante);
-				gridParticipante.setItems(listParticipante);
+				listMateria.remove(Materia);
+				gridMateria.setItems(listMateria);
 			});
 			b2.setStyleName(ValoTheme.BUTTON_DANGER);
 			b2.addStyleName(ValoTheme.BUTTON_SMALL);
@@ -254,7 +255,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		pnlProyectoMateria.setCaption("Materias del proyecto involucradas");
 		pnlProyectoMateria.setIcon(VaadinIcons.BOOK);
 		pnlProyectoMateria.setContent(proyectoMateriaLayout);
-		/*FIN PARTICIPANTE*/
+		/*FIN MATERIAS*/
 		
 	}
 	
@@ -473,7 +474,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	
 	private void buscarUsuario() {
 		cargarDatos();
-		dialogWindow dialogReactivoWindow = new dialogWindow("Registro de proyectos", VaadinIcons.FLASK);
+		dialogWindow dialogReactivoWindow = new dialogWindow("Búsqueda de participantes", VaadinIcons.FLASK);
 		
 		dialogReactivoWindow.getCancelButton().addClickListener(e -> {
 			dialogReactivoWindow.close();
@@ -490,6 +491,120 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		dialogReactivoWindow.getOkButton().setVisible(false);
 		dialogReactivoWindow.getLayoutComponent().setMargin(false);
 		UI.getCurrent().addWindow(dialogReactivoWindow);
+	}
+	
+	
+	public VerticalLayout materiaLayout = new VerticalLayout();
+	public CssLayout filteringMateria = new CssLayout();
+	public Button clearFilterMateria = new Button(VaadinIcons.CLOSE_CIRCLE);
+	public TextField filtertxtMateria = new TextField();
+	public Grid<Materia> gridMateriabus = new Grid<>();
+	public List<Materia> listMateriabus = new ArrayList<>();
+	
+	private void initBuscarMateria() {
+		filtertxtMateria.setPlaceholder("Buscar por nombres");
+		filtertxtMateria.setValueChangeMode(ValueChangeMode.LAZY);
+		filtertxtMateria.setSizeFull();
+		filtertxtMateria.addValueChangeListener(e ->{
+			listMateriabus.clear();
+			listMateriabus.addAll(MateriaController.search(filtertxtMateria.getValue()));
+			gridMateriabus.setItems(listMateriabus);
+		}); 
+		
+		clearFilterMateria.addClickListener(e->{
+			filtertxtMateria.clear();
+		});
+		
+		filteringMateria.addComponents(filtertxtMateria,clearFilterMateria);
+		filteringMateria.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
+		filteringMateria.addStyleName("custom-margins");
+				   
+		gridMateriabus.addColumn(Materia::getNombre).setCaption("NOMBRE");
+		gridMateriabus.addColumn(Materia::getSemetre).setCaption("SEMESTRE");
+		
+		gridMateriabus.setWidth("100%");
+		gridMateriabus.setSelectionMode(SelectionMode.NONE);
+		gridMateriabus.addComponentColumn(Materia -> {
+	 
+			Button b = new Button("Seleccionar");
+			b.addClickListener(clickb ->{ 
+				
+				if(!listMateria.contains(Materia)) {
+				   listMateria.add(Materia);
+				   gridMateria.setItems(listMateria);
+				}else {
+					message.warringMessage("El registro ya está seleccionado");
+				}
+				
+				
+				/*userNewEdit(Usuario);
+				cedula.setValue(Usuario.getCedula());
+				apellido_paterno.setValue(Usuario.getApellido_paterno());
+				apellido_materno.setValue(Usuario.getApellido_materno());
+				nombre_uno.setValue(Usuario.getNombre_uno());
+				nombre_dos.setValue(Usuario.getNombre_dos());
+				correo.setValue(Usuario.getCorreo()); 
+				telefono.setValue(Usuario.getTelefono());
+				nombre_usuario.setValue(Usuario.getNombre_usuario());
+				clave.setValue("");
+				uploadField.setValue(Usuario.getImagen());	
+				
+				listGridRol.addAll(Usuario.getRoles());
+				
+				gridRol.setItems(listGridRol);
+	
+				accion = "modificar";*/
+				
+			});
+			b.setStyleName(ValoTheme.BUTTON_FRIENDLY);
+			b.addStyleName(ValoTheme.BUTTON_SMALL);
+			b.setIcon(VaadinIcons.EDIT);
+			
+			/*Button b2 = new Button("Eliminar");
+			b2.addClickListener(clickb2 ->{
+				listUsuarios.remove(Usuario);
+				gridUsuario.setItems(listUsuarios);
+				Usuario.setEstado(0);
+				UsuarioController.update(Usuario);
+				message.warringMessage("Usuario eliminado");
+			});
+			b2.setStyleName(ValoTheme.BUTTON_DANGER);
+			b2.addStyleName(ValoTheme.BUTTON_SMALL);
+			b2.setIcon(VaadinIcons.ERASER);*/
+			
+			HorizontalLayout hl = new HorizontalLayout();
+			hl.addComponents(b);
+			return hl;			
+		}).setCaption("Opciones");
+
+		materiaLayout.addComponents(filteringMateria,gridMateriabus);
+		materiaLayout.setMargin(false);
+	}
+	
+	private void buscarMateria() {
+		cargarDatosMateria();
+		dialogWindow dialogReactivoWindow = new dialogWindow("Busqueda de materias", VaadinIcons.FLASK);
+		
+		dialogReactivoWindow.getCancelButton().addClickListener(e -> {
+			dialogReactivoWindow.close(); 
+		});
+		
+		VerticalLayout vroot = new VerticalLayout();
+		vroot.addComponents(materiaLayout);
+		vroot.setMargin(false);
+		vroot.setSpacing(false);
+		
+		dialogReactivoWindow.setResponsive(true);
+		dialogReactivoWindow.setWidth("60%");
+		dialogReactivoWindow.addComponentBody(vroot);
+		dialogReactivoWindow.getOkButton().setVisible(false);
+		dialogReactivoWindow.getLayoutComponent().setMargin(false);
+		UI.getCurrent().addWindow(dialogReactivoWindow);
+	}
+	
+	private void cargarDatosMateria() {
+		listMateriabus = MateriaController.findAll();
+		gridMateriabus.setItems(listMateriabus);
 	}
 	
 	 Component panelContent() {
