@@ -1,7 +1,9 @@
 package views;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,6 +17,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
@@ -23,12 +26,14 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.MenuBar.Command;
@@ -38,12 +43,20 @@ import com.vaadin.ui.themes.ValoTheme;
 import controllers.ComponenteController;
 import controllers.MateriaController;
 import controllers.MaterialController;
+import controllers.ProyectoController;
+import controllers.ProyectoParticipanteController;
+import controllers.TipoProyectoController;
 import controllers.UsuarioController;
 import fi.jasoft.qrcode.QRCode;
 import models.Componente;
 import models.Equipo;
+import models.Laboratorio;
 import models.Materia;
 import models.Material;
+import models.Proyecto;
+import models.ProyectoParticipante;
+import models.Rol;
+import models.TipoProyecto;
 import models.Usuario;
 import utils.classGeneradorCodigo;
 import utils.dialogWindow;
@@ -63,7 +76,6 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	public VerticalLayout proyectoLayout = new VerticalLayout();
 	public MenuBar mainMenu = new MenuBar();
 	
-	 private CssLayout dashboardPanels = new CssLayout();
 	 public VwProyectos() {
 		 addComponent(buildUI());
 		 addStyleName("custom-margin-layout");
@@ -174,17 +186,74 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		});
 		
 		gridParticipante.setRowHeight(35.00); 
-		gridParticipante.setHeight("100px");
+		gridParticipante.setHeight("150px");
 		gridParticipante.addColumn(Estudiante -> Estudiante.getNombre_uno()+" "+Estudiante.getNombre_dos()
 		+" "+Estudiante.getApellido_paterno()+" "+Estudiante.getApellido_materno()).setCaption("NOMBRE").setExpandRatio(0);
 		gridParticipante.setWidth("100%");
 		gridParticipante.setSelectionMode(SelectionMode.NONE);
+		
+		List<Rol> rolesAsignados = new ArrayList<>();
+		
+		gridParticipante.addComponentColumn(Participante ->{
+			CheckBox chk = new CheckBox();
+			rolesAsignados.clear();
+			rolesAsignados.addAll(Participante.getRoles());
+			Iterator<Rol> rol = rolesAsignados.iterator();
+			Long idrol;
+			Boolean yesNo = false;
+			while(rol.hasNext()) {
+				idrol = rol.next().getIdRol();
+				
+				if(idrol == 2) {//2: DOCENTE
+					yesNo = true;
+				}
+				
+				if(yesNo) 
+					chk.setVisible(true);
+				else 
+					chk.setVisible(false);
+			}
+			
+			chk.addValueChangeListener(e ->{
+				//if(e.getValue()) {
+					Iterator<ProyectoParticipante> ppIterator = listProyectoParticipante.iterator();
+					ProyectoParticipante pp;
+					while(ppIterator.hasNext()) {
+						pp = ppIterator.next();
+						
+						if(Participante.getId() == pp.getUsuario().getId()) {
+							if(e.getValue()) {
+								pp.setResponsable(1);
+								System.out.println(pp.getUsuario().getNombre_usuario() +"1");		
+							}else {						
+							System.out.println(pp.getUsuario().getNombre_usuario()+"0");
+							pp.setResponsable(0);
+							}
+						}
+					}
+				//}
+			});
+			
+			return chk;
+		}).setCaption("Resp.").setStyleGenerator(Participante -> "v-align-center");
 		
 		gridParticipante.addComponentColumn(Participante -> {
 			Button b2 = new Button("Quitar");
 			b2.addClickListener(clickb2 -> {
 				listParticipante.remove(Participante);
 				gridParticipante.setItems(listParticipante);
+				
+				Iterator<ProyectoParticipante> ppIterator = listProyectoParticipante.iterator();
+				ProyectoParticipante pp,pp2 = null;
+				while(ppIterator.hasNext()) {
+					pp = ppIterator.next();
+					if(Participante.getId() == pp.getUsuario().getId()) {
+						pp2 = pp;
+					}
+				}
+				
+				listProyectoParticipante.remove(pp2);
+				
 			});
 			b2.setStyleName(ValoTheme.BUTTON_DANGER);
 			b2.addStyleName(ValoTheme.BUTTON_SMALL);
@@ -227,7 +296,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		});
 		
 		gridMateria.setRowHeight(35.00); 
-		gridMateria.setHeight("100px");
+		gridMateria.setHeight("150px");
 		gridMateria.addColumn(Materia -> Materia.getNombre()).setCaption("NOMBRE").setExpandRatio(0);
 		gridMateria.setWidth("100%");
 		gridMateria.setSelectionMode(SelectionMode.NONE);
@@ -260,26 +329,28 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	}
 	
 	private FormLayout formProject = new FormLayout();
-	private List<String> listTipo = new ArrayList<>();
 	private TextField codigoProject = new TextField("codigo");
-	private ComboBox<String> cmbTipo = new ComboBox<>("Tipo");
+	private List<TipoProyecto> listTipo = new ArrayList<>();
+	private ComboBox<TipoProyecto> cmbTipo = new ComboBox<>("Tipo");
+	private DateField fechaProyecto = new DateField("Fecha");
 	private TextArea temaProject = new TextArea("Tema");
 	private TextArea descripcionProject = new TextArea("Descripción");
 	private Label lb1 = new Label("Información del proyecto");
 	private QRCode qr = new QRCode();
-		
+	private TabSheet tabProyecto = new  TabSheet();	
+	private List<ProyectoParticipante> listProyectoParticipante = new ArrayList<>();
+	
 	private void buildNewProject() {
 		limpiarProyecto();
-        
-		dialogWindow dialogReactivoWindow = new dialogWindow("Registro de proyectos", VaadinIcons.FLASK);
-		temaProject.setRows(1);
-		descripcionProject.setRows(1);
+        cargarDatosProyecto();
 		
-		listTipo.add("Proyecto integrador");
+		dialogWindow dialogReactivoWindow = new dialogWindow("Registro de proyectos", VaadinIcons.FLASK);
+		
+		/*listTipo.add("Proyecto integrador");
 		cmbTipo.setItems(listTipo);
-		cmbTipo.setTextInputAllowed(false);
+		cmbTipo.setTextInputAllowed(false);*/
 						
-		formProject.addComponents(lb1,codigoProject,cmbTipo,temaProject,descripcionProject);
+		formProject.addComponents(lb1,codigoProject,fechaProyecto ,cmbTipo,temaProject,descripcionProject);
 		
 		/*formLayoutMaterial.setSpacing(false);
 		formLayoutMaterial.setMargin(false);
@@ -290,6 +361,21 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
+				
+				Proyecto p = new Proyecto(codigoProject.getValue(), fechaProyecto.getValue(), cmbTipo.getValue(), 
+						temaProject.getValue(), descripcionProject.getValue(), 1);
+				
+				ProyectoController.save(p);
+				
+				Iterator<ProyectoParticipante> ppIterator = listProyectoParticipante.iterator();
+				ProyectoParticipante pp;
+				while(ppIterator.hasNext()) {
+					pp = ppIterator.next();
+					pp.setProyecto(p);
+					ProyectoParticipanteController.save(pp);
+				}
+				
+				listProyectoParticipante.clear();
 				
 			/*	if (!validatorMaterial.isValid()) {
 					validatorMaterial.validate();
@@ -343,28 +429,36 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		infProyecto.setExpandRatio(formProject, 1);
 		infProyecto.setSizeFull();
 		
+		tabProyecto.addTab(pnlProyectoParticipante,"Participantes",new ThemeResource("images/team.png"));
+		tabProyecto.addTab(pnlProyectoMateria,"Materias",new ThemeResource("images/books.png"));
+		
 		VerticalLayout vroot = new VerticalLayout();
-		vroot.addComponents(infProyecto,pnlProyectoParticipante, pnlProyectoMateria);
+		vroot.addComponents(infProyecto,tabProyecto);
 		vroot.setMargin(false);
 		vroot.setSpacing(false);
 		
 		dialogReactivoWindow.setResponsive(true);
-		dialogReactivoWindow.setWidth("50%");
+		dialogReactivoWindow.setWidth("45%");
 		dialogReactivoWindow.addComponentBody(vroot);
+		dialogReactivoWindow.getCancelButton().setCaption("Cerrar");
 		dialogReactivoWindow.getLayoutComponent().setMargin(false);
 		UI.getCurrent().addWindow(dialogReactivoWindow);
 	}
 	
-	private void cargarDatos() {
-		listUsuarios = UsuarioController.findAll();
-		gridUsuario.setItems(listUsuarios);
+	private void cargarDatosProyecto() { 
+		listTipo.clear();
+		listTipo.addAll(TipoProyectoController.findAll());
+		cmbTipo.setItems(listTipo);
+		cmbTipo.setItemCaptionGenerator(TipoProyecto::getNombre);
 	}
 	
 	private void limpiarProyecto() {
 		String cod = classGeneradorCodigo.genCode();
-		codigoProject.setValue(cod);
-		qr.setValue(cod);
+		codigoProject.setValue(cod.toUpperCase());
+		codigoProject.setReadOnly(true);
+		qr.setValue(cod.toUpperCase());
 		temaProject.clear();
+		fechaProyecto.setValue(LocalDate.now());
 		descripcionProject.clear();
 		listParticipante.clear();
 		gridParticipante.setItems(listParticipante);
@@ -373,10 +467,16 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	}
 	
 	private void setCss() {
+		temaProject.setRows(2);
+		descripcionProject.setRows(2);
+		cmbTipo.setTextInputAllowed(false);
+		cmbTipo.setEmptySelectionCaption("Seleccionar el tipo de proyecto");
+		
 		formProject.addStyleName(ValoTheme.FORMLAYOUT_LIGHT);
 		lb1.setStyleName(ValoTheme.LABEL_H3);
 		lb1.setStyleName(ValoTheme.LABEL_COLORED);
 		toolbarParticipante.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
+		fechaProyecto.setDateFormat("dd/MM/yyyy");
 		
 		qr.setWidth("140px");	
 		qr.setHeight("140px");
@@ -423,6 +523,11 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 				if(!listParticipante.contains(Usuario)) {
 				   listParticipante.add(Usuario);
 				   gridParticipante.setItems(listParticipante);
+				   
+				   ProyectoParticipante pp = new ProyectoParticipante(Usuario,0);
+				   
+				   listProyectoParticipante.add(pp);
+				   
 				}else {
 					message.warringMessage("El registro ya está seleccionado");
 				}
@@ -473,7 +578,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	}
 	
 	private void buscarUsuario() {
-		cargarDatos();
+		cargarDatosUsuario();
 		dialogWindow dialogReactivoWindow = new dialogWindow("Búsqueda de participantes", VaadinIcons.FLASK);
 		
 		dialogReactivoWindow.getCancelButton().addClickListener(e -> {
@@ -486,11 +591,17 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		vroot.setSpacing(false);
 		
 		dialogReactivoWindow.setResponsive(true);
-		dialogReactivoWindow.setWidth("75%");
+		dialogReactivoWindow.setWidth("65%");
 		dialogReactivoWindow.addComponentBody(vroot);
 		dialogReactivoWindow.getOkButton().setVisible(false);
+		dialogReactivoWindow.getCancelButton().setCaption("Cerrar");
 		dialogReactivoWindow.getLayoutComponent().setMargin(false);
 		UI.getCurrent().addWindow(dialogReactivoWindow);
+	}
+	
+	private void cargarDatosUsuario() {
+		listUsuarios = UsuarioController.findAll();
+		gridUsuario.setItems(listUsuarios);
 	}
 	
 	
@@ -595,9 +706,10 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		vroot.setSpacing(false);
 		
 		dialogReactivoWindow.setResponsive(true);
-		dialogReactivoWindow.setWidth("60%");
+		dialogReactivoWindow.setWidth("55%");
 		dialogReactivoWindow.addComponentBody(vroot);
 		dialogReactivoWindow.getOkButton().setVisible(false);
+		dialogReactivoWindow.getCancelButton().setCaption("Cerrar");
 		dialogReactivoWindow.getLayoutComponent().setMargin(false);
 		UI.getCurrent().addWindow(dialogReactivoWindow);
 	}

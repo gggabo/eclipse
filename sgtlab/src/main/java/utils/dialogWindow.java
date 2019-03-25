@@ -82,6 +82,19 @@ public class dialogWindow extends Window implements Serializable {
 	}
 
 
+
+	public Label getFooterText() {
+		return footerText;
+	}
+
+
+
+	public void setFooterText(Label footerText) {
+		this.footerText = footerText;
+	}
+
+	
+
 	
 	
 	
