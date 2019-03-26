@@ -61,10 +61,10 @@ public class panelProyecto extends Panel implements Serializable {
 		usuariosProyecto.setCaption("Usuarios");
 		usuariosProyecto.setSizeFull();
 		usuariosProyecto.setContentMode(ContentMode.HTML);
-		usuariosProyecto.setValue("Salvatierra Tumbaco Gabriel<br>"
+		/*usuariosProyecto.setValue("Salvatierra Tumbaco Gabriel<br>"
 				+ "Bravo Kevin Alex<br>"
 				+ "Sanchez Moreira Freddy<br>");
-		
+		*/
 		form.addStyleName(ValoTheme.FORMLAYOUT_LIGHT);
 		form.setWidth("310px");
 		
@@ -74,7 +74,7 @@ public class panelProyecto extends Panel implements Serializable {
         form.addComponent(lb1);
         
         qr.setCaption("Codigo");
-        qr.setValue("Ejemplo de QR - Gabriel");
+        //qr.setValue("Ejemplo de QR - Gabriel");
         qr.setWidth("100px");
         qr.setHeight("100px");
         
@@ -83,7 +83,7 @@ public class panelProyecto extends Panel implements Serializable {
 		
 		layoutComponent.setSpacing(false);
 		layoutComponent.setMargin(false);
-		layoutComponent.addComponent(form);
+		layoutComponent.addComponent(form); 
 		
 		layout.setSpacing(false);
 		layout.setMargin(true);
@@ -113,5 +113,37 @@ public class panelProyecto extends Panel implements Serializable {
 	public void setCancelButton(Button cancelButton) {
 		this.cancelButton = cancelButton;
 	}
+
+
+	public Label getNombreProyecto() {
+		return nombreProyecto;
+	}
+
+
+	public void setNombreProyecto(Label nombreProyecto) {
+		this.nombreProyecto = nombreProyecto;
+	}
+
+
+	public Label getUsuariosProyecto() {
+		return usuariosProyecto;
+	}
+
+
+	public void setUsuariosProyecto(Label usuariosProyecto) {
+		this.usuariosProyecto = usuariosProyecto;
+	}
+
+
+	public QRCode getQr() {
+		return qr;
+	}
+
+
+	public void setQr(QRCode qr) {
+		this.qr = qr;
+	}
+	
+	
 	
 }

@@ -7,6 +7,7 @@ import javax.persistence.Query;
 
 import models.Materia;
 import models.Proyecto;
+import models.ProyectoParticipante;
 import models.Rol;
 import models.TipoProyecto;
 import models.Usuario;
@@ -52,6 +53,25 @@ public class ProyectoController implements Serializable {
 		
 		return p;
 		
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public static List<ProyectoParticipante> getProyectoByUser(long idUser){
+		return JPAService.runInTransaction(em->{
+			Query query = em.createQuery("select pp from ProyectoParticipante pp where pp.usuario.id =?1 ");
+			query.setParameter(1,idUser);
+			return query.getResultList();
+		});
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<ProyectoParticipante> getProyectoById(long idProyecto){
+		return JPAService.runInTransaction(em->{
+			Query query = em.createQuery("select pp from ProyectoParticipante pp where pp.proyecto.idProyecto =?1 ");
+			query.setParameter(1,idProyecto);
+			return query.getResultList();
+		});
 	}
 	
 	@SuppressWarnings("unchecked")

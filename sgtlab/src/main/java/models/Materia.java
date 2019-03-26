@@ -1,12 +1,17 @@
 package models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity 
@@ -27,13 +32,13 @@ public class Materia implements Serializable {
 	
 	@Column(name = "ESTADO")
 	private int estado;
+	
+	@ManyToMany(mappedBy = "materias", cascade = {CascadeType.ALL })//, fetch = FetchType.EAGER)
+	private List<Proyecto> proyectos = new ArrayList<>();
 		
 	public Materia() {
 		// TODO Auto-generated constructor stub
 	}
-
-		
-	
 
 	public Materia(String nombre, String semetres, int estado) {
 		super();
@@ -75,8 +80,13 @@ public class Materia implements Serializable {
 		this.semetre = semetre;
 	}
 
+	public List<Proyecto> getProyectos() {
+		return proyectos;
+	}
 
-
+	public void setProyectos(List<Proyecto> proyectos) {
+		this.proyectos = proyectos;
+	}
 
 	@Override
 	public int hashCode() {
