@@ -3,16 +3,13 @@ package viewComponents;
 import java.io.Serializable;
 
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -20,11 +17,12 @@ import fi.jasoft.qrcode.QRCode;
 
 public class panelProyecto extends Panel implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private Button okButton = new Button("Editar", VaadinIcons.CHECK_CIRCLE_O);
-	private Button cancelButton = new Button("Eliminar", VaadinIcons.CLOSE_CIRCLE_O);
+	private Button trazButton = new Button("", VaadinIcons.BOOK);
+	private Button delButton = new Button("", VaadinIcons.CLOSE_CIRCLE_O);
+	private Button editButton = new Button("", VaadinIcons.EDIT);
 	private VerticalLayout layout = new VerticalLayout();
 	private HorizontalLayout footer = new HorizontalLayout();
-	private Label footerText = new Label("Opciones       ");
+	private Label footerText = new Label("Opciones");
 	private VerticalLayout layoutComponent = new VerticalLayout();
 	private FormLayout form = new FormLayout();
 	private Label nombreProyecto = new Label();
@@ -36,10 +34,15 @@ public class panelProyecto extends Panel implements Serializable {
 		setStyleName("v-panel-proyecto-integrador");
 		addStyleName(ValoTheme.PANEL_SCROLL_INDICATOR);
 		
-		okButton.addStyleName(ValoTheme.BUTTON_PRIMARY);
-		cancelButton.addStyleName(ValoTheme.BUTTON_DANGER);
-		okButton.addStyleName(ValoTheme.BUTTON_SMALL);
-		cancelButton.addStyleName(ValoTheme.BUTTON_SMALL);
+		trazButton.addStyleName(ValoTheme.BUTTON_PRIMARY);
+		delButton.addStyleName(ValoTheme.BUTTON_DANGER);
+		editButton.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+		trazButton.addStyleName(ValoTheme.BUTTON_SMALL);
+		delButton.addStyleName(ValoTheme.BUTTON_SMALL);
+		editButton.addStyleName(ValoTheme.BUTTON_SMALL);
+		/*trazButton.setWidth("40px");
+		delButton.setWidth("40px");
+		editButton.setWidth("40px");*/
 		
         footerText.setSizeUndefined(); 
         footerText.setStyleName(ValoTheme.LABEL_H3);
@@ -47,7 +50,7 @@ public class panelProyecto extends Panel implements Serializable {
         
 		footer.setSpacing(true);
 		footer.addStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
-		footer.addComponents(footerText, okButton,cancelButton);
+		footer.addComponents(footerText, editButton,trazButton,delButton);
 		footer.setWidth("310px");
 		footer.setExpandRatio(footerText, 1);
 		
@@ -75,8 +78,8 @@ public class panelProyecto extends Panel implements Serializable {
         
         qr.setCaption("Codigo");
         //qr.setValue("Ejemplo de QR - Gabriel");
-        qr.setWidth("100px");
-        qr.setHeight("100px");
+        qr.setWidth("120px");
+        qr.setHeight("120px");
         
 		form.addComponents(nombreProyecto,usuariosProyecto,qr);
 		form.setSpacing(true);
@@ -99,19 +102,19 @@ public class panelProyecto extends Panel implements Serializable {
 	}
 
 	public Button getOkButton() {
-		return okButton;
+		return trazButton;
 	}
 
 	public void setOkButton(Button okButton) {
-		this.okButton = okButton;
+		this.trazButton = okButton;
 	}
 
 	public Button getCancelButton() {
-		return cancelButton;
+		return delButton;
 	}
 
 	public void setCancelButton(Button cancelButton) {
-		this.cancelButton = cancelButton;
+		this.delButton = cancelButton;
 	}
 
 

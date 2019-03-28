@@ -70,6 +70,8 @@ public class Usuario implements Serializable {
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ProyectoParticipante>  proyectoParticipantes = new ArrayList<>();
 	
+	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Trazabilidad>  trazabilidades = new ArrayList<>();
 	
 	@Column(name = "ESTADO") 
 	private int estado; 

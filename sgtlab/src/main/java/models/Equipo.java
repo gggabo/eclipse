@@ -8,10 +8,12 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -56,7 +58,10 @@ public class Equipo implements Serializable {
 	
 	@OneToMany(mappedBy = "equipo", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Componente>  componentes = new ArrayList<>();
-		
+	
+	@ManyToMany(mappedBy = "equipos", cascade = {CascadeType.ALL }, fetch = FetchType.EAGER)
+	private List<Trazabilidad> trazabilidades = new ArrayList<>();
+			
 	@Column(name = "ESTADO")
 	private int estado;
 	

@@ -57,7 +57,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	private static final long serialVersionUID = -5759789185491799696L;
 	
 	public static final String VIEW_NAME = "proyectos";
-	public static long idUsuario = LoginController.u.getId();
+	//public static long idUsuario = LoginController.u.getId();
 	
 	public VerticalLayout mainLayout = new VerticalLayout();
 	public Panel pnlPrincipal = new Panel();
@@ -91,16 +91,24 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		mainMenu.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
 		mainMenu.addStyleName(ValoTheme.MENUBAR_SMALL);
 		mainMenu.setResponsive(true);
-		mainMenu.addItem("Nuevo proyecto", VaadinIcons.USER_CHECK, new Command() {
+		mainMenu.addItem("Nuevo proyecto", VaadinIcons.SUITCASE, new Command() {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
-				buildNewProject();
+				buildNewEditProject(null);
 			}
 		});		
 		
-		mainMenu.addItem("Ver otros proyectos", VaadinIcons.SEARCH_PLUS, null);		
+		mainMenu.addItem("Ver otros proyectos", VaadinIcons.SEARCH, null);		
 		
+		mainMenu.addItem("Actualizar", VaadinIcons.REFRESH, new Command() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void menuSelected(MenuItem selectedItem) {
+				buildUIProyect();
+			}
+		});	
+			
 		proyectoLayout.addComponents(toolbar, buildUIProyect());
 		proyectoLayout.setMargin(false);
 		
@@ -115,7 +123,11 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	
 	public Component buildUIProyect() {
 		
-		List<ProyectoParticipante> pp = ProyectoController.getProyectoByUser(idUsuario);
+		if(layoutProyectos.getComponentCount() >= 1) {
+			layoutProyectos.removeAllComponents();
+		}
+		
+		List<ProyectoParticipante> pp = ProyectoController.getProyectoByUser(LoginController.u.getId());
 		Iterator<ProyectoParticipante> iteratorPp = pp.iterator();
 		ProyectoParticipante prop;
 		
@@ -140,34 +152,20 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 			p.getUsuariosProyecto().setValue(usuarios);
 			
 			String qr = prop.getProyecto().getCodigo();
-			//System.out.println(qr);
 			p.getQr().setValue(qr);
-			//p.getQr().setCaption(prop.getProyecto().getCodigo());
 			
+			p.getOkButton().addClickListener(e ->{
+				mainLayout.removeComponent(pnlPrincipal);
+				VwTrazabilidad tr = new VwTrazabilidad(this);
+				mainLayout.addComponent(tr);
+			});
 			layoutProyectos.addComponents(p);
 			ppU.clear();
 			usuarios = "";
 		}
 		
 		
-		
-		/*//p1.addComponentBody(panelContent());
-		p1.setCaption("Proyecto integrador");
-		
-		panelProyecto p2 = new panelProyecto();
-		//p2.addComponentBody(panelContent());
-		p2.setCaption("Proyecto de clases");
-		 
-		panelProyecto p3 = new panelProyecto();
-		//p3.addComponentBody(panelContent());
-		p3.setCaption("Practica clases");
-		
-		panelProyecto p4 = new panelProyecto();
-		//p4.addComponentBody(panelContent());
-		p4.setCaption("Trabajo titulación");*/
-		
 		layoutProyectos.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
-		//layoutProyectos.addComponents(p1,p2,p3,p4);
 		layoutProyectos.setMargin(true);
 		
 		return layoutProyectos;
@@ -241,7 +239,6 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 			}
 			
 			chk.addValueChangeListener(e ->{
-				//if(e.getValue()) {
 					Iterator<ProyectoParticipante> ppIterator = listProyectoParticipante.iterator();
 					ProyectoParticipante pp;
 					while(ppIterator.hasNext()) {
@@ -249,15 +246,12 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 						
 						if(Participante.getId() == pp.getUsuario().getId()) {
 							if(e.getValue()) {
-								pp.setResponsable(1);
-								//System.out.println(pp.getUsuario().getNombre_usuario() +"1");		
+								pp.setResponsable(1);	
 							}else {						
-							//System.out.println(pp.getUsuario().getNombre_usuario()+"0");
 							pp.setResponsable(0);
 							}
 						}
 					}
-				//}
 			});
 			
 			return chk;
@@ -366,7 +360,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	private TabSheet tabProyecto = new  TabSheet();	
 	private List<ProyectoParticipante> listProyectoParticipante = new ArrayList<>();
 	
-	private void buildNewProject() {
+	private void buildNewEditProject(Proyecto pro) {
 		limpiarProyecto();
         cargarDatosProyecto();
 		
@@ -402,9 +396,8 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 				}
 				
 				listProyectoParticipante.clear();
-
-				
 				message.normalMessage("Acción realizada con éxito");
+				buildUIProyect();
 				dialogReactivoWindow.close();
 			}
 		});

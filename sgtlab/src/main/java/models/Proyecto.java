@@ -8,7 +8,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -51,10 +50,14 @@ public class Proyecto implements Serializable {
 	@OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ProyectoParticipante>  proyectoParticipantes = new ArrayList<>();
 	
-	@ManyToMany//(fetch = FetchType.EAGER)
+	@ManyToMany
 	@JoinTable(name = "TBL_PROYECTO_MATERIA", joinColumns= @JoinColumn(name = "ID_PROYECTO"), 
 	inverseJoinColumns = @JoinColumn(name ="ID_MATERIA"))
 	private List<Materia> materias = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Trazabilidad>  trazabilidad = new ArrayList<>();
+	
 	
 	public Proyecto() {
 		// TODO Auto-generated constructor stub

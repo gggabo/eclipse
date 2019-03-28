@@ -16026,11 +16026,11 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .dashboard .custom-margin-layout .v-margin-left {
-	padding-left: 10px;
+	padding-left: 7px;
 }
 
 .dashboard .custom-margin-layout .v-margin-right {
-	padding-right: 10px;
+	padding-right: 7px;
 }
 
 .dashboard .custom-margin-layout .v-margin-top {
@@ -16043,4 +16043,8 @@ div.v-layout.v-horizontal.v-widget {
 
 .dashboard .custom-margins {
 	margin-left: 10px;
+}
+
+.dashboard .v-button-primary {
+	min-width: 40px;
 }
