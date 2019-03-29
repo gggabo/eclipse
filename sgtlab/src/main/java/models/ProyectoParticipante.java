@@ -30,13 +30,13 @@ public class ProyectoParticipante implements Serializable {
 	private Usuario usuario;
 	
 	@Column(name = "RESPONSABLE") 
-	private int responsable; 
+	private boolean responsable; 
 	
 	public ProyectoParticipante() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public ProyectoParticipante(Usuario usuario, int responsable) {
+	public ProyectoParticipante(Usuario usuario, boolean responsable) {
 		super();
 		this.usuario = usuario;
 		this.responsable = responsable;
@@ -66,12 +66,45 @@ public class ProyectoParticipante implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public int getResponsable() {
+	public boolean getResponsable() {
 		return responsable;
 	}
 
-	public void setResponsable(int responsable) {
+	public void setResponsable(boolean responsable) {
 		this.responsable = responsable;
+	}
+
+	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((usuario == null) ? 0 : usuario.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ProyectoParticipante other = (ProyectoParticipante) obj;
+		if (usuario == null) {
+			if (other.usuario != null)
+				return false;
+		} else if (!usuario.equals(other.usuario))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "ProyectoParticipante [idProyectoParticipante=" + idProyectoParticipante + ", proyecto=" + proyecto
+				+ ", usuario=" + usuario + ", responsable=" + responsable + "]";
 	}
 	
 	

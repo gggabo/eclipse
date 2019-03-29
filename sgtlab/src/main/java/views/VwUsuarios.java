@@ -23,6 +23,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
+import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -384,7 +385,14 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		dialogWindow.getOkButton().addClickListener(e ->{
 			
 			//System.out.println(uploadXls.getListUsuariosImport());
-			 
+			/*dialogWindow dialogProcess = new dialogWindow("Procesando", VaadinIcons.FLASK);;
+			getUI().access(()->{
+				UI.getCurrent().addWindow(dialogProcess);
+				ProgressBar progress = new ProgressBar();
+				progress.setIndeterminate(true);
+				dialogProcess.addComponentBody(progress);
+			});
+			*/
 			Iterator<Usuario> u = uploadXls.getListUsuariosImport().iterator();
 			Usuario ureg, udis;
 			
@@ -413,6 +421,9 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 			
 			cargarDatos();
 			dialogWindow.close();
+			/*getUI().access(()->{
+				dialogProcess.close();
+			});*/
 		});
 		
 		dialogWindow.addComponentBody(rootLayout);

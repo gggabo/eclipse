@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import models.Equipo;
+import models.Laboratorio;
 import models.Materia;
 import models.Proyecto;
 import models.ProyectoParticipante;
@@ -72,6 +74,18 @@ public class ProyectoController implements Serializable {
 			query.setParameter(1,idProyecto);
 			return query.getResultList();
 		});
+	}
+	
+	public static List<Materia> getAllMateriaByProject(long idProyecto) {		
+		JPAService.runInTransaction(em ->{
+			p = em.find(Proyecto.class, idProyecto);
+			p.getMaterias().size();
+			
+			return null;
+			
+		}); 
+		
+		return p.getMaterias();
 	}
 	
 	@SuppressWarnings("unchecked")

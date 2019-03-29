@@ -146,6 +146,16 @@ public class panelProyecto extends Panel implements Serializable {
 	public void setQr(QRCode qr) {
 		this.qr = qr;
 	}
+
+
+	public Button getEditButton() {
+		return editButton;
+	}
+
+
+	public void setEditButton(Button editButton) {
+		this.editButton = editButton;
+	}
 	
 	
 	

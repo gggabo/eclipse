@@ -96,6 +96,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
 				buildNewEditProject(null);
+				proyectoAction = "guardar";
 			}
 		});		
 		
@@ -121,6 +122,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		
 	}
 	
+	
 	public Component buildUIProyect() {
 		
 		if(layoutProyectos.getComponentCount() >= 1) {
@@ -129,7 +131,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		
 		List<ProyectoParticipante> pp = ProyectoController.getProyectoByUser(LoginController.u.getId());
 		Iterator<ProyectoParticipante> iteratorPp = pp.iterator();
-		ProyectoParticipante prop;
+		
 		
 		List<ProyectoParticipante> ppU = null;
 		Iterator<ProyectoParticipante> iteratorPpU;// = ppU.iterator();
@@ -137,7 +139,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		String usuarios = "";
 		
 		while(iteratorPp.hasNext()) {
-			prop = iteratorPp.next();	
+			ProyectoParticipante prop = iteratorPp.next();	
 			panelProyecto p = new panelProyecto();	
 			p.setCaption(prop.getProyecto().getTipoProyecto().getNombre());
 			p.getNombreProyecto().setValue(prop.getProyecto().getTema());
@@ -151,7 +153,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 			}
 			p.getUsuariosProyecto().setValue(usuarios);
 			
-			String qr = prop.getProyecto().getCodigo();
+			String qr = prop.getProyecto().getCodigo(); 
 			p.getQr().setValue(qr);
 			
 			p.getOkButton().addClickListener(e ->{
@@ -159,6 +161,31 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 				VwTrazabilidad tr = new VwTrazabilidad(this);
 				mainLayout.addComponent(tr);
 			});
+			
+			p.getEditButton().addClickListener(e ->{
+				proyectoAction = "modificar";
+				buildNewEditProject(prop);
+				codigoProject.setValue(prop.getProyecto().getCodigo());
+				fechaProyecto.setValue(prop.getProyecto().getFecha());
+				cmbTipo.setValue(prop.getProyecto().getTipoProyecto());
+				temaProject.setValue(prop.getProyecto().getTema());
+				descripcionProject.setValue(prop.getProyecto().getDescripcion());
+
+				List<ProyectoParticipante> ppUEdit = ProyectoController.getProyectoById(prop.getProyecto().getIdProyecto());
+				Iterator<ProyectoParticipante> iteratorPpUEdit;
+				iteratorPpUEdit = ppUEdit.iterator();
+				ProyectoParticipante propUedit;
+				while(iteratorPpUEdit.hasNext()) {
+					propUedit = iteratorPpUEdit.next();
+					listProyectoParticipante.add(propUedit);
+				}
+				gridParticipante.setItems(listProyectoParticipante);
+				
+				listMateria.addAll(ProyectoController.getAllMateriaByProject(prop.getProyecto().getIdProyecto()));
+				gridMateria.setItems(listMateria);
+				
+			});
+			
 			layoutProyectos.addComponents(p);
 			ppU.clear();
 			usuarios = "";
@@ -176,8 +203,9 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	public HorizontalLayout toolbarParticipante = new HorizontalLayout();
 	public VerticalLayout proyectoParticipanteLayout = new VerticalLayout();
 	public MenuBar mainMenuParticipante = new MenuBar();
-	public Grid<Usuario> gridParticipante = new Grid<>();
-	public List<Usuario> listParticipante = new ArrayList<>();
+	public Grid<ProyectoParticipante> gridParticipante = new Grid<>();
+	String proyectoAction = "guardar";
+	//public List<ProyectoParticipante> listParticipante = new ArrayList<>();
 	
 	//MATERIAS
 	public Panel pnlProyectoMateria = new Panel();
@@ -211,8 +239,8 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		
 		gridParticipante.setRowHeight(35.00); 
 		gridParticipante.setHeight("150px");
-		gridParticipante.addColumn(Estudiante -> Estudiante.getNombre_uno()+" "+Estudiante.getNombre_dos()
-		+" "+Estudiante.getApellido_paterno()+" "+Estudiante.getApellido_materno()).setCaption("NOMBRE").setExpandRatio(0);
+		gridParticipante.addColumn(Estudiante -> Estudiante.getUsuario().getApellido_paterno()+" "+Estudiante.getUsuario().getApellido_materno()
+		+" "+Estudiante.getUsuario().getNombre_uno()+" "+Estudiante.getUsuario().getNombre_dos()).setCaption("NOMBRE").setExpandRatio(0);
 		gridParticipante.setWidth("100%");
 		gridParticipante.setSelectionMode(SelectionMode.NONE);
 		
@@ -221,7 +249,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		gridParticipante.addComponentColumn(Participante ->{
 			CheckBox chk = new CheckBox();
 			rolesAsignados.clear();
-			rolesAsignados.addAll(Participante.getRoles());
+			rolesAsignados.addAll(Participante.getUsuario().getRoles());
 			Iterator<Rol> rol = rolesAsignados.iterator();
 			Long idrol;
 			Boolean yesNo = false;
@@ -235,24 +263,26 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 				if(yesNo) 
 					chk.setVisible(true);
 				else 
-					chk.setVisible(false);
+					chk.setVisible(false); 
 			}
 			
-			chk.addValueChangeListener(e ->{
+			chk.setValue(Participante.getResponsable());			
+			
+			/*chk.addValueChangeListener(e ->{
 					Iterator<ProyectoParticipante> ppIterator = listProyectoParticipante.iterator();
 					ProyectoParticipante pp;
 					while(ppIterator.hasNext()) {
 						pp = ppIterator.next();
 						
-						if(Participante.getId() == pp.getUsuario().getId()) {
+						if(Participante.getUsuario().getId() == pp.getUsuario().getId()) {
 							if(e.getValue()) {
 								pp.setResponsable(1);	
 							}else {						
-							pp.setResponsable(0);
+							    pp.setResponsable(0);
 							}
 						}
 					}
-			});
+			});*/
 			
 			return chk;
 		}).setCaption("Resp.").setStyleGenerator(Participante -> "v-align-center");
@@ -260,19 +290,19 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		gridParticipante.addComponentColumn(Participante -> {
 			Button b2 = new Button("Quitar");
 			b2.addClickListener(clickb2 -> {
-				listParticipante.remove(Participante);
-				gridParticipante.setItems(listParticipante);
+				listProyectoParticipante.remove(Participante);
+				gridParticipante.setItems(listProyectoParticipante);
 				
-				Iterator<ProyectoParticipante> ppIterator = listProyectoParticipante.iterator();
+			/*	Iterator<ProyectoParticipante> ppIterator = listProyectoParticipante.iterator();
 				ProyectoParticipante pp,pp2 = null;
 				while(ppIterator.hasNext()) {
 					pp = ppIterator.next();
-					if(Participante.getId() == pp.getUsuario().getId()) {
+					if(Participante.getUsuario().getId() == pp.getUsuario().getId()) {
 						pp2 = pp;
 					}
-				}
+				}*/
 				
-				listProyectoParticipante.remove(pp2);
+				//listProyectoParticipante.remove(pp2);
 				
 			});
 			b2.setStyleName(ValoTheme.BUTTON_DANGER);
@@ -360,7 +390,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	private TabSheet tabProyecto = new  TabSheet();	
 	private List<ProyectoParticipante> listProyectoParticipante = new ArrayList<>();
 	
-	private void buildNewEditProject(Proyecto pro) {
+	private void buildNewEditProject(ProyectoParticipante prop) {
 		limpiarProyecto();
         cargarDatosProyecto();
 		
@@ -381,18 +411,41 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 					return;
 				}
 
-				Proyecto p = new Proyecto(codigoProject.getValue(), fechaProyecto.getValue(), cmbTipo.getValue(), 
-						temaProject.getValue(), descripcionProject.getValue(), 1);
-				
-				p.setMaterias(listMateria);
-				ProyectoController.save(p); 
-				
-				Iterator<ProyectoParticipante> ppIterator = listProyectoParticipante.iterator();
-				ProyectoParticipante pp;
-				while(ppIterator.hasNext()) {
-					pp = ppIterator.next();
-					pp.setProyecto(p);
-					ProyectoParticipanteController.save(pp);
+				if(proyectoAction.equals("guardar")) {
+					Proyecto p = new Proyecto(codigoProject.getValue(), fechaProyecto.getValue(), cmbTipo.getValue(), 
+							temaProject.getValue().toUpperCase().trim(), descripcionProject.getValue().toUpperCase().trim(), 1);
+					
+					p.setMaterias(listMateria);
+					ProyectoController.save(p); 
+					
+					Iterator<ProyectoParticipante> ppIterator = listProyectoParticipante.iterator();
+					ProyectoParticipante pp;
+					while(ppIterator.hasNext()) {
+						pp = ppIterator.next();
+						pp.setProyecto(p);
+						ProyectoParticipanteController.save(pp);
+					}
+					
+				}else {
+					
+					Proyecto p = prop.getProyecto();
+					
+					p.setFecha(fechaProyecto.getValue());
+					p.setTipoProyecto(cmbTipo.getValue());
+					p.setTema(temaProject.getValue().toUpperCase().trim());
+					p.setDescripcion(descripcionProject.getValue().toUpperCase().trim());
+					
+					p.setMaterias(listMateria);
+					ProyectoController.update(p);
+					
+					Iterator<ProyectoParticipante> ppIterator = listProyectoParticipante.iterator();
+					ProyectoParticipante pp;
+					while(ppIterator.hasNext()) {
+						pp = ppIterator.next();
+						pp.setProyecto(p);
+						ProyectoParticipanteController.update(pp);
+					}
+					
 				}
 				
 				listProyectoParticipante.clear();
@@ -445,8 +498,8 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		temaProject.clear();
 		fechaProyecto.setValue(LocalDate.now());
 		descripcionProject.clear();
-		listParticipante.clear();
-		gridParticipante.setItems(listParticipante);
+		listProyectoParticipante.clear();
+		gridParticipante.setItems(listProyectoParticipante);
 		listMateria.clear();
 		gridMateria.setItems(listMateria);
 	}
@@ -504,15 +557,11 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	 
 			Button b = new Button("Seleccionar");
 			b.addClickListener(clickb ->{ 
+				ProyectoParticipante pp = new ProyectoParticipante(Usuario, false);
 				
-				if(!listParticipante.contains(Usuario)) {
-				   listParticipante.add(Usuario);
-				   gridParticipante.setItems(listParticipante);
-				   
-				   ProyectoParticipante pp = new ProyectoParticipante(Usuario,0);
-				   
+				if(!listProyectoParticipante.contains(pp)) { 
 				   listProyectoParticipante.add(pp);
-				   
+				   gridParticipante.setItems(listProyectoParticipante); 
 				}else {
 					message.warringMessage("El registro ya está seleccionado");
 				}
