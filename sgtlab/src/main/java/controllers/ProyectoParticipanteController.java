@@ -5,12 +5,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import models.Materia;
-import models.Proyecto;
 import models.ProyectoParticipante;
-import models.Rol;
-import models.TipoProyecto;
-import models.Usuario;
 import services.JPAService;
 
 public class ProyectoParticipanteController implements Serializable {
@@ -26,6 +21,15 @@ public class ProyectoParticipanteController implements Serializable {
 	public static void update (ProyectoParticipante proyecto) {
 		JPAService.runInTransaction(em ->{
 			em.merge(proyecto);
+			return null;
+		});
+	}
+	
+	public static void deleteUserProyecto (long idProyecto) {
+		JPAService.runInTransaction(em ->{
+			em.createQuery("delete from ProyectoParticipante where proyecto.idProyecto = ?1")
+			  .setParameter(1, idProyecto)
+			  .executeUpdate();
 			return null;
 		});
 	}

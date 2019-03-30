@@ -268,30 +268,19 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 			
 			chk.setValue(Participante.getResponsable());			
 			
-			/*chk.addValueChangeListener(e ->{
-					Iterator<ProyectoParticipante> ppIterator = listProyectoParticipante.iterator();
-					ProyectoParticipante pp;
-					while(ppIterator.hasNext()) {
-						pp = ppIterator.next();
-						
-						if(Participante.getUsuario().getId() == pp.getUsuario().getId()) {
-							if(e.getValue()) {
-								pp.setResponsable(1);	
-							}else {						
-							    pp.setResponsable(0);
-							}
-						}
-					}
-			});*/
+			chk.addValueChangeListener(e ->{
+				Participante.setResponsable(e.getValue());
+			});
 			
 			return chk;
-		}).setCaption("Resp.").setStyleGenerator(Participante -> "v-align-center");
+		}).setCaption("Rev.").setStyleGenerator(Participante -> "v-align-center");
 		
 		gridParticipante.addComponentColumn(Participante -> {
 			Button b2 = new Button("Quitar");
 			b2.addClickListener(clickb2 -> {
 				listProyectoParticipante.remove(Participante);
 				gridParticipante.setItems(listProyectoParticipante);
+				
 				
 			/*	Iterator<ProyectoParticipante> ppIterator = listProyectoParticipante.iterator();
 				ProyectoParticipante pp,pp2 = null;
@@ -411,9 +400,14 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 					return;
 				}
 
+				if(listProyectoParticipante.size()==0) {
+					message.warringMessage("El proyecto debe tener al menos un participante");
+					return;
+				}
+				
 				if(proyectoAction.equals("guardar")) {
 					Proyecto p = new Proyecto(codigoProject.getValue(), fechaProyecto.getValue(), cmbTipo.getValue(), 
-							temaProject.getValue().toUpperCase().trim(), descripcionProject.getValue().toUpperCase().trim(), 1);
+							temaProject.getValue().toUpperCase().trim(), descripcionProject.getValue().toUpperCase().trim(), "EJECUCIÓN",1);
 					
 					p.setMaterias(listMateria);
 					ProyectoController.save(p); 
@@ -435,16 +429,19 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 					p.setTema(temaProject.getValue().toUpperCase().trim());
 					p.setDescripcion(descripcionProject.getValue().toUpperCase().trim());
 					
-					p.setMaterias(listMateria);
-					ProyectoController.update(p);
+					p.setMaterias(listMateria); 
+					
+					ProyectoParticipanteController.deleteUserProyecto(p.getIdProyecto());
 					
 					Iterator<ProyectoParticipante> ppIterator = listProyectoParticipante.iterator();
 					ProyectoParticipante pp;
 					while(ppIterator.hasNext()) {
 						pp = ppIterator.next();
 						pp.setProyecto(p);
-						ProyectoParticipanteController.update(pp);
 					}
+					
+					p.setProyectoParticipantes(listProyectoParticipante);
+					ProyectoController.update(p);
 					
 				}
 				

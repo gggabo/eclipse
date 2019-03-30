@@ -12,7 +12,7 @@ import com.vaadin.ui.VerticalLayout;
 public class MainView extends HorizontalLayout implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private VwMenu menu;
-	
+	private VwUsuarios usuario = new VwUsuarios();
 	public MainView(MainUI ui) {
 		setSpacing(false);
 		setStyleName("main-screen");
@@ -26,9 +26,9 @@ public class MainView extends HorizontalLayout implements Serializable {
 		navigator.setErrorView(ErrorView.class); 
 		
 		menu = new VwMenu(navigator);
-		menu.addView(new VwProyectos(), "inicio", "Inicio", VaadinIcons.HOME);
+		menu.addView(new VwInicio(), "inicio", "Inicio", VaadinIcons.HOME);
 		menu.addView(new VwProyectos(), "proyectos", "Proyectos", VaadinIcons.NOTEBOOK);
-		menu.addView(new VwUsuarios(), "usuarios", "Usuarios", VaadinIcons.USERS);
+		menu.addView(usuario, "usuarios", "Usuarios", VaadinIcons.USERS);
 		//menu.addView(new VwProyectos(), "categorias-cursos", "Categorias y cursos", VaadinIcons.ACADEMY_CAP);
 		menu.addView(new VwLaboratorios(), "laboratorios", "Laboratorios", VaadinIcons.FLASK);
 		
@@ -55,6 +55,9 @@ public class MainView extends HorizontalLayout implements Serializable {
 		@Override
 		public void afterViewChange(ViewChangeEvent event) {
 			menu.setActiveView(event.getViewName());
+			if(event.getViewName().equals("usuarios")) {
+				usuario.cargarDatos();
+			}
 		};
 	};
 	

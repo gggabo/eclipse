@@ -5,14 +5,9 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import models.Equipo;
-import models.Laboratorio;
 import models.Materia;
 import models.Proyecto;
 import models.ProyectoParticipante;
-import models.Rol;
-import models.TipoProyecto;
-import models.Usuario;
 import services.JPAService;
 
 public class ProyectoController implements Serializable {
@@ -61,9 +56,9 @@ public class ProyectoController implements Serializable {
 	@SuppressWarnings("unchecked")
 	public static List<ProyectoParticipante> getProyectoByUser(long idUser){
 		return JPAService.runInTransaction(em->{
-			Query query = em.createQuery("select pp from ProyectoParticipante pp where pp.usuario.id =?1 ");
+			Query query = em.createQuery("select pp from ProyectoParticipante pp where pp.usuario.id =?1 ORDER BY proyecto.fecha DESC");
 			query.setParameter(1,idUser);
-			return query.getResultList();
+			return query.getResultList(); 
 		});
 	}
 	

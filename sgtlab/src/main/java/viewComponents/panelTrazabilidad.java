@@ -15,22 +15,21 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import fi.jasoft.qrcode.QRCode;
 
-public class panelProyecto extends Panel implements Serializable {
+public class panelTrazabilidad extends Panel implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Button trazButton = new Button("", VaadinIcons.BOOK);
 	private Button delButton = new Button("", VaadinIcons.CLOSE_CIRCLE_O);
 	private Button editButton = new Button("", VaadinIcons.EDIT);
 	private VerticalLayout layout = new VerticalLayout();
 	private HorizontalLayout footer = new HorizontalLayout();
-	private Label footerText = new Label("Opciones");
+	private Label footerText = new Label("Revisado por: Gabriel Salvatierra Tumbaco");
 	private VerticalLayout layoutComponent = new VerticalLayout();
 	private FormLayout form = new FormLayout();
-	private FormLayout form2 = new FormLayout();
 	private Label nombreProyecto = new Label();
 	private Label usuariosProyecto = new Label();
 	private QRCode qr = new QRCode("Código");
 
-	public panelProyecto() {
+	public panelTrazabilidad() {
 		setIcon(VaadinIcons.CLUSTER);
 		setStyleName("v-panel-proyecto-integrador");
 		addStyleName(ValoTheme.PANEL_SCROLL_INDICATOR);
@@ -43,13 +42,13 @@ public class panelProyecto extends Panel implements Serializable {
 		editButton.addStyleName(ValoTheme.BUTTON_SMALL);
 		
         footerText.setSizeUndefined(); 
-        footerText.setStyleName(ValoTheme.LABEL_H3);
+        footerText.setStyleName(ValoTheme.LABEL_H4);
         footerText.setStyleName(ValoTheme.LABEL_COLORED);
         
 		footer.setSpacing(true);
 		footer.addStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
 		footer.addComponents(footerText, editButton,trazButton,delButton);
-		footer.setWidth("445px");
+		footer.setWidth("100%");
 		footer.setExpandRatio(footerText, 1);
 		
 		nombreProyecto.addStyleName(ValoTheme.LABEL_SMALL);
@@ -64,7 +63,7 @@ public class panelProyecto extends Panel implements Serializable {
 		usuariosProyecto.setContentMode(ContentMode.HTML);
 
 		form.addStyleName(ValoTheme.FORMLAYOUT_LIGHT);
-		form.setWidth("310px");
+		form.setWidth("100%");
 		//form2.addStyleName(ValoTheme.FORMLAYOUT_LIGHT);
 		//form.setWidth("310px");
 		
@@ -82,9 +81,7 @@ public class panelProyecto extends Panel implements Serializable {
         
 		form.addComponents(nombreProyecto,usuariosProyecto);
 		form.setSpacing(true);
-		
-		form2.addComponent(qr);
-		
+				
 		hl.addComponents(form,qr);
 		
 		layoutComponent.setSpacing(false);

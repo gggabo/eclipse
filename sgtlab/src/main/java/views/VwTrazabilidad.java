@@ -1,14 +1,18 @@
 package views;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
@@ -17,6 +21,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.themes.ValoTheme;
@@ -24,6 +29,8 @@ import com.vaadin.ui.themes.ValoTheme;
 import fi.jasoft.qrcode.QRCode;
 import models.ProyectoParticipante;
 import models.TipoProyecto;
+import models.Trazabilidad;
+import viewComponents.panelTrazabilidad;
 
 public class VwTrazabilidad extends Panel {
 	private static final long serialVersionUID = 1L;
@@ -36,6 +43,8 @@ public class VwTrazabilidad extends Panel {
 	public VerticalLayout trazabilidadLayout = new VerticalLayout();
 	public MenuBar mainMenu = new MenuBar();
 	private VwProyectos vwproyectos;
+	private Grid<Trazabilidad> gridTrazabilidad = new Grid<>();
+	private List<Trazabilidad> listTrazabildiad = new ArrayList<>();
 	
 	public VwTrazabilidad(VwProyectos vwproyectos) {
 		this.vwproyectos = vwproyectos;
@@ -50,6 +59,8 @@ public class VwTrazabilidad extends Panel {
 		VerticalLayout vl = new VerticalLayout();
 		vl.addComponent(b);*/
 		setContent(buildUI());
+		cargarDatos();
+		//addComponent(buildUI());
 	}
 	
 	public Component buildUI() {
@@ -72,6 +83,14 @@ public class VwTrazabilidad extends Panel {
 			}
 		});		
 		
+		mainMenu.addItem("Nuevo proceso", VaadinIcons.PLUS, new Command() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void menuSelected(MenuItem selectedItem) {
+				//buildUIProyect();
+			}
+		});	
+		
 		mainMenu.addItem("Imprimir", VaadinIcons.PRINT, new Command() {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -80,7 +99,40 @@ public class VwTrazabilidad extends Panel {
 			}
 		});	
 			
-		trazabilidadLayout.addComponents(toolbar);//, buildUIProyect());
+		gridTrazabilidad.setBodyRowHeight(300);
+		gridTrazabilidad.setSizeFull();
+		gridTrazabilidad.setHeightMode(HeightMode.UNDEFINED);
+		//gridTrazabilidad.addColumn(Trazabilidad -> Trazabilidad.getDescripcion()).setCaption("Descripción proceso").setExpandRatio(0);
+		//panelTrazabilidad pn;
+		gridTrazabilidad.addComponentColumn(Trazabilidad -> {
+			panelTrazabilidad pn = new panelTrazabilidad();
+			pn.setCaption("EJEMPLO DE PROYECTO");
+			
+			return pn;
+		}).setCaption("Procesos");
+		
+		//gridTrazabilidad.setWidth("100%");
+		gridTrazabilidad.setSelectionMode(SelectionMode.NONE);
+		gridTrazabilidad.addStyleName(ValoTheme.TABLE_NO_STRIPES);
+		
+		/*gridTrazabilidad.addComponentColumn(Materia -> {
+			Button b2 = new Button("Quitar");
+			b2.addClickListener(clickb2 -> {
+				listMateria.remove(Materia);
+				gridTrazabilidad.setItems(listMateria);
+			});
+			b2.setStyleName(ValoTheme.BUTTON_DANGER);
+			b2.addStyleName(ValoTheme.BUTTON_SMALL);
+			b2.setIcon(VaadinIcons.ERASER);
+
+			HorizontalLayout hl = new HorizontalLayout();
+			hl.setSpacing(false);
+			hl.setSizeFull();
+			hl.addComponents(b2);
+			return hl;
+		}).setCaption("Opciones"); */
+		
+		trazabilidadLayout.addComponents(toolbar,gridTrazabilidad);//, buildUIProyect());
 		trazabilidadLayout.setMargin(false);
 		
 		/*pnlPrincipal.setCaption("Gestión de proyectos");
@@ -91,17 +143,13 @@ public class VwTrazabilidad extends Panel {
 		return trazabilidadLayout;
 	}
 
-	private FormLayout formProject = new FormLayout();
-	private TextField codigoProject = new TextField("codigo");
-	private List<TipoProyecto> listTipo = new ArrayList<>();
-	private ComboBox<TipoProyecto> cmbTipo = new ComboBox<>("Tipo");
-	private DateField fechaProyecto = new DateField("Fecha");
-	private TextArea temaProject = new TextArea("Tema");
-	private TextArea descripcionProject = new TextArea("Descripción");
-	private Label lb1 = new Label("Información del proyecto");
-	private QRCode qr = new QRCode();
-	private TabSheet tabProyecto = new  TabSheet();	
-	private List<ProyectoParticipante> listProyectoParticipante = new ArrayList<>();
+	public void cargarDatos() {
+		listTrazabildiad.add(new Trazabilidad(LocalDate.now(), LocalTime.now(), "HHHH", null, 1));
+		listTrazabildiad.add(new Trazabilidad(LocalDate.now(), LocalTime.now(), "HHHHsss", null, 1));
+		listTrazabildiad.add(new Trazabilidad(LocalDate.now(), LocalTime.now(), "HHHHeeeeee", null, 1));
+		
+		gridTrazabilidad.setItems(listTrazabildiad);
+	}
 	
 	public void setCss() {
 		toolbar.addStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);

@@ -58,12 +58,14 @@ public class Proyecto implements Serializable {
 	@OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Trazabilidad>  trazabilidad = new ArrayList<>();
 	
+	@Column(name = "ESTADO_PROYECTO")
+	private String estadoProyecto;
 	
 	public Proyecto() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Proyecto(String codigo, LocalDate fecha, TipoProyecto tipoProyecto, String tema, String descripcion,
+	public Proyecto(String codigo, LocalDate fecha, TipoProyecto tipoProyecto, String tema, String descripcion,String estadoProyecto,
 			int estado) {
 		super();
 		this.codigo = codigo;
@@ -71,9 +73,26 @@ public class Proyecto implements Serializable {
 		this.tipoProyecto = tipoProyecto;
 		this.tema = tema;
 		this.descripcion = descripcion;
+		this.estadoProyecto = estadoProyecto;
 		this.estado = estado;
 	}
 	
+	public List<Trazabilidad> getTrazabilidad() {
+		return trazabilidad;
+	}
+
+	public void setTrazabilidad(List<Trazabilidad> trazabilidad) {
+		this.trazabilidad = trazabilidad;
+	}
+
+	public String getEstadoProyecto() {
+		return estadoProyecto;
+	}
+
+	public void setEstadoProyecto(String estadoProyecto) {
+		this.estadoProyecto = estadoProyecto;
+	}
+
 	public long getIdProyecto() {
 		return idProyecto;
 	}

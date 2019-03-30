@@ -48,7 +48,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		setPlaceHolder();
 		setMaxLengthText();
 		addValidation();
-		cargarDatos();
+		//cargarDatos();
 		buildUser();
 		initComponents();
 		
@@ -432,7 +432,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		UI.getCurrent().addWindow(dialogWindow);
 	}
 	
-	private void cargarDatos() {
+	public void cargarDatos() {
 		listUsuarios = UsuarioController.findAll();
 		gridUsuario.setItems(listUsuarios);
 		
