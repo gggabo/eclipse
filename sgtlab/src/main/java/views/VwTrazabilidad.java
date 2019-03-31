@@ -30,13 +30,13 @@ import fi.jasoft.qrcode.QRCode;
 import models.ProyectoParticipante;
 import models.TipoProyecto;
 import models.Trazabilidad;
-import viewComponents.panelTrazabilidad;
+import viewComponents.ProcesoComponent;
 
 public class VwTrazabilidad extends Panel {
 	private static final long serialVersionUID = 1L;
 
 	public VerticalLayout mainLayout = new VerticalLayout();
-	public Panel pnlPrincipal = new Panel();
+	//public Panel pnlPrincipal = new Panel();
 	public FormLayout mainFrm;
 	public HorizontalLayout toolbar = new HorizontalLayout();
 	//public HorizontalLayout layoutProyectos = new HorizontalLayout();
@@ -45,22 +45,16 @@ public class VwTrazabilidad extends Panel {
 	private VwProyectos vwproyectos;
 	private Grid<Trazabilidad> gridTrazabilidad = new Grid<>();
 	private List<Trazabilidad> listTrazabildiad = new ArrayList<>();
+	private VerticalLayout trazas = new VerticalLayout();
 	
 	public VwTrazabilidad(VwProyectos vwproyectos) {
 		this.vwproyectos = vwproyectos;
 		setCaption("Gestión de trazabilidad de producto");
 		setIcon(VaadinIcons.FILE_PROCESS);
-		
-		setCss();
-		/*Button b = new Button("Trazabilidad");
-		b.addClickListener(e ->{
-			
-		});
-		VerticalLayout vl = new VerticalLayout();
-		vl.addComponent(b);*/
+		setHeight("600px"); 
+		setCss(); 
 		setContent(buildUI());
 		cargarDatos();
-		//addComponent(buildUI());
 	}
 	
 	public Component buildUI() {
@@ -95,64 +89,44 @@ public class VwTrazabilidad extends Panel {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
-				//buildUIProyect();
+				//buildUIProyect(); 
 			}
-		});	
-			
-		gridTrazabilidad.setBodyRowHeight(300);
-		gridTrazabilidad.setSizeFull();
-		gridTrazabilidad.setHeightMode(HeightMode.UNDEFINED);
-		//gridTrazabilidad.addColumn(Trazabilidad -> Trazabilidad.getDescripcion()).setCaption("Descripción proceso").setExpandRatio(0);
-		//panelTrazabilidad pn;
-		gridTrazabilidad.addComponentColumn(Trazabilidad -> {
-			panelTrazabilidad pn = new panelTrazabilidad();
-			pn.setCaption("EJEMPLO DE PROYECTO");
-			
-			return pn;
-		}).setCaption("Procesos");
-		
-		//gridTrazabilidad.setWidth("100%");
-		gridTrazabilidad.setSelectionMode(SelectionMode.NONE);
-		gridTrazabilidad.addStyleName(ValoTheme.TABLE_NO_STRIPES);
-		
-		/*gridTrazabilidad.addComponentColumn(Materia -> {
-			Button b2 = new Button("Quitar");
-			b2.addClickListener(clickb2 -> {
-				listMateria.remove(Materia);
-				gridTrazabilidad.setItems(listMateria);
-			});
-			b2.setStyleName(ValoTheme.BUTTON_DANGER);
-			b2.addStyleName(ValoTheme.BUTTON_SMALL);
-			b2.setIcon(VaadinIcons.ERASER);
+		});	 
 
-			HorizontalLayout hl = new HorizontalLayout();
-			hl.setSpacing(false);
-			hl.setSizeFull();
-			hl.addComponents(b2);
-			return hl;
-		}).setCaption("Opciones"); */
-		
-		trazabilidadLayout.addComponents(toolbar,gridTrazabilidad);//, buildUIProyect());
+		trazabilidadLayout.addComponents(toolbar,trazas);//,gridTrazabilidad);//, buildUIProyect());
 		trazabilidadLayout.setMargin(false);
 		
-		/*pnlPrincipal.setCaption("Gestión de proyectos");
-		pnlPrincipal.setIcon(VaadinIcons.USERS);
-		pnlPrincipal.setContent(proyectoLayout);*/
-		
-		mainLayout.addComponents(pnlPrincipal);
-		return trazabilidadLayout;
+		return trazabilidadLayout; 
 	}
 
 	public void cargarDatos() {
-		listTrazabildiad.add(new Trazabilidad(LocalDate.now(), LocalTime.now(), "HHHH", null, 1));
+		/*listTrazabildiad.add(new Trazabilidad(LocalDate.now(), LocalTime.now(), "HHHH", null, 1));
 		listTrazabildiad.add(new Trazabilidad(LocalDate.now(), LocalTime.now(), "HHHHsss", null, 1));
 		listTrazabildiad.add(new Trazabilidad(LocalDate.now(), LocalTime.now(), "HHHHeeeeee", null, 1));
 		
-		gridTrazabilidad.setItems(listTrazabildiad);
+		gridTrazabilidad.setItems(listTrazabildiad);*/
+		//trazas.setWidth("100%");
+		trazas.addComponent(new ProcesoComponent());
+		trazas.addComponent(new ProcesoComponent());
+	
+		trazas.addComponent(new ProcesoComponent());
+		trazas.addComponent(new ProcesoComponent());
+		trazas.addComponent(new ProcesoComponent());
+		trazas.addComponent(new ProcesoComponent());
+		
+	}
+	
+	public void newEditTraza() {
+		
+	}
+	
+	public void limpiar() {
+		
 	}
 	
 	public void setCss() {
 		toolbar.addStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
 	}
+	
 	
 }

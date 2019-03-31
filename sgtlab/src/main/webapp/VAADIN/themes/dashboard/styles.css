@@ -15418,14 +15418,6 @@ div.v-layout.v-horizontal.v-widget {
 	padding-bottom: 5px;
 }
 
-.dashboard .v-panel-proyecto-integrador .v-panel-caption {
-	border-bottom: 1px solid #039615;
-	background-image: -webkit-linear-gradient(top, #039615 2%, #039615 98%);
-	background-image: linear, to bottom, #039615 2%, #039615 98%;
-	color: #ffffff;
-	box-shadow: inset 0 1px 0 #039615, inset 0 -1px 0 #039615;
-}
-
 .dashboard .v-window-closebox {
 	color: #fff;
 	background: #ff6363;
@@ -16047,4 +16039,27 @@ div.v-layout.v-horizontal.v-widget {
 
 .dashboard .v-button-primary {
 	min-width: 40px;
+}
+
+.dashboard .v-avatar {
+	height: 50px;
+	width: 50px;
+	border-radius: 50%;
+	background-color: #fff;
+	box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.6);
+	-moz-box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.6);
+	-webkit-box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.6);
+	-o-box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.6);
+}
+
+.dashboard .v-label-esperando-revision {
+	background-color: #f8d99b;
+	padding: 3px;
+	border-radius: 5px;
+}
+
+.dashboard .v-label-revisado {
+	background-color: #a4f89b;
+	padding: 3px;
+	border-radius: 5px;
 }

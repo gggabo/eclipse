@@ -74,6 +74,10 @@ public class Trazabilidad implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "ID_USUARIO")
+	private Usuario revisor;
+	
+	@ManyToOne
+	@JoinColumn(name = "ID_USUARIO")
 	private Usuario usuario;
 	
 	public Trazabilidad() {
@@ -183,6 +187,22 @@ public class Trazabilidad implements Serializable {
 
 	public void setMediosCultivo(List<MedioCultivo> mediosCultivo) {
 		this.mediosCultivo = mediosCultivo;
+	}
+	
+	public Usuario getRevisor() {
+		return revisor;
+	}
+
+	public void setRevisor(Usuario revisor) {
+		this.revisor = revisor;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 	@Override

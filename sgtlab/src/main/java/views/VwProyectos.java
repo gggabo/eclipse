@@ -118,6 +118,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		pnlPrincipal.setContent(proyectoLayout);
 		
 		mainLayout.addComponents(pnlPrincipal);
+		mainLayout.setHeight("100%");
 		return mainLayout;
 		
 	}
