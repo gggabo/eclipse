@@ -37,7 +37,7 @@ public class Trazabilidad implements Serializable {
 	@Column(name = "HORA")
 	private LocalTime hora;
 	
-	@Column(name = "DESCRIPCION")
+	@Column(name = "DESCRIPCION", columnDefinition = "TEXT")
 	private String descripcion;
 	
 	@Lob
@@ -61,10 +61,8 @@ public class Trazabilidad implements Serializable {
 	inverseJoinColumns = @JoinColumn(name ="ID_MATERIAL"))
 	private List<Material> materiales = new ArrayList<>();
 
-	@ManyToMany
-	@JoinTable(name = "TBL_TRAZABILIDAD_MEDIOCULTIVO", joinColumns= @JoinColumn(name = "ID_TRAZABILIDAD"), 
-	inverseJoinColumns = @JoinColumn(name ="ID_MEDIO_CULTIVO"))
-	private List<MedioCultivo> mediosCultivo = new ArrayList<>();
+	@OneToMany(mappedBy = "trazabilidad", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<TrazabilidadMedioCultivo>  trazabilidadMediosCultivo = new ArrayList<>();
 	
 	@Column(name = "ESTADO_REVISION") 
 	private String estadoRevision; 
@@ -72,9 +70,8 @@ public class Trazabilidad implements Serializable {
 	@Column(name = "ESTADO") 
 	private int estado; 
 	
-	@ManyToOne
-	@JoinColumn(name = "ID_USUARIO")
-	private Usuario revisor;
+	@Column(name = "REVISOR")
+	private String revisor;
 	
 	@ManyToOne
 	@JoinColumn(name = "ID_USUARIO")
@@ -181,19 +178,20 @@ public class Trazabilidad implements Serializable {
 		this.materiales = materiales;
 	}
 
-	public List<MedioCultivo> getMediosCultivo() {
-		return mediosCultivo;
+
+	public List<TrazabilidadMedioCultivo> getTrazabilidadMediosCultivo() {
+		return trazabilidadMediosCultivo;
 	}
 
-	public void setMediosCultivo(List<MedioCultivo> mediosCultivo) {
-		this.mediosCultivo = mediosCultivo;
+	public void setTrazabilidadMediosCultivo(List<TrazabilidadMedioCultivo> trazabilidadMediosCultivo) {
+		this.trazabilidadMediosCultivo = trazabilidadMediosCultivo;
 	}
-	
-	public Usuario getRevisor() {
+
+	public String getRevisor() {
 		return revisor;
 	}
 
-	public void setRevisor(Usuario revisor) {
+	public void setRevisor(String revisor) {
 		this.revisor = revisor;
 	}
 

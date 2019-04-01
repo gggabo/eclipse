@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity 
@@ -60,8 +61,8 @@ public class MedioCultivo implements Serializable {
 	@Column(name = "ESTADO")
 	private int estado;
 	
-	@ManyToMany(mappedBy = "mediosCultivo", cascade = {CascadeType.ALL }, fetch = FetchType.EAGER)
-	private List<Trazabilidad> trazabilidades = new ArrayList<>();
+	@OneToMany(mappedBy = "medioCultivo", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<TrazabilidadMedioCultivo>  trazabilidadMediosCultivo = new ArrayList<>();
 	
 	public MedioCultivo() {
 		// TODO Auto-generated constructor stub

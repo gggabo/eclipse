@@ -75,12 +75,8 @@ public class ProcesoComponent extends HorizontalLayout implements Serializable {
 		nombreProyecto.setWidth("100%");
 		nombreProyecto.setValue("Integer legentibus erat a ante historiarum dapibus. Vivamus sagittis lacus vel augue laoreet rutrum faucibus. A communi observantia non est recedendum. Morbi fringilla convallis sapien, id pulvinar odio volutpat. Ab illo tempore, ab est sed immemorabili. Quam temere in vitiis, legem sancimus haerentia.\r\n" + 
 				"\r\n" + 
-				"Morbi odio eros, volutpat ut pharetra vitae, lobortis sed nibh. Quam diu etiam furor iste tuus nos eludet? Cum sociis natoque penatibus et magnis dis parturient. Quam diu etiam furor iste tuus nos eludet? Tityre, tu patulae recubans sub tegmine fagi dolor.\r\n" + 
-				"\r\n" +  
-				"Curabitur blandit tempus ardua ridiculus sed magna. Phasellus laoreet lorem vel dolor tempus vehicula. Etiam habebis sem dicantur magna mollis euismod. Hi omnes lingua, institutis, legibus inter se differunt.");        
-        /*HorizontalLayout hl = new HorizontalLayout();
-        hl.setWidth("100%");*/
-                
+				"Morbi odio eros, volutpat ut pharetra vitae, lobortis sed nibh. Quam diu etiam furor iste tuus nos eludet? Cum sociis natoque penatibus et magnis dis parturient. Quam diu etiam furor iste tuus nos eludet? Tityre, tu patulae recubans sub tegmine fagi dolor.\r\n" ); 
+				       
 		form.addComponents(estadoProyecto,nombreProyecto);
 				 
 		layoutComponent.setSpacing(false);
