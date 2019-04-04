@@ -1,25 +1,17 @@
 package views;
 
 import java.io.Serializable;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.vaadin.ui.NumberField;
 
-import com.vaadin.data.Binder;
-import com.vaadin.data.converter.StringToFloatConverter;
-import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.navigator.View;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -38,7 +30,6 @@ import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.LocalDateRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -49,7 +40,6 @@ import controllers.LabotatorioController;
 import controllers.MaterialController;
 import controllers.MedioCultivoController;
 import controllers.ReactivoController;
-import controllers.UnidadController;
 import models.Componente;
 import models.Equipo;
 import models.Laboratorio;
@@ -60,26 +50,27 @@ import models.Rol;
 import models.Unidad;
 import models.Usuario;
 import utils.UploadImage;
-import utils.dialogWindow;
 import utils.message;
 import utils.uploadXls;
 
-public class VwLaboratorios extends VerticalLayout implements View, Serializable {
+public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	public VwLaboratorios() {
+	public VwLaboratoriosBuscar() {
 		addComponent(buildUI());
 		setCss();
 		setPlaceHolder();
 		setMaxLengthText();
-		addValidation();
+		//addValidation();
 		cargarDatosPrincipales();
-		buildUser();
+		//buildUser();
 		initComponents();
-		addStyleName("custom-margin-layout");
+		
+		//addStyleName("custom-margin-layout");
+		setMargin(false);
 	}
 
-	public VerticalLayout mainLayout = new VerticalLayout();
+	public VerticalLayout mainLayou = new VerticalLayout();
 	public Panel pnlPrincipal = new Panel();
 	public FormLayout mainFrm;
 	public HorizontalLayout toolbar = new HorizontalLayout();
@@ -99,17 +90,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 	public TextField filterReactivotxt = new TextField();
 	public Grid<Reactivo> gridReactivo = new Grid<>();
 	public List<Reactivo> listReactivos = new ArrayList<>();
-	String reactivoAction = "guardar";
-	public FormLayout formLayoutReactivo = new FormLayout();
-	public TextField codigoReactivo = new TextField("Código");
-	public TextField nombreReactivo = new TextField("Nombre");
-	public NumberField entradaReactivo = new NumberField("Entrada");
-	public NumberField gastoRectivo = new NumberField("Gasto");
-	public TextField saldoRectivo = new TextField("Saldo");
-	public ComboBox<Unidad> cmbUnidad = new ComboBox<>();
-	public List<Unidad> listUnidad = new ArrayList<>();
-	public Button btnAddUnidad = new Button(VaadinIcons.PLUS_CIRCLE);
-	public DateField fechaCaducidadRectivo = new DateField("Fecha caducidad");
+	
 	/*FIN REACTIVO*/
 
 	/*EQUIPO*/
@@ -263,11 +244,12 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		toolbar.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
 		toolbar.setResponsive(true);
 		toolbar.addComponents(cmbLaboratorio, btnAddLaboratorio);
+		toolbar.setVisible(false);
 
-		tabSheet.addTab(pnlReactivos, "Reactivos", new ThemeResource("images/quimica.png"));
-		tabSheet.addTab(pnlEquipos, "Equipos", new ThemeResource("images/microscopio.png"));
-		tabSheet.addTab(pnlMateriales, "Materiales", new ThemeResource("images/mortero.png"));
-		tabSheet.addTab(pnlMedioCultivo, "M. Cultivo", new ThemeResource("images/molecule.png"));
+		tabSheet.addTab(laboratorioReactivoLayout, "Reactivos", new ThemeResource("images/quimica.png"));
+		tabSheet.addTab(laboratorioEquipoLayout, "Equipos", new ThemeResource("images/microscopio.png"));
+		tabSheet.addTab(laboratorioMaterialesLayout, "Materiales", new ThemeResource("images/mortero.png"));
+		tabSheet.addTab(laboratorioMedioCultivoLayout, "M. Cultivo", new ThemeResource("images/molecule.png"));
 
 		// **REACTIVO**// 
 		toolbarReactivo.setWidth("100%");
@@ -286,9 +268,9 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
-				codigoReactivo.setReadOnly(false);
+				/*codigoReactivo.setReadOnly(false);
 				newEditReactivo(null);
-				reactivoAction = "guardar";
+				reactivoAction = "guardar";*/
 			}
 		});
 
@@ -334,9 +316,8 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 
 			Button b = new Button("Editar");
 			b.addClickListener(clickb -> {
-				newEditReactivo(Reactivo);
 
-				codigoReactivo.setValue(Reactivo.getCodigo());
+				/*codigoReactivo.setValue(Reactivo.getCodigo());
 				codigoReactivo.setReadOnly(true);
 				nombreReactivo.setValue(Reactivo.getNombre());
 				entradaReactivo.setValue(String.valueOf(Reactivo.getEntrada()));
@@ -345,9 +326,9 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 				cmbUnidad.setValue(Reactivo.getUnidad());
 				fechaCaducidadRectivo.setValue(Reactivo.getFechaCaducidad());
 
-				reactivoAction = "modificar";
+				reactivoAction = "modificar";*/
 
-			}); 
+			});
 			b.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			b.addStyleName(ValoTheme.BUTTON_SMALL);
 			b.setIcon(VaadinIcons.EDIT);
@@ -375,12 +356,9 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		gridReactivo.setWidth("100%");
 		gridReactivo.setSelectionMode(SelectionMode.NONE);
 
-		pnlReactivos.setCaption("Gestión de reactivos");
-		pnlReactivos.setIcon(VaadinIcons.FLASK);
-		pnlReactivos.setContent(laboratorioReactivoLayout);
-
-		laboratorioReactivoLayout.addComponents(toolbarReactivo, filteringReactivo, gridReactivo);
-		laboratorioReactivoLayout.setMargin(false);
+		laboratorioReactivoLayout.addComponents(filteringReactivo, gridReactivo);
+		laboratorioReactivoLayout.setSpacing(true);
+		laboratorioReactivoLayout.setMargin(true);
 		// **FIN REACTIVO**//
 
 		// **EQUIPO**//
@@ -401,7 +379,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
 				codigoEquipo.setReadOnly(false);
-				newEditEquipo(null);
+				//newEditEquipo(null);
 				pnlComponente.setVisible(false);
 				equipoAction = "guardar";
 			}
@@ -462,7 +440,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 			Button b = new Button("Editar");
 			b.addClickListener(clickb -> {
 				
-				newEditEquipo(Equipo);
+				//newEditEquipo(Equipo);
 				pnlComponente.setVisible(true);
 				codigoEquipo.setValue(Equipo.getCodigo());
 				codigoEquipo.setReadOnly(true);
@@ -476,7 +454,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 				equipoAction = "modificar";
 				equipo = Equipo;
 				
-				cargarDatosComponente(Equipo);
+				//cargarDatosComponente(Equipo);
 
 			});
 			b.setStyleName(ValoTheme.BUTTON_FRIENDLY);
@@ -505,12 +483,9 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		gridEquipo.setWidth("100%");
 		gridEquipo.setSelectionMode(SelectionMode.NONE);
 
-		pnlEquipos.setCaption("Gestión de equipos");
-		pnlEquipos.setIcon(VaadinIcons.FLASK);
-		pnlEquipos.setContent(laboratorioEquipoLayout);
-
-		laboratorioEquipoLayout.addComponents(toolbarEquipos, filteringEquipo, gridEquipo);
-		laboratorioEquipoLayout.setMargin(false);
+		laboratorioEquipoLayout.addComponents(filteringEquipo, gridEquipo);
+		laboratorioEquipoLayout.setSpacing(true);
+		laboratorioEquipoLayout.setMargin(true);
 		
 		//COMPONENTES DE EQUIPO COMPUESTO
 		toolbarComponente.setWidth("100%");
@@ -529,7 +504,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
-				newEditComponente(null,equipo);
+				//newEditComponente(null,equipo);
 				componenteAction = "guardar";
 			}
 		});
@@ -547,7 +522,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 
 			Button b = new Button("Editar");
 			b.addClickListener(clickb -> {
-				newEditComponente(Componente, equipo);
+				//newEditComponente(Componente, equipo);
 				nombreComponente.setValue(Componente.getNombre()); 
 				marcaComponente.setValue(Componente.getMarca());  
 				capacidadComponente.setValue(Componente.getCapacidad()); 
@@ -564,7 +539,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 				 Componente.setEstado(0); 
 				 ComponenteController.update(Componente);
 				 message.normalMessage("Componente eliminado");
-				 cargarDatosComponente(equipo);
+				// cargarDatosComponente(equipo);
 			});
 			b2.setStyleName(ValoTheme.BUTTON_DANGER);
 			b2.addStyleName(ValoTheme.BUTTON_SMALL);
@@ -578,7 +553,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		}).setCaption("Opciones"); 
 		
 		laboratorioComponenteLayout.addComponents(toolbarComponente, gridComponente);
-		laboratorioComponenteLayout.setMargin(false);
+		laboratorioComponenteLayout.setMargin(true);
 		
 		pnlComponente.setCaption("Gestión de componentes");
 		pnlComponente.setIcon(VaadinIcons.FLASK);
@@ -604,7 +579,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
 				codigoMaterial.setReadOnly(false);
-				newEditMaterial(null);
+				//newEditMaterial(null);
 				materialAction = "guardar";
 			}
 		});
@@ -647,7 +622,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 
 			Button b = new Button("Editar");
 			b.addClickListener(clickb -> {
-				newEditMaterial(Material);
+			//	newEditMaterial(Material);
 				
 				codigoMaterial.setReadOnly(true);
 				codigoMaterial.setValue(Material.getCodigo());
@@ -688,12 +663,9 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		gridMaterial.setWidth("100%");
 		gridMaterial.setSelectionMode(SelectionMode.NONE);
 
-		pnlMateriales.setCaption("Gestión de materiales");
-		pnlMateriales.setIcon(VaadinIcons.FLASK);
-		pnlMateriales.setContent(laboratorioMaterialesLayout);
-
-		laboratorioMaterialesLayout.addComponents(toolbarMaterial, filteringMaterial, gridMaterial);
-		laboratorioMaterialesLayout.setMargin(false);
+		laboratorioMaterialesLayout.addComponents(filteringMaterial, gridMaterial);
+		laboratorioMaterialesLayout.setSpacing(true);
+		laboratorioMaterialesLayout.setMargin(true);
 		// **FIN MATERIAL**//
 
 		// **MEDIOS DE CULTIVO**//
@@ -714,7 +686,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
 				codigoMedioCultivo.setReadOnly(false);
-				newEditMedioCultivo(null);
+				//newEditMedioCultivo(null);
 				MedioCultivoAction = "guardar";
 			}
 		});
@@ -761,7 +733,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 
 			Button b = new Button("Editar");
 			b.addClickListener(clickb -> {
-				newEditMedioCultivo(MedioCultivo);
+				//newEditMedioCultivo(MedioCultivo);
 
 				codigoMedioCultivo.setValue(MedioCultivo.getCodigo());
 				codigoMedioCultivo.setReadOnly(true);
@@ -798,190 +770,25 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 			hl.addComponents(b, b2);
 			return hl;
 		}).setCaption("Opciones");
-
+ 
 		gridMedioCultivo.setWidth("100%");
 		gridMedioCultivo.setSelectionMode(SelectionMode.NONE);
 
-		pnlMedioCultivo.setCaption("Gestión de medios de cultivos");
-		pnlMedioCultivo.setIcon(VaadinIcons.FLASK);
-		pnlMedioCultivo.setContent(laboratorioMedioCultivoLayout);
-
-		laboratorioMedioCultivoLayout.addComponents(toolbarMedioCultivo, filteringMedioCultivo, gridMedioCultivo);
-		laboratorioMedioCultivoLayout.setMargin(false);
+		laboratorioMedioCultivoLayout.addComponents(filteringMedioCultivo, gridMedioCultivo);
+		laboratorioMedioCultivoLayout.setSpacing(true);
+		laboratorioMedioCultivoLayout.setMargin(true);
 		// **FIN MEDIOS CULTIVO**//
 		
 		laboratorioLayout.addComponents(toolbar, tabSheet);
 		laboratorioLayout.setMargin(false);
-
-		pnlPrincipal.setCaption("Gestión de laboratorios");
-		pnlPrincipal.setIcon(VaadinIcons.FLASK);
-		pnlPrincipal.setContent(laboratorioLayout);
-
-		mainLayout.addComponents(pnlPrincipal);
-		return mainLayout;
+		
+		return laboratorioLayout;
 	}
 
 	public void limpiarMainComponents() {
 
 	}
 
-	HorizontalLayout hl = new HorizontalLayout();
-	public void newEditReactivo(Reactivo reactMod) {
-		limpiarReactivo();
-
-		dialogWindow dialogReactivoWindow = new dialogWindow("Gestión de reactivos", VaadinIcons.FLASK);
-
-		hl.setCaption("Unidad");
-		hl.setSpacing(false);
-		hl.setMargin(false);
-		hl.addComponents(cmbUnidad, btnAddUnidad);
-		 
-		formLayoutReactivo.setSpacing(false);
-		formLayoutReactivo.setMargin(false);
-		formLayoutReactivo.addComponents(codigoReactivo, nombreReactivo, entradaReactivo, gastoRectivo, saldoRectivo,
-				hl, fechaCaducidadRectivo);
-
-		dialogReactivoWindow.getOkButton().addClickListener(new ClickListener() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				
-				if (!validatorReactivo.isValid()) {
-					validatorReactivo.validate();
-
-					message.warringMessage("Hay errores en los campos de texto");
-					return;
-				}
-
-				if (reactivoAction.equals("guardar")) {
-					
-					if (ReactivoController.DBcontainsCodReactivo(codigoReactivo.getValue())) {
-						message.warringMessage("El codigo del reactivo ya se encuentra registrado");
-						return;
-					}
-										
-					Reactivo react = new Reactivo(codigoReactivo.getValue().toUpperCase().trim(),
-							nombreReactivo.getValue().toUpperCase().trim(),
-							Float.parseFloat(entradaReactivo.getValue()), fechaCaducidadRectivo.getValue(),
-							Float.parseFloat(gastoRectivo.getValue()), Float.parseFloat(saldoRectivo.getValue()),
-							cmbUnidad.getValue(), cmbLaboratorio.getValue(), 1);
-
-					ReactivoController.save(react);
-				} else {
-
-					reactMod.setCodigo(codigoReactivo.getValue().toUpperCase().trim());
-					reactMod.setNombre(nombreReactivo.getValue().toUpperCase().trim());
-					reactMod.setEntrada(Float.parseFloat(entradaReactivo.getValue()));
-					reactMod.setFechaCaducidad(fechaCaducidadRectivo.getValue());
-					reactMod.setGasto(Float.parseFloat(gastoRectivo.getValue()));
-					reactMod.setSaldo(Float.parseFloat(saldoRectivo.getValue()));
-					reactMod.setUnidad(cmbUnidad.getValue());
-					reactMod.setLaboratorio(cmbLaboratorio.getValue());
-
-					ReactivoController.update(reactMod);
-					codigoReactivo.setReadOnly(false);
-				}
-
-				message.normalMessage("Acción realizada con éxito");
-
-				cargarDatosReactivo();
-				dialogReactivoWindow.close();
-			}
-		});
-
-		dialogReactivoWindow.getCancelButton().addClickListener(e -> {
-			dialogReactivoWindow.close();
-		});
-
-		dialogReactivoWindow.setResponsive(true);
-		dialogReactivoWindow.setWidth("32%");
-		dialogReactivoWindow.addComponentBody(formLayoutReactivo);
-		UI.getCurrent().addWindow(dialogReactivoWindow);
-	}
-
-	public void limpiarReactivo() {
-		codigoReactivo.setValue("");
-		nombreReactivo.setValue("");
-		entradaReactivo.setValue("");
-		gastoRectivo.setValue("");
-		saldoRectivo.setValue("");
-		fechaCaducidadRectivo.setValue(LocalDate.now());
-	}
-	
-	public void newEditEquipo(Equipo equipo) {
-		limpiarEquipo();
-
-		dialogWindow dialogReactivoWindow = new dialogWindow("Gestión de equipos", VaadinIcons.FLASK);
-		 
-		formLayoutEquipo.setSpacing(false);
-		formLayoutEquipo.setMargin(false);
-		formLayoutEquipo.addComponents(codigoEquipo, nombreEquipo, equipoMarca, cantidadEquipo,equipoObservacion,equipoCaracteristicas,
-				equipoFechaAdquisicion,rbEstadoEquipo);
- 
-		dialogReactivoWindow.getOkButton().addClickListener(new ClickListener() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				
-				if (!validatorEquipo.isValid()) {
-					validatorEquipo.validate();
-
-					message.warringMessage("Hay errores en los campos de texto");
-					return;
-				}
-
-				if (equipoAction.equals("guardar")) {
-					
-					if (EquipoController.DBcontainsCodEquipo(codigoEquipo.getValue())) {
-						message.warringMessage("El codigo del equipo ya se encuentra registrado");
-						return;
-					}
-										
-					Equipo eq = new Equipo(codigoEquipo.getValue().toUpperCase().trim(),nombreEquipo.getValue().toUpperCase().trim(),
-							equipoMarca.getValue().toUpperCase().trim(),Integer.parseInt(cantidadEquipo.getValue()),
-							equipoObservacion.getValue().toUpperCase().trim(),equipoCaracteristicas.getValue().toUpperCase().trim(),
-							equipoFechaAdquisicion.getValue(),rbEstadoEquipo.getValue(),cmbLaboratorio.getValue(),1);
-					EquipoController.save(eq);
-				} else {
-
-					equipo.setCodigo(codigoEquipo.getValue().toUpperCase().trim());
-					equipo.setNombre(nombreEquipo.getValue().toUpperCase().trim());
-					equipo.setMarca(equipoMarca.getValue().toUpperCase().trim());
-					equipo.setCantidad(Integer.parseInt(cantidadEquipo.getValue()));
-					equipo.setEstadoEquipo(rbEstadoEquipo.getValue());					
-					equipo.setLaboratorio(cmbLaboratorio.getValue());
-					equipo.setObservacion(equipoObservacion.getValue().toUpperCase().trim());
-					equipo.setCaracteristicas(equipoCaracteristicas.getValue().toUpperCase().trim());
-					equipo.setFechaAdquisicion(equipoFechaAdquisicion.getValue());
-					
-					EquipoController.update(equipo);
-					codigoEquipo.setReadOnly(false);
-				}
-
-				message.normalMessage("Acción realizada con éxito");
-
-				cargarDatosEquipo();
-				dialogReactivoWindow.close();
-			}
-		});
-
-		dialogReactivoWindow.getCancelButton().addClickListener(e -> {
-			dialogReactivoWindow.close();
-		});
-
-
-		
-		VerticalLayout vroot = new VerticalLayout();
-		vroot.addComponents(formLayoutEquipo,pnlComponente);
-		vroot.setMargin(false);
-		
-		dialogReactivoWindow.setResponsive(true);
-		dialogReactivoWindow.setWidth("50%");
-		dialogReactivoWindow.addComponentBody(vroot);
-		UI.getCurrent().addWindow(dialogReactivoWindow);
-	}
 
 	public void limpiarEquipo() {
 		codigoEquipo.setValue("");
@@ -994,61 +801,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		rbEstadoEquipo.setSelectedItem("BUENO");
 	}	
 	
-	public void newEditComponente(Componente componente, Equipo eq) {
-		limpiarComponente();
-		
-		dialogWindow dialogReactivoWindow = new dialogWindow("Gestión de componentes de equipos", VaadinIcons.FLASK);
-		 
-		formLayoutComponente.setSpacing(false);
-		formLayoutComponente.setMargin(false);
-		formLayoutComponente.addComponents(nombreComponente, marcaComponente, capacidadComponente, cantidadComponente);
 
-		dialogReactivoWindow.getOkButton().addClickListener(new ClickListener() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				
-				if (!validatorComponente.isValid()) {
-					validatorComponente.validate();
-
-					message.warringMessage("Hay errores en los campos de texto");
-					return;
-				}
-
-				if (componenteAction.equals("guardar")) {	
-					Componente comp = new Componente(nombreComponente.getValue().toUpperCase().trim(), marcaComponente.getValue().toUpperCase().trim(), 
-							capacidadComponente.getValue().toUpperCase().trim(), Integer.parseInt(cantidadComponente.getValue()), eq, 1);
-					
-					ComponenteController.save(comp);
-					
-				} else {
-
-					componente.setNombre(nombreComponente.getValue().toUpperCase().trim());
-					componente.setMarca(marcaComponente.getValue().toUpperCase().trim());
-					componente.setCapacidad(capacidadComponente.getValue().toUpperCase().trim());
-					componente.setCantidad(Integer.parseInt(cantidadComponente.getValue()));
-					componente.setEquipo(eq);
-					
-					ComponenteController.update(componente);
-				}
-
-				message.normalMessage("Acción realizada con éxito");
-				cargarDatosComponente(eq);
-				dialogReactivoWindow.close();
-			}
-		});
-
-		dialogReactivoWindow.getCancelButton().addClickListener(e -> {
-			dialogReactivoWindow.close();
-		});
-
-		dialogReactivoWindow.setResponsive(true);
-		dialogReactivoWindow.setWidth("32%");
-		dialogReactivoWindow.addComponentBody(formLayoutComponente);
-		UI.getCurrent().addWindow(dialogReactivoWindow);
-	}
-	
 	public void limpiarComponente() {
 		nombreComponente.setValue("");
 		marcaComponente.setValue("");
@@ -1056,76 +809,6 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		cantidadComponente.setValue("");
 	}
 	
-	public void newEditMaterial(Material material) {
-		limpiarMaterial();
-
-		dialogWindow dialogReactivoWindow = new dialogWindow("Gestión de Materiales", VaadinIcons.FLASK);
-		 
-		formLayoutMaterial.setSpacing(false);
-		formLayoutMaterial.setMargin(false);
-		formLayoutMaterial.addComponents(codigoMaterial, nombreMaterial, marcaMaterial,tipoMaterial, capacidadMaterial, cantidadMaterial, observacionMaterial);
- 
-		dialogReactivoWindow.getOkButton().addClickListener(new ClickListener() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				
-				if (!validatorMaterial.isValid()) {
-					validatorMaterial.validate();
-
-					message.warringMessage("Hay errores en los campos de texto");
-					return;
-				}
-
-				if (materialAction.equals("guardar")) {
-					
-					if (MaterialController.DBcontainsCodMaterial(codigoMaterial.getValue())) {
-						message.warringMessage("El codigo del material ya se encuentra registrado");
-						return;
-					} 
-										
-					Material mat = new Material(codigoMaterial.getValue().toUpperCase().trim(),nombreMaterial.getValue().toUpperCase().trim(),
-							marcaMaterial.getValue().toUpperCase().trim(), tipoMaterial.getValue().toUpperCase().trim(), 
-							capacidadMaterial.getValue().toUpperCase().trim(), Integer.parseInt(cantidadMaterial.getValue()), 
-							observacionMaterial.getValue().toUpperCase().trim(), cmbLaboratorio.getValue(), 1);
-					MaterialController.save(mat);
-				} else {
-
-					material.setCodigo(codigoMaterial.getValue().toUpperCase().trim());
-					material.setNombre(nombreMaterial.getValue().toUpperCase().trim());
-					material.setMarca(marcaMaterial.getValue().toUpperCase().trim());
-					material.setTipoMaterial(tipoMaterial.getValue().toUpperCase().trim());
-					material.setCapacidad(capacidadMaterial.getValue().toUpperCase().trim());
-					material.setCantidad(Integer.parseInt(cantidadMaterial.getValue()));
-					material.setObservacion(observacionMaterial.getValue().toUpperCase().trim());
-					
-					MaterialController.update(material);
-					codigoMaterial.setReadOnly(false);
-				}
-
-				message.normalMessage("Acción realizada con éxito");
-
-				cargarDatosMaterial();;
-				dialogReactivoWindow.close();
-			}
-		});
-
-		dialogReactivoWindow.getCancelButton().addClickListener(e -> {
-			dialogReactivoWindow.close();
-		});
-
-
-		
-		VerticalLayout vroot = new VerticalLayout();
-		vroot.addComponents(formLayoutMaterial);
-		vroot.setMargin(false);
-		
-		dialogReactivoWindow.setResponsive(true);
-		dialogReactivoWindow.setWidth("35%");
-		dialogReactivoWindow.addComponentBody(vroot);
-		UI.getCurrent().addWindow(dialogReactivoWindow);
-	}
 
 	public void limpiarMaterial() {
 		codigoMaterial.setValue("");
@@ -1136,96 +819,11 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		observacionMaterial.setValue("");
 	}	
 	
-	HorizontalLayout hlmc = new HorizontalLayout();
-	public void newEditMedioCultivo(MedioCultivo medioCultivo) {
-		limpiarMedioCultivo();
 
-		dialogWindow dialogMcWindow = new dialogWindow("Gestión de medios de cultivos", VaadinIcons.FLASK);
-
-		hlmc.setCaption("Unidad");
-		hlmc.setSpacing(false);
-		hlmc.setMargin(false);
-		hlmc.addComponents(cmbUnidadMedioCultivo, btnAddUnidadMedioCultivo);
-		 
-		formLayoutMedioCultivo.setSpacing(false);
-		formLayoutMedioCultivo.setMargin(false);
-		formLayoutMedioCultivo.addComponents(codigoMedioCultivo, nombreMedioCultivo, entradaMedioCultivo, gastoMedioCultivo, saldoMedioCultivo,
-				hlmc, fechaCaducidadMedioCultivo);
-
-		dialogMcWindow.getOkButton().addClickListener(new ClickListener() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				
-				if (!validatorMc.isValid()) {
-					validatorReactivo.validate();
-
-					message.warringMessage("Hay errores en los campos de texto");
-					return;
-				}
-
-				if (MedioCultivoAction.equals("guardar")) {
-					
-					if (ReactivoController.DBcontainsCodReactivo(codigoMedioCultivo.getValue())) {
-						message.warringMessage("El codigo del medio de cultivo ya se encuentra registrado");
-						return;
-					}
-										
-					MedioCultivo mc = new MedioCultivo(codigoMedioCultivo.getValue().toUpperCase().trim(),
-							nombreMedioCultivo.getValue().toUpperCase().trim(),
-							Float.parseFloat(entradaMedioCultivo.getValue()), fechaCaducidadMedioCultivo.getValue(),
-							Float.parseFloat(gastoMedioCultivo.getValue()), Float.parseFloat(saldoMedioCultivo.getValue()),
-							cmbUnidadMedioCultivo.getValue(), cmbLaboratorio.getValue(), 1);
-
-					MedioCultivoController.save(mc);
-				} else {
-
-					medioCultivo.setCodigo(codigoMedioCultivo.getValue().toUpperCase().trim());
-					medioCultivo.setNombre(nombreMedioCultivo.getValue().toUpperCase().trim());
-					medioCultivo.setEntrada(Float.parseFloat(entradaMedioCultivo.getValue()));
-					medioCultivo.setFechaCaducidad(fechaCaducidadMedioCultivo.getValue());
-					medioCultivo.setGasto(Float.parseFloat(gastoMedioCultivo.getValue()));
-					medioCultivo.setSaldo(Float.parseFloat(saldoMedioCultivo.getValue()));
-					medioCultivo.setUnidad(cmbUnidadMedioCultivo.getValue());
-					medioCultivo.setLaboratorio(cmbLaboratorio.getValue());
-
-					MedioCultivoController.update(medioCultivo);
-					codigoReactivo.setReadOnly(false);
-				}
-
-				message.normalMessage("Acción realizada con éxito");
-
-				cargarDatosMediosCultivo();
-				dialogMcWindow.close();
-			}
-		});
-
-		dialogMcWindow.getCancelButton().addClickListener(e -> {
-			dialogMcWindow.close();
-		});
-
-		dialogMcWindow.setResponsive(true);
-		dialogMcWindow.setWidth("32%");
-		dialogMcWindow.addComponentBody(formLayoutMedioCultivo);
-		UI.getCurrent().addWindow(dialogMcWindow);
-	}
-
-	public void limpiarMedioCultivo() {
-		codigoMedioCultivo.setValue("");
-		nombreMedioCultivo.setValue("");
-		entradaMedioCultivo.setValue("");
-		gastoMedioCultivo.setValue("");
-		saldoMedioCultivo.setValue("");
-		fechaCaducidadMedioCultivo.setValue(LocalDate.now());
-	}
-  
 	
 	private void initComponents() {
 
-		setEvents();
-		fechaCaducidadRectivo.setDateFormat("dd/MM/yyyy");
-		limpiarReactivo();
+		//setEvents();
 		
 		rbEstadoEquipo.setItems("BUENO","REGULAR","MALO");
 		equipoFechaAdquisicion.setDateFormat("dd/MM/yyyy");
@@ -1234,25 +832,15 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		limpiarComponente();
 		
 		fechaCaducidadMedioCultivo.setDateFormat("dd/MM/yyyy");
-		limpiarMedioCultivo();		
-		
 	}
 
 	private void cargarDatosPrincipales() {
 		listLab = LabotatorioController.findAll();
 		createMenu(); 
 
-		listUnidad = UnidadController.findAll();
-		cmbUnidad.setItems(listUnidad);
-		cmbUnidad.setItemCaptionGenerator(Unidad::getNombre);
-		cmbUnidad.setEmptySelectionCaption("Seleccionar");
-		
-		cmbUnidadMedioCultivo.setItems(listUnidad);
-		cmbUnidadMedioCultivo.setItemCaptionGenerator(Unidad::getNombre);
-		cmbUnidadMedioCultivo.setEmptySelectionCaption("Seleccionar");
 	}
 
-	private void cargarDatosReactivo() {
+	/*private void cargarDatosReactivo() {
 		listReactivos.clear();
 		listReactivos.addAll(
 				ReactivoController.searchReactiveByLaboratory(cmbLaboratorio.getValue(), filterReactivotxt.getValue()));
@@ -1285,10 +873,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 				MedioCultivoController.searchMedioCultivoByLaboratory(cmbLaboratorio.getValue(), filterMedioCultivotxt.getValue()));
 		gridMedioCultivo.setItems(listMediosCultivos);
 	}
-	
-	private void setEvents() {
-		calcularSaldo();
-	}
+	*/
 
 	public void setCss() {
 
@@ -1299,28 +884,6 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		btnAddLaboratorio.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
 
 		// REACTIVO
-		codigoReactivo.setStyleName(ValoTheme.TEXTFIELD_SMALL);
-		nombreReactivo.setStyleName(ValoTheme.TEXTFIELD_SMALL);
-		entradaReactivo.setStyleName(ValoTheme.TEXTFIELD_SMALL);
-		entradaReactivo.setDecimalPrecision(2);
-		entradaReactivo.setDecimalSeparator('.');
-		entradaReactivo.setGroupingSeparator(',');
-		entradaReactivo.setMinimumFractionDigits(2);
-		entradaReactivo.setDecimalSeparatorAlwaysShown(true);
-		
-		gastoRectivo.setStyleName(ValoTheme.TEXTFIELD_SMALL);
-		gastoRectivo.setDecimalPrecision(2);
-		gastoRectivo.setDecimalSeparator('.');
-		gastoRectivo.setGroupingSeparator(',');  
-		gastoRectivo.setMinimumFractionDigits(2);
-		gastoRectivo.setDecimalSeparatorAlwaysShown(true);
-		saldoRectivo.setStyleName(ValoTheme.TEXTFIELD_SMALL);
-		saldoRectivo.setReadOnly(true);
-		saldoRectivo.addStyleName(ValoTheme.TEXTFIELD_ALIGN_RIGHT);
-		cmbUnidad.addStyleName(ValoTheme.COMBOBOX_TINY);
-		btnAddUnidad.addStyleName(ValoTheme.BUTTON_SMALL);
-		btnAddUnidad.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
-		fechaCaducidadRectivo.setStyleName(ValoTheme.DATEFIELD_TINY);
 		filterReactivotxt.addStyleName(ValoTheme.TEXTFIELD_SMALL);
 		filterReactivotxt.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
 		filterReactivotxt.setIcon(VaadinIcons.SEARCH);
@@ -1428,11 +991,6 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 
 
 	private void setPlaceHolder() {
-		codigoReactivo.setPlaceholder("LQR001");
-		nombreReactivo.setPlaceholder("CLOR-ANTIMONIO");
-		entradaReactivo.setPlaceholder("0.00");
-		gastoRectivo.setPlaceholder("0.00");
-		saldoRectivo.setPlaceholder("0.00");
 		
 		codigoEquipo.setPlaceholder("LQE001");
 		nombreEquipo.setPlaceholder("AGITADOR MAGNETICO");
@@ -1465,11 +1023,6 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 	}
 
 	private void setMaxLengthText() {
-		codigoReactivo.setMaxLength(20);
-		nombreReactivo.setMaxLength(60);
-		entradaReactivo.setMaxLength(15);
-		gastoRectivo.setMaxLength(15);
-		saldoRectivo.setMaxLength(15);
 		
 		nombreComponente.setMaxLength(50);
 		marcaComponente.setMaxLength(30);
@@ -1484,233 +1037,5 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		
 	}
 
-
-	Binder<Reactivo> validatorReactivo = new Binder<>();
-	Binder<Equipo> validatorEquipo = new Binder<>();
-	Binder<Componente> validatorComponente = new Binder<>();
-	Binder<Material> validatorMaterial = new Binder<>();
-	Binder<MedioCultivo> validatorMc = new Binder<>();
 	
-	private void addValidation() {
-		/*REACTIVO*/
-		validatorReactivo.forField(codigoReactivo).asRequired("Campo requerido").bind(Reactivo::getCodigo,
-				Reactivo::setCodigo);
-
-		validatorReactivo.forField(nombreReactivo).asRequired("Campo requerido").bind(Reactivo::getNombre,
-				Reactivo::setNombre);
-
-		validatorReactivo.forField(entradaReactivo).asRequired("Campo requerido").withNullRepresentation("")
-				.withConverter(new StringToFloatConverter("formato decimal 0.00"))
-				.bind(Reactivo::getEntrada, Reactivo::setEntrada);
-
-		validatorReactivo.forField(gastoRectivo).asRequired("Campo requerido").withNullRepresentation("")
-				.withConverter(new StringToFloatConverter("formato decimal 0.00"))
-				.bind(Reactivo::getGasto, Reactivo::setGasto);
-		
-		validatorReactivo.forField(cmbUnidad).asRequired("Campo requerido")
-		.bind(Reactivo::getUnidad, Reactivo::setUnidad);
-
-		/*validatorReactivo.forField(fechaCaducidadRectivo).asRequired("Campo requerido")
-				.bind(Reactivo::getFechaCaducidad, Reactivo::setFechaCaducidad);*/
-		/*FIN REACTIVO*/
-		
-		/*EQUIPO*/
-		validatorEquipo.forField(codigoEquipo).asRequired("Campo requerido").bind(Equipo::getCodigo,
-				Equipo::setCodigo);
-		validatorEquipo.forField(nombreEquipo).asRequired("Campo requerido").bind(Equipo::getNombre,
-				Equipo::setNombre);
-		validatorEquipo.forField(rbEstadoEquipo).asRequired("Campo requerido").bind(Equipo::getEstadoEquipo,
-				Equipo::setEstadoEquipo);
-		
-		validatorEquipo.forField(cantidadEquipo).asRequired("Campo requerido").withNullRepresentation("")
-		.withConverter(new StringToIntegerConverter("formato numerico 1"))
-		.bind(Equipo::getCantidad, Equipo::setCantidad);
-
-		//LAB OPERACIONES UNITARES - COMPONENTES		
-		validatorComponente.forField(nombreComponente).asRequired("Campo requerido").bind(Componente::getNombre,
-				Componente::setNombre);
-		
-		validatorComponente.forField(cantidadComponente).asRequired("Campo requerido").withNullRepresentation("")
-		.withConverter(new StringToIntegerConverter("formato numerico 1"))
-		.bind(Componente::getCantidad, Componente::setCantidad);
-		/*FIN EQUIPO*/
-		
-		/*MATERIAL*/
-		validatorMaterial.forField(codigoMaterial).asRequired("Campo requerido").bind(Material::getCodigo,
-				Material::setCodigo);
-		validatorMaterial.forField(nombreMaterial).asRequired("Campo requerido").bind(Material::getNombre,
-				Material::setNombre);
-		validatorMaterial.forField(cantidadMaterial).asRequired("Campo requerido").withNullRepresentation("")
-		.withConverter(new StringToIntegerConverter("formato numerico 1"))
-		.bind(Material::getCantidad, Material::setCantidad);
-		/*FIN MATERIAL*/
-		
-		/*MEDIOS DE CULTIVO*/
-		validatorMc.forField(codigoMedioCultivo).asRequired("Campo requerido").bind(MedioCultivo::getCodigo,
-				MedioCultivo::setCodigo);
-
-		validatorMc.forField(nombreMedioCultivo).asRequired("Campo requerido").bind(MedioCultivo::getNombre,
-				MedioCultivo::setNombre);
-
-		validatorMc.forField(entradaMedioCultivo).asRequired("Campo requerido").withNullRepresentation("")
-				.withConverter(new StringToFloatConverter("formato decimal 0.00"))
-				.bind(MedioCultivo::getEntrada, MedioCultivo::setEntrada);
-
-		validatorMc.forField(gastoMedioCultivo).asRequired("Campo requerido").withNullRepresentation("")
-				.withConverter(new StringToFloatConverter("formato decimal 0.00"))
-				.bind(MedioCultivo::getGasto, MedioCultivo::setGasto);
-		
-		validatorMc.forField(cmbUnidadMedioCultivo).asRequired("Campo requerido")
-		.bind(MedioCultivo::getUnidad, MedioCultivo::setUnidad);
-
-		validatorMc.forField(fechaCaducidadMedioCultivo).asRequired("Campo requerido")
-				.bind(MedioCultivo::getFechaCaducidad, MedioCultivo::setFechaCaducidad);
-		/*FIN MEDIOS DE CULTIVO*/
-
-	}
-
-	private void calcularSaldo() {
-		entradaReactivo.addValueChangeListener(e -> {
-			float entrada, gasto, saldo;
-			
-			DecimalFormatSymbols separadoresPersonalizados = new DecimalFormatSymbols();
-			separadoresPersonalizados.setDecimalSeparator('.');
-			
-			DecimalFormat format = new DecimalFormat("#0.00;-#",separadoresPersonalizados);
-			
-			if(!entradaReactivo.isEmpty()) 
-				entrada = Float.valueOf(entradaReactivo.getValue());
-			else
-				entrada = 0;
-			
-			if(!gastoRectivo.isEmpty()) 
-				gasto = Float.valueOf(gastoRectivo.getValue());
-			else
-				gasto = 0;
-			
-			saldo = entrada - gasto;
-			format.format(saldo);
-			saldoRectivo.setValue(format.format(saldo));
-			
-		});
-
-		gastoRectivo.addValueChangeListener(e -> {
-			float entrada, gasto, saldo;
-			
-			DecimalFormatSymbols separadoresPersonalizados = new DecimalFormatSymbols();
-			separadoresPersonalizados.setDecimalSeparator('.');
-						
-			DecimalFormat format = new DecimalFormat("#0.00;-#",separadoresPersonalizados);
-			
-			if(!entradaReactivo.isEmpty()) 
-				entrada = Float.valueOf(entradaReactivo.getValue());
-			else
-				entrada = 0;
-			
-			if(!gastoRectivo.isEmpty()) 
-				gasto = Float.valueOf(gastoRectivo.getValue());
-			else
-				gasto = 0;
-			 
-			saldo = entrada - gasto;
-			
-			saldoRectivo.setValue(format.format(saldo));
-		});
-		
-		//MEDIOS DE CULTIVO
-		entradaMedioCultivo.addValueChangeListener(e -> {
-			float entrada, gasto, saldo;
-			
-			DecimalFormatSymbols separadoresPersonalizados = new DecimalFormatSymbols();
-			separadoresPersonalizados.setDecimalSeparator('.');
-			
-			DecimalFormat format = new DecimalFormat("#0.00;-#",separadoresPersonalizados);
-			
-			if(!entradaMedioCultivo.isEmpty()) 
-				entrada = Float.valueOf(entradaMedioCultivo.getValue());
-			else
-				entrada = 0;
-			
-			if(!gastoMedioCultivo.isEmpty()) 
-				gasto = Float.valueOf(gastoMedioCultivo.getValue());
-			else
-				gasto = 0;
-			
-			saldo = entrada - gasto;
-			format.format(saldo);
-			saldoMedioCultivo.setValue(format.format(saldo));
-			
-		});
-
-		gastoMedioCultivo.addValueChangeListener(e -> {
-			float entrada, gasto, saldo;
-			
-			DecimalFormatSymbols separadoresPersonalizados = new DecimalFormatSymbols();
-			separadoresPersonalizados.setDecimalSeparator('.');
-						
-			DecimalFormat format = new DecimalFormat("#0.00;-#",separadoresPersonalizados);
-			
-			if(!entradaMedioCultivo.isEmpty()) 
-				entrada = Float.valueOf(entradaMedioCultivo.getValue());
-			else
-				entrada = 0;
-			
-			if(!gastoMedioCultivo.isEmpty()) 
-				gasto = Float.valueOf(gastoMedioCultivo.getValue());
-			else
-				gasto = 0;
-			 
-			saldo = entrada - gasto;
-			
-			saldoMedioCultivo.setValue(format.format(saldo));
-		});
-
-	}
-
-	private void buildUser() {
-		/*
-		 * cedula.addValueChangeListener(e ->{ clave.setValue(e.getValue());
-		 * 
-		 * if(!nombre_uno.getValue().isEmpty() && nombre_uno.getValue().trim().length()
-		 * >=1) { varNombreUno = nombre_uno.getValue().substring(0,1); }else {
-		 * varNombreUno = ""; }
-		 * 
-		 * if(!cedula.getValue().isEmpty() && cedula.getValue().length() >=4) {
-		 * varCedula = cedula.getValue().substring(cedula.getValue().trim().length() - 4
-		 * , cedula.getValue().trim().length());//4 ULTIMOS DÍGITOS DE CEDULA }else {
-		 * varCedula = ""; }
-		 * 
-		 * varApellido = apellido_paterno.getValue().trim().replace(" ", "");
-		 * 
-		 * nombre_usuario.setValue(varNombreUno+varApellido+varCedula); });
-		 * 
-		 * apellido_paterno.addValueChangeListener(e->{
-		 * if(!nombre_uno.getValue().isEmpty() && nombre_uno.getValue().trim().length()
-		 * >=1) { varNombreUno = nombre_uno.getValue().substring(0,1); }else {
-		 * varNombreUno = ""; }
-		 * 
-		 * if(!cedula.getValue().isEmpty() && cedula.getValue().length() >=4) {
-		 * varCedula = cedula.getValue().substring(cedula.getValue().trim().length() - 4
-		 * , cedula.getValue().trim().length());//4 ULTIMOS DÍGITOS DE CEDULA }else {
-		 * varCedula = ""; }
-		 * 
-		 * varApellido = apellido_paterno.getValue().trim().replace(" ", "");;
-		 * 
-		 * nombre_usuario.setValue(varNombreUno+varApellido+varCedula); });
-		 * 
-		 * nombre_uno.addValueChangeListener(e->{ if(!nombre_uno.getValue().isEmpty() &&
-		 * nombre_uno.getValue().trim().length() >=1) { varNombreUno =
-		 * nombre_uno.getValue().substring(0,1); }else { varNombreUno = ""; }
-		 * 
-		 * if(!cedula.getValue().isEmpty() && cedula.getValue().length() >=4) {
-		 * varCedula = cedula.getValue().substring(cedula.getValue().trim().length() - 4
-		 * , cedula.getValue().trim().length());//4 ULTIMOS DÍGITOS DE CEDULA }else {
-		 * varCedula = ""; }
-		 * 
-		 * varApellido = apellido_paterno.getValue().trim().replace(" ", "");;
-		 * 
-		 * nombre_usuario.setValue(varNombreUno+varApellido+varCedula); });
-		 */
-	}
-
 }
