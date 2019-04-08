@@ -30,6 +30,7 @@ import models.Componente;
 import models.Equipo;
 import models.Material;
 import models.Trazabilidad;
+import models.TrazabilidadEquipo;
 import models.TrazabilidadMedioCultivo;
 import models.TrazabilidadReactivo;
 import utils.dialogWindow;
@@ -131,8 +132,9 @@ public class VwTrazabilidad extends Panel {
 	private TabSheet tabProcesosQuimicosPQ = new TabSheet();
 	//EQUIPOS
 	public VerticalLayout laboratorioEquipoLayoutPQ = new VerticalLayout();
-	public Grid<Equipo> gridEquipoPQ = new Grid<>();
-	public List<Equipo> listEquiposPQ = new ArrayList<>();
+	public Grid<TrazabilidadEquipo> gridEquipoPQ = new Grid<>();
+	public List<TrazabilidadEquipo> listEquiposPQ = new ArrayList<>();
+	public List<Componente> listComponenteEquipoPQ = new ArrayList<>();
 	//MATERIALES
 	public VerticalLayout laboratorioMaterialesLayoutPQ = new VerticalLayout();
 	public Grid<Material> gridMaterialPQ = new Grid<>();
@@ -150,8 +152,8 @@ public class VwTrazabilidad extends Panel {
 	private TabSheet tabMicrobiologiaMi = new TabSheet();
 	//EQUIPOS
 	public VerticalLayout laboratorioEquipoLayoutMi = new VerticalLayout();
-	public Grid<Equipo> gridEquipoMi = new Grid<>();
-	public List<Equipo> listEquiposMi = new ArrayList<>();
+	public Grid<TrazabilidadEquipo> gridEquipoMi = new Grid<>();
+	public List<TrazabilidadEquipo> listEquiposMi = new ArrayList<>();
 	//MATERIALES
 	public VerticalLayout laboratorioMaterialesLayoutMi = new VerticalLayout();
 	public Grid<Material> gridMaterialMi = new Grid<>();
@@ -173,8 +175,8 @@ public class VwTrazabilidad extends Panel {
 	private TabSheet tabAguasAG = new TabSheet();
 	//EQUIPOS
 	public VerticalLayout laboratorioEquipoLayoutAG = new VerticalLayout();
-	public Grid<Equipo> gridEquipoAG = new Grid<>();
-	public List<Equipo> listEquiposAG = new ArrayList<>();
+	public Grid<TrazabilidadEquipo> gridEquipoAG = new Grid<>();
+	public List<TrazabilidadEquipo> listEquiposAG = new ArrayList<>();
 	//MATERIALES
 	public VerticalLayout laboratorioMaterialesLayoutAG = new VerticalLayout();
 	public Grid<Material> gridMaterialAG = new Grid<>();
@@ -188,8 +190,8 @@ public class VwTrazabilidad extends Panel {
 	private TabSheet tabOperacionesUnitariasOU = new TabSheet();
 	//EQUIPOS
 	public VerticalLayout laboratorioEquipoLayoutOU = new VerticalLayout();
-	public Grid<Equipo> gridEquipoOU = new Grid<>();
-	public List<Equipo> listEquiposOU = new ArrayList<>();
+	public Grid<TrazabilidadEquipo> gridEquipoOU = new Grid<>();
+	public List<TrazabilidadEquipo> listEquiposOU = new ArrayList<>();
 	//MATERIALES
 	public VerticalLayout laboratorioMaterialesLayoutOU = new VerticalLayout();
 	public Grid<Material> gridMaterialOU = new Grid<>();
@@ -207,8 +209,8 @@ public class VwTrazabilidad extends Panel {
 	private TabSheet tabEcotoxicologiaEC = new TabSheet();
 	//EQUIPOS
 	public VerticalLayout laboratorioEquipoLayoutEC = new VerticalLayout();
-	public Grid<Equipo> gridEquipoEC = new Grid<>();
-	public List<Equipo> listEquiposEC = new ArrayList<>();
+	public Grid<TrazabilidadEquipo> gridEquipoEC = new Grid<>();
+	public List<TrazabilidadEquipo> listEquiposEC = new ArrayList<>();
 	//MATERIALES
 	public VerticalLayout laboratorioMaterialesLayoutEC = new VerticalLayout();
 	public Grid<Material> gridMaterialEC = new Grid<>();
@@ -251,7 +253,7 @@ public class VwTrazabilidad extends Panel {
 
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
-				buscarEnLab();
+				buscarEnLab(1);
 			}
 		});
 	
@@ -271,7 +273,7 @@ public class VwTrazabilidad extends Panel {
 			return lb;
 		}).setCaption("NOMBRE").setExpandRatio(0);
 
-		gridReactivoPQ.addColumn(Trazabilidad -> Trazabilidad.getGasto() + " " +Trazabilidad.getReactivo().getNombre().toLowerCase())
+		gridReactivoPQ.addColumn(Trazabilidad -> Trazabilidad.getGasto() + " " +Trazabilidad.getReactivo().getUnidad().getNombre().toLowerCase())
 		.setCaption("GASTO").setId("GASTO").setExpandRatio(0);
 		gridReactivoPQ.addComponentColumn(Reactivo -> {
 			
@@ -279,7 +281,7 @@ public class VwTrazabilidad extends Panel {
 			b2.addClickListener(clickb2 -> {
 				listReactivosPQ.remove(Reactivo); 
 				gridReactivoPQ.setItems(listReactivosPQ);
-				message.normalMessage("Reactivo eliminado");
+				//message.normalMessage("Reactivo eliminado");
 			});
 			b2.setStyleName(ValoTheme.BUTTON_DANGER);
 			b2.addStyleName(ValoTheme.BUTTON_SMALL);
@@ -291,45 +293,29 @@ public class VwTrazabilidad extends Panel {
 			hl.addComponents(b2);
 			return hl;
 			
-		}).setCaption("Opciones");
+		}).setCaption("Opciones"); 
 
 		gridReactivoPQ.setWidth("100%");
+		gridReactivoPQ.setHeight("150px");
 		gridReactivoPQ.setSelectionMode(SelectionMode.NONE);
 
 		laboratorioReactivoLayoutPQ.addComponents(gridReactivoPQ); 
 		laboratorioReactivoLayoutPQ.setMargin(false);
 		
 		//EQUIPOS
-		gridEquipoPQ.addComponentColumn(Equipo -> {
+		gridEquipoPQ.setRowHeight(45.00);
+		gridEquipoPQ.addComponentColumn(Trazabilidad -> {
 			Label lb = new Label("");
-			lb.setValue(Equipo.getNombre());
+			lb.setValue(Trazabilidad.getEquipo().getNombre());
 			lb.setSizeFull();
 			return lb;
 		}).setCaption("NOMBRE").setExpandRatio(0);
 
 		gridEquipoPQ.addComponentColumn(Equipo -> {
-			Label lb = new Label();
-			lb.setContentMode(ContentMode.HTML);
-			String comp = "";
-			Iterator<Componente> iterator = ComponenteController.getAllComponentByEquipo(Equipo.getIdEquipo()).iterator();
-			while(iterator.hasNext()) {
-				Componente c = iterator.next();
-				comp = comp + c.getNombre() + ", ";
-			}
-			lb.setValue("<font size='1'>"+comp+"</font>");
-
-			lb.setSizeFull();
-			return lb;
-		}).setCaption("COMPONENTES").setExpandRatio(0);
-
-		gridEquipoPQ.addComponentColumn(Equipo -> {
 			Button b2 = new Button("Quitar");
 			b2.addClickListener(clickb2 -> {
-				/*listEquiposPQ.remove(Equipo); 
+				listEquiposPQ.remove(Equipo); 
 				gridEquipoPQ.setItems(listEquiposPQ);
-				Equipo.setEstado(0); 
-				EquipoController.update(Equipo);
-				message.normalMessage("Reactivo eliminado");*/
 			});
 			b2.setStyleName(ValoTheme.BUTTON_DANGER);
 			b2.addStyleName(ValoTheme.BUTTON_SMALL);
@@ -343,6 +329,7 @@ public class VwTrazabilidad extends Panel {
 		}).setCaption("Opciones");
 
 		gridEquipoPQ.setWidth("100%");
+		gridEquipoPQ.setHeight("150px");
 		gridEquipoPQ.setSelectionMode(SelectionMode.NONE);
 
 
@@ -350,6 +337,7 @@ public class VwTrazabilidad extends Panel {
 		laboratorioEquipoLayoutPQ.setMargin(false);
 		
 		// **MATERIAL**//
+		gridMaterialPQ.setRowHeight(45.00);
 		gridMaterialPQ.addComponentColumn(Material -> {
 			Label lb = new Label();
 			lb.setValue(Material.getNombre());
@@ -363,12 +351,8 @@ public class VwTrazabilidad extends Panel {
 
 			Button b2 = new Button("Quitar");
 			b2.addClickListener(clickb2 -> {
-				/* listMaterialesPQ.remove(Material); 
-						 gridMaterialPQ.setItems(listMaterialesPQ);
-						 Material.setEstado(0); 
-						 MaterialController.update(Material);
-
-						 message.normalMessage("Material eliminado");*/
+				listMaterialesPQ.remove(Material); 
+				gridMaterialPQ.setItems(listMaterialesPQ);
 			});
 			b2.setStyleName(ValoTheme.BUTTON_DANGER);
 			b2.addStyleName(ValoTheme.BUTTON_SMALL);
@@ -382,6 +366,7 @@ public class VwTrazabilidad extends Panel {
 		}).setCaption("Opciones");
 
 		gridMaterialPQ.setWidth("100%");
+		gridMaterialPQ.setHeight("150px");
 		gridMaterialPQ.setSelectionMode(SelectionMode.NONE);
 
 		laboratorioMaterialesLayoutPQ.addComponents(gridMaterialPQ);
@@ -405,7 +390,7 @@ public class VwTrazabilidad extends Panel {
 
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
-				//BUSCAR REACTIVO
+				buscarEnLab(2);
 			}
 		});
 	
@@ -415,19 +400,18 @@ public class VwTrazabilidad extends Panel {
 		tabMicrobiologiaMi.addTab(laboratorioReactivoLayoutMi, "Reactivos", new ThemeResource("images/quimica.png"));
 		tabMicrobiologiaMi.addTab(laboratorioEquipoLayoutMi, "Equipos", new ThemeResource("images/microscopio.png"));
 		tabMicrobiologiaMi.addTab(laboratorioMaterialesLayoutMi, "Materiales", new ThemeResource("images/mortero.png"));
-		tabMicrobiologiaMi.addTab(laboratorioMedioCultivoLayoutMi, "Materiales", new ThemeResource("images/molecule.png"));
+		tabMicrobiologiaMi.addTab(laboratorioMedioCultivoLayoutMi, "M. Cultivo", new ThemeResource("images/molecule.png"));
 				
 		// REACTIVO 
-		
 		gridReactivoMi.setRowHeight(45.00);
 		gridReactivoMi.addComponentColumn(Trazabilidad -> {
 			Label lb = new Label();
 			lb.setValue(Trazabilidad.getReactivo().getNombre());
-			lb.setSizeFull();
+			lb.setSizeFull(); 
 			return lb;
 		}).setCaption("NOMBRE").setExpandRatio(0);
 
-		gridReactivoMi.addColumn(Trazabilidad -> Trazabilidad.getGasto() + " " +Trazabilidad.getReactivo().getNombre().toLowerCase())
+		gridReactivoMi.addColumn(Trazabilidad -> Trazabilidad.getGasto() + " " +Trazabilidad.getReactivo().getUnidad().getNombre().toLowerCase())
 		.setCaption("GASTO").setId("GASTO").setExpandRatio(0);
 		gridReactivoMi.addComponentColumn(Reactivo -> {
 			
@@ -435,7 +419,7 @@ public class VwTrazabilidad extends Panel {
 			b2.addClickListener(clickb2 -> {
 				listReactivosMi.remove(Reactivo); 
 				gridReactivoMi.setItems(listReactivosMi);
-				message.normalMessage("Reactivo eliminado");
+				//message.normalMessage("Reactivo eliminado");
 			});
 			b2.setStyleName(ValoTheme.BUTTON_DANGER);
 			b2.addStyleName(ValoTheme.BUTTON_SMALL);
@@ -450,42 +434,26 @@ public class VwTrazabilidad extends Panel {
 		}).setCaption("Opciones");
 
 		gridReactivoMi.setWidth("100%");
+		gridReactivoMi.setHeight("150px");
 		gridReactivoMi.setSelectionMode(SelectionMode.NONE);
 
 		laboratorioReactivoLayoutMi.addComponents(gridReactivoMi); 
 		laboratorioReactivoLayoutMi.setMargin(false);
 		
 		//EQUIPOS
-		gridEquipoMi.addComponentColumn(Equipo -> {
+		gridEquipoMi.setRowHeight(45.00);
+		gridEquipoMi.addComponentColumn(Trazabilidad -> {
 			Label lb = new Label("");
-			lb.setValue(Equipo.getNombre());
+			lb.setValue(Trazabilidad.getEquipo().getNombre());
 			lb.setSizeFull();
 			return lb;
 		}).setCaption("NOMBRE").setExpandRatio(0);
 
 		gridEquipoMi.addComponentColumn(Equipo -> {
-			Label lb = new Label();
-			lb.setContentMode(ContentMode.HTML);
-			String comp = "";
-			Iterator<Componente> iterator = ComponenteController.getAllComponentByEquipo(Equipo.getIdEquipo()).iterator();
-			while(iterator.hasNext()) {
-				Componente c = iterator.next();
-				comp = comp + c.getNombre() + ", ";
-			}
-			lb.setValue("<font size='1'>"+comp+"</font>");
-
-			lb.setSizeFull();
-			return lb;
-		}).setCaption("COMPONENTES").setExpandRatio(0);
-
-		gridEquipoMi.addComponentColumn(Equipo -> {
 			Button b2 = new Button("Quitar");
 			b2.addClickListener(clickb2 -> {
-				/*listEquiposPQ.remove(Equipo); 
-				gridEquipoPQ.setItems(listEquiposPQ);
-				Equipo.setEstado(0); 
-				EquipoController.update(Equipo);
-				message.normalMessage("Reactivo eliminado");*/
+				listEquiposMi.remove(Equipo); 
+				gridEquipoMi.setItems(listEquiposMi);
 			});
 			b2.setStyleName(ValoTheme.BUTTON_DANGER);
 			b2.addStyleName(ValoTheme.BUTTON_SMALL);
@@ -499,6 +467,7 @@ public class VwTrazabilidad extends Panel {
 		}).setCaption("Opciones");
 
 		gridEquipoMi.setWidth("100%");
+		gridEquipoMi.setHeight("150px");
 		gridEquipoMi.setSelectionMode(SelectionMode.NONE);
 
 
@@ -506,6 +475,7 @@ public class VwTrazabilidad extends Panel {
 		laboratorioEquipoLayoutMi.setMargin(false);
 		
 		// **MATERIAL**//
+		gridMaterialMi.setRowHeight(45.00);
 		gridMaterialMi.addComponentColumn(Material -> {
 			Label lb = new Label();
 			lb.setValue(Material.getNombre());
@@ -519,12 +489,8 @@ public class VwTrazabilidad extends Panel {
 
 			Button b2 = new Button("Quitar");
 			b2.addClickListener(clickb2 -> {
-				/* listMaterialesPQ.remove(Material); 
-						 gridMaterialPQ.setItems(listMaterialesPQ);
-						 Material.setEstado(0); 
-						 MaterialController.update(Material);
-
-						 message.normalMessage("Material eliminado");*/
+				listMaterialesMi.remove(Material); 
+				gridMaterialMi.setItems(listMaterialesMi);
 			});
 			b2.setStyleName(ValoTheme.BUTTON_DANGER);
 			b2.addStyleName(ValoTheme.BUTTON_SMALL);
@@ -538,6 +504,7 @@ public class VwTrazabilidad extends Panel {
 		}).setCaption("Opciones");
 
 		gridMaterialMi.setWidth("100%");
+		gridMaterialMi.setHeight("150px");
 		gridMaterialMi.setSelectionMode(SelectionMode.NONE);
 
 		laboratorioMaterialesLayoutMi.addComponents(gridMaterialMi);
@@ -560,7 +527,6 @@ public class VwTrazabilidad extends Panel {
 			b2.addClickListener(clickb2 -> {
 				listMediosCultivosMi.remove(Trazabilidad); 
 				gridMedioCultivoMi.setItems(listMediosCultivosMi);
-				//message.normalMessage("Medio de cultivo eliminado");
 			});
 			b2.setStyleName(ValoTheme.BUTTON_DANGER);
 			b2.addStyleName(ValoTheme.BUTTON_SMALL);
@@ -575,6 +541,7 @@ public class VwTrazabilidad extends Panel {
 		}).setCaption("Opciones");
 
 		gridMedioCultivoMi.setWidth("100%");
+		gridMedioCultivoMi.setHeight("150px");
 		gridMedioCultivoMi.setSelectionMode(SelectionMode.NONE);
 
 		laboratorioMedioCultivoLayoutMi.addComponents(gridMedioCultivoMi); 
@@ -598,7 +565,7 @@ public class VwTrazabilidad extends Panel {
 
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
-				//BUSCAR REACTIVO
+				buscarEnLab(4);
 			}
 		});
 	
@@ -618,7 +585,7 @@ public class VwTrazabilidad extends Panel {
 			return lb;
 		}).setCaption("NOMBRE").setExpandRatio(0);
 
-		gridReactivoAG.addColumn(Trazabilidad -> Trazabilidad.getGasto() + " " +Trazabilidad.getReactivo().getNombre().toLowerCase())
+		gridReactivoAG.addColumn(Trazabilidad -> Trazabilidad.getGasto() + " " +Trazabilidad.getReactivo().getUnidad().getNombre().toLowerCase())
 		.setCaption("GASTO").setId("GASTO").setExpandRatio(0);
 		gridReactivoAG.addComponentColumn(Reactivo -> {
 			
@@ -626,7 +593,6 @@ public class VwTrazabilidad extends Panel {
 			b2.addClickListener(clickb2 -> {
 				listReactivosAG.remove(Reactivo); 
 				gridReactivoAG.setItems(listReactivosAG);
-				message.normalMessage("Reactivo eliminado");
 			});
 			b2.setStyleName(ValoTheme.BUTTON_DANGER);
 			b2.addStyleName(ValoTheme.BUTTON_SMALL);
@@ -641,42 +607,26 @@ public class VwTrazabilidad extends Panel {
 		}).setCaption("Opciones");
 
 		gridReactivoAG.setWidth("100%");
+		gridReactivoAG.setHeight("150px");
 		gridReactivoAG.setSelectionMode(SelectionMode.NONE);
 
 		laboratorioReactivoLayoutAG.addComponents(gridReactivoAG); 
 		laboratorioReactivoLayoutAG.setMargin(false);
 		
 		//EQUIPOS
-		gridEquipoAG.addComponentColumn(Equipo -> {
+		gridEquipoAG.setRowHeight(45.00);
+		gridEquipoAG.addComponentColumn(Trazabilidad -> {
 			Label lb = new Label("");
-			lb.setValue(Equipo.getNombre());
+			lb.setValue(Trazabilidad.getEquipo().getNombre());
 			lb.setSizeFull();
 			return lb;
 		}).setCaption("NOMBRE").setExpandRatio(0);
 
 		gridEquipoAG.addComponentColumn(Equipo -> {
-			Label lb = new Label();
-			lb.setContentMode(ContentMode.HTML);
-			String comp = "";
-			Iterator<Componente> iterator = ComponenteController.getAllComponentByEquipo(Equipo.getIdEquipo()).iterator();
-			while(iterator.hasNext()) {
-				Componente c = iterator.next();
-				comp = comp + c.getNombre() + ", ";
-			}
-			lb.setValue("<font size='1'>"+comp+"</font>");
-
-			lb.setSizeFull();
-			return lb;
-		}).setCaption("COMPONENTES").setExpandRatio(0);
-
-		gridEquipoAG.addComponentColumn(Equipo -> {
 			Button b2 = new Button("Quitar");
 			b2.addClickListener(clickb2 -> {
-				/*listEquiposPQ.remove(Equipo); 
-				gridEquipoPQ.setItems(listEquiposPQ);
-				Equipo.setEstado(0); 
-				EquipoController.update(Equipo);
-				message.normalMessage("Reactivo eliminado");*/
+				listEquiposAG.remove(Equipo); 
+				gridEquipoAG.setItems(listEquiposAG);
 			});
 			b2.setStyleName(ValoTheme.BUTTON_DANGER);
 			b2.addStyleName(ValoTheme.BUTTON_SMALL);
@@ -690,6 +640,7 @@ public class VwTrazabilidad extends Panel {
 		}).setCaption("Opciones");
 
 		gridEquipoAG.setWidth("100%");
+		gridEquipoAG.setHeight("150px");
 		gridEquipoAG.setSelectionMode(SelectionMode.NONE);
 
 
@@ -697,11 +648,12 @@ public class VwTrazabilidad extends Panel {
 		laboratorioEquipoLayoutAG.setMargin(false);
 		
 		// **MATERIAL**//
+		gridMaterialAG.setRowHeight(45.00);
 		gridMaterialAG.addComponentColumn(Material -> {
 			Label lb = new Label();
 			lb.setValue(Material.getNombre());
 			lb.setSizeFull();
-			return lb;
+			return lb; 
 		}).setCaption("NOMBRE").setExpandRatio(0);
 
 		gridMaterialAG.addColumn(Material -> Material.getCapacidad()).setCaption("CAPACIDAD").setExpandRatio(0);
@@ -710,12 +662,8 @@ public class VwTrazabilidad extends Panel {
 
 			Button b2 = new Button("Quitar");
 			b2.addClickListener(clickb2 -> {
-				/* listMaterialesPQ.remove(Material); 
-						 gridMaterialPQ.setItems(listMaterialesPQ);
-						 Material.setEstado(0); 
-						 MaterialController.update(Material);
-
-						 message.normalMessage("Material eliminado");*/
+				listMaterialesAG.remove(Material); 
+				gridMaterialAG.setItems(listMaterialesAG);
 			});
 			b2.setStyleName(ValoTheme.BUTTON_DANGER);
 			b2.addStyleName(ValoTheme.BUTTON_SMALL);
@@ -729,6 +677,7 @@ public class VwTrazabilidad extends Panel {
 		}).setCaption("Opciones");
 
 		gridMaterialAG.setWidth("100%");
+		gridMaterialAG.setHeight("150px");
 		gridMaterialAG.setSelectionMode(SelectionMode.NONE);
 
 		laboratorioMaterialesLayoutAG.addComponents(gridMaterialAG);
@@ -752,7 +701,7 @@ public class VwTrazabilidad extends Panel {
 
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
-				//BUSCAR REACTIVO
+				buscarEnLab(3);
 			}
 		});
 	
@@ -763,18 +712,19 @@ public class VwTrazabilidad extends Panel {
 		tabOperacionesUnitariasOU.addTab(laboratorioMaterialesLayoutOU, "Materiales", new ThemeResource("images/mortero.png"));
 		
 		//EQUIPOS
-		gridEquipoOU.addComponentColumn(Equipo -> {
+		gridEquipoOU.setRowHeight(45.00);
+		gridEquipoOU.addComponentColumn(Trazabilidad -> {
 			Label lb = new Label("");
-			lb.setValue(Equipo.getNombre());
+			lb.setValue(Trazabilidad.getEquipo().getNombre());
 			lb.setSizeFull();
 			return lb;
 		}).setCaption("NOMBRE").setExpandRatio(0);
 
-		gridEquipoOU.addComponentColumn(Equipo -> {
+		gridEquipoOU.addComponentColumn(Trazabilidad -> {
 			Label lb = new Label();
 			lb.setContentMode(ContentMode.HTML);
 			String comp = "";
-			Iterator<Componente> iterator = ComponenteController.getAllComponentByEquipo(Equipo.getIdEquipo()).iterator();
+			Iterator<Componente> iterator = Trazabilidad.getComponentes().iterator();
 			while(iterator.hasNext()) {
 				Componente c = iterator.next();
 				comp = comp + c.getNombre() + ", ";
@@ -785,14 +735,11 @@ public class VwTrazabilidad extends Panel {
 			return lb;
 		}).setCaption("COMPONENTES").setExpandRatio(0);
 
-		gridEquipoOU.addComponentColumn(Equipo -> {
+		gridEquipoOU.addComponentColumn(Trazabilidad -> {
 			Button b2 = new Button("Quitar");
 			b2.addClickListener(clickb2 -> {
-				/*listEquiposPQ.remove(Equipo); 
-				gridEquipoPQ.setItems(listEquiposPQ);
-				Equipo.setEstado(0); 
-				EquipoController.update(Equipo);
-				message.normalMessage("Reactivo eliminado");*/
+				listEquiposOU.remove(Trazabilidad); 
+				gridEquipoOU.setItems(listEquiposOU);
 			});
 			b2.setStyleName(ValoTheme.BUTTON_DANGER);
 			b2.addStyleName(ValoTheme.BUTTON_SMALL);
@@ -806,6 +753,7 @@ public class VwTrazabilidad extends Panel {
 		}).setCaption("Opciones");
 
 		gridEquipoOU.setWidth("100%");
+		gridEquipoOU.setHeight("150px");
 		gridEquipoOU.setSelectionMode(SelectionMode.NONE);
 
 
@@ -813,6 +761,7 @@ public class VwTrazabilidad extends Panel {
 		laboratorioEquipoLayoutOU.setMargin(false);
 		
 		// **MATERIAL**//
+		gridMaterialOU.setRowHeight(45.00);
 		gridMaterialOU.addComponentColumn(Material -> {
 			Label lb = new Label();
 			lb.setValue(Material.getNombre());
@@ -826,12 +775,8 @@ public class VwTrazabilidad extends Panel {
 
 			Button b2 = new Button("Quitar");
 			b2.addClickListener(clickb2 -> {
-				/* listMaterialesPQ.remove(Material); 
-						 gridMaterialPQ.setItems(listMaterialesPQ);
-						 Material.setEstado(0); 
-						 MaterialController.update(Material);
-
-						 message.normalMessage("Material eliminado");*/
+				listMaterialesOU.remove(Material); 
+				gridMaterialOU.setItems(listMaterialesOU);
 			});
 			b2.setStyleName(ValoTheme.BUTTON_DANGER);
 			b2.addStyleName(ValoTheme.BUTTON_SMALL);
@@ -845,6 +790,7 @@ public class VwTrazabilidad extends Panel {
 		}).setCaption("Opciones");
 
 		gridMaterialOU.setWidth("100%");
+		gridMaterialOU.setHeight("150px");
 		gridMaterialOU.setSelectionMode(SelectionMode.NONE);
 
 		laboratorioMaterialesLayoutOU.addComponents(gridMaterialOU);
@@ -868,7 +814,7 @@ public class VwTrazabilidad extends Panel {
 
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
-				//BUSCAR REACTIVO
+				buscarEnLab(5);
 			}
 		});
 	
@@ -888,7 +834,7 @@ public class VwTrazabilidad extends Panel {
 			return lb;
 		}).setCaption("NOMBRE").setExpandRatio(0);
 
-		gridReactivoEC.addColumn(Trazabilidad -> Trazabilidad.getGasto() + " " +Trazabilidad.getReactivo().getNombre().toLowerCase())
+		gridReactivoEC.addColumn(Trazabilidad -> Trazabilidad.getGasto() + " " +Trazabilidad.getReactivo().getUnidad().getNombre().toLowerCase())
 		.setCaption("GASTO").setId("GASTO").setExpandRatio(0);
 		gridReactivoEC.addComponentColumn(Reactivo -> {
 			
@@ -896,7 +842,7 @@ public class VwTrazabilidad extends Panel {
 			b2.addClickListener(clickb2 -> {
 				listReactivosEC.remove(Reactivo); 
 				gridReactivoEC.setItems(listReactivosEC);
-				message.normalMessage("Reactivo eliminado");
+				//message.normalMessage("Reactivo eliminado");
 			});
 			b2.setStyleName(ValoTheme.BUTTON_DANGER);
 			b2.addStyleName(ValoTheme.BUTTON_SMALL);
@@ -911,42 +857,26 @@ public class VwTrazabilidad extends Panel {
 		}).setCaption("Opciones");
 
 		gridReactivoEC.setWidth("100%");
+		gridReactivoEC.setHeight("150px");
 		gridReactivoEC.setSelectionMode(SelectionMode.NONE);
 
 		laboratorioReactivoLayoutEC.addComponents(gridReactivoEC); 
 		laboratorioReactivoLayoutEC.setMargin(false);
 		
 		//EQUIPOS
-		gridEquipoEC.addComponentColumn(Equipo -> {
+		gridEquipoEC.setRowHeight(45.00);
+		gridEquipoEC.addComponentColumn(Trazabilidad -> {
 			Label lb = new Label("");
-			lb.setValue(Equipo.getNombre());
+			lb.setValue(Trazabilidad.getEquipo().getNombre());
 			lb.setSizeFull();
 			return lb;
 		}).setCaption("NOMBRE").setExpandRatio(0);
 
 		gridEquipoEC.addComponentColumn(Equipo -> {
-			Label lb = new Label();
-			lb.setContentMode(ContentMode.HTML);
-			String comp = "";
-			Iterator<Componente> iterator = ComponenteController.getAllComponentByEquipo(Equipo.getIdEquipo()).iterator();
-			while(iterator.hasNext()) {
-				Componente c = iterator.next();
-				comp = comp + c.getNombre() + ", ";
-			}
-			lb.setValue("<font size='1'>"+comp+"</font>");
-
-			lb.setSizeFull();
-			return lb;
-		}).setCaption("COMPONENTES").setExpandRatio(0);
-
-		gridEquipoEC.addComponentColumn(Equipo -> {
 			Button b2 = new Button("Quitar");
 			b2.addClickListener(clickb2 -> {
-				/*listEquiposPQ.remove(Equipo); 
-				gridEquipoPQ.setItems(listEquiposPQ);
-				Equipo.setEstado(0); 
-				EquipoController.update(Equipo);
-				message.normalMessage("Reactivo eliminado");*/
+				listEquiposEC.remove(Equipo); 
+				gridEquipoEC.setItems(listEquiposEC);
 			});
 			b2.setStyleName(ValoTheme.BUTTON_DANGER);
 			b2.addStyleName(ValoTheme.BUTTON_SMALL);
@@ -960,6 +890,7 @@ public class VwTrazabilidad extends Panel {
 		}).setCaption("Opciones");
 
 		gridEquipoEC.setWidth("100%");
+		gridEquipoEC.setHeight("150px");
 		gridEquipoEC.setSelectionMode(SelectionMode.NONE);
 
 
@@ -967,6 +898,7 @@ public class VwTrazabilidad extends Panel {
 		laboratorioEquipoLayoutEC.setMargin(false);
 		
 		// **MATERIAL**//
+		gridMaterialEC.setRowHeight(45.00);
 		gridMaterialEC.addComponentColumn(Material -> {
 			Label lb = new Label();
 			lb.setValue(Material.getNombre());
@@ -980,12 +912,8 @@ public class VwTrazabilidad extends Panel {
 
 			Button b2 = new Button("Quitar");
 			b2.addClickListener(clickb2 -> {
-				/* listMaterialesPQ.remove(Material); 
-						 gridMaterialPQ.setItems(listMaterialesPQ);
-						 Material.setEstado(0); 
-						 MaterialController.update(Material);
-
-						 message.normalMessage("Material eliminado");*/
+				listMaterialesEC.remove(Material); 
+				gridMaterialEC.setItems(listMaterialesEC);
 			});
 			b2.setStyleName(ValoTheme.BUTTON_DANGER);
 			b2.addStyleName(ValoTheme.BUTTON_SMALL);
@@ -999,6 +927,7 @@ public class VwTrazabilidad extends Panel {
 		}).setCaption("Opciones");
 
 		gridMaterialEC.setWidth("100%");
+		gridMaterialEC.setHeight("150px");
 		gridMaterialEC.setSelectionMode(SelectionMode.NONE);
 
 		laboratorioMaterialesLayoutEC.addComponents(gridMaterialEC);
@@ -1081,11 +1010,11 @@ public class VwTrazabilidad extends Panel {
 		UI.getCurrent().addWindow(dialogReactivoWindow);
 	}
 	
-	public void buscarEnLab() {
+	public void buscarEnLab(int lab) {
 		dialogWindow dialogReactivoWindow = new dialogWindow("Busqueda", VaadinIcons.ARROW_RIGHT);
 		dialogReactivoWindow.setResponsive(true);
-		dialogReactivoWindow.setWidth("50%");
-		dialogReactivoWindow.addComponentBody(new VwLaboratoriosBuscar());
+		dialogReactivoWindow.setWidth("60%");
+		dialogReactivoWindow.addComponentBody(new VwLaboratoriosBuscar(VwTrazabilidad.this, lab));
 		UI.getCurrent().addWindow(dialogReactivoWindow);
 	}
 	

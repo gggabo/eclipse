@@ -1,13 +1,18 @@
 package models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -39,6 +44,9 @@ public class Componente implements Serializable {
 	
 	@Column(name = "ESTADO")
 	private int estado;
+	
+	@ManyToMany(mappedBy = "componentes", cascade = {CascadeType.ALL }, fetch = FetchType.EAGER)
+	private List<TrazabilidadEquipo> trazabilidadEquipos = new ArrayList<>();
 	
 	public Componente() {
 		// TODO Auto-generated constructor stub
@@ -112,6 +120,16 @@ public class Componente implements Serializable {
 	public void setEstado(int estado) {
 		this.estado = estado;
 	}
+
+	public List<TrazabilidadEquipo> getTrazabilidadEquipos() {
+		return trazabilidadEquipos;
+	}
+
+	public void setTrazabilidadEquipos(List<TrazabilidadEquipo> trazabilidadEquipos) {
+		this.trazabilidadEquipos = trazabilidadEquipos;
+	}
+
+
 
 	@Override
 	public int hashCode() {

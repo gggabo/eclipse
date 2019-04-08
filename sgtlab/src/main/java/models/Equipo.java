@@ -59,8 +59,8 @@ public class Equipo implements Serializable {
 	@OneToMany(mappedBy = "equipo", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Componente>  componentes = new ArrayList<>();
 	
-	@ManyToMany(mappedBy = "equipos", cascade = {CascadeType.ALL }, fetch = FetchType.EAGER)
-	private List<Trazabilidad> trazabilidades = new ArrayList<>();
+	@OneToMany(mappedBy = "equipo", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<TrazabilidadEquipo>  trazabilidadEquipos = new ArrayList<>();
 			
 	@Column(name = "ESTADO")
 	private int estado;

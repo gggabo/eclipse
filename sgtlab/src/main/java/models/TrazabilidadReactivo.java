@@ -73,12 +73,13 @@ public class TrazabilidadReactivo implements Serializable {
 		this.gasto = gasto;
 	}
 
+	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + Float.floatToIntBits(gasto);
-		result = prime * result + (int) (idTrazabilidadReactivo ^ (idTrazabilidadReactivo >>> 32));
+		result = prime * result + ((reactivo == null) ? 0 : reactivo.hashCode());
 		return result;
 	}
 
@@ -91,9 +92,10 @@ public class TrazabilidadReactivo implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		TrazabilidadReactivo other = (TrazabilidadReactivo) obj;
-		if (Float.floatToIntBits(gasto) != Float.floatToIntBits(other.gasto))
-			return false;
-		if (idTrazabilidadReactivo != other.idTrazabilidadReactivo)
+		if (reactivo == null) {
+			if (other.reactivo != null)
+				return false;
+		} else if (!reactivo.equals(other.reactivo))
 			return false;
 		return true;
 	}

@@ -5,10 +5,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+
 import org.vaadin.ui.NumberField;
 
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Button;
@@ -30,6 +31,7 @@ import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.TwinColSelect;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.LocalDateRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -40,6 +42,8 @@ import controllers.LabotatorioController;
 import controllers.MaterialController;
 import controllers.MedioCultivoController;
 import controllers.ReactivoController;
+import de.steinwedel.messagebox.ButtonOption;
+import de.steinwedel.messagebox.MessageBox;
 import models.Componente;
 import models.Equipo;
 import models.Laboratorio;
@@ -47,6 +51,8 @@ import models.Material;
 import models.MedioCultivo;
 import models.Reactivo;
 import models.Rol;
+import models.TrazabilidadEquipo;
+import models.TrazabilidadReactivo;
 import models.Unidad;
 import models.Usuario;
 import utils.UploadImage;
@@ -55,19 +61,32 @@ import utils.uploadXls;
 
 public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable {
 	private static final long serialVersionUID = 1L;
+	private VwTrazabilidad vwtrazabilidad;
+	int laboratorio;
 
-	public VwLaboratoriosBuscar() {
+	public VwLaboratoriosBuscar(VwTrazabilidad vwtrazabilidad, int lab) {
+		this.vwtrazabilidad = vwtrazabilidad;
+		laboratorio = lab;
 		addComponent(buildUI());
 		setCss();
 		setPlaceHolder();
 		setMaxLengthText();
-		//addValidation();
 		cargarDatosPrincipales();
-		//buildUser();
 		initComponents();
-		
-		//addStyleName("custom-margin-layout");
 		setMargin(false);
+
+		if(laboratorio == 1) { //PROCESOS QUIMICOS
+			cmbLaboratorio.setSelectedItem(listLab.get(0));
+		}else if(laboratorio == 2) { // MICROBIOLOGIA
+			cmbLaboratorio.setSelectedItem(listLab.get(1));
+		}else if(laboratorio == 3) { // OPERACIONES UNITARIAS
+			cmbLaboratorio.setSelectedItem(listLab.get(2));
+		}else if(laboratorio == 4) { // ANALISIS DE AGUAS
+			cmbLaboratorio.setSelectedItem(listLab.get(3));
+		}else if(laboratorio == 5) { // ECOTOXICOLOGIA
+			cmbLaboratorio.setSelectedItem(listLab.get(4));
+		}
+		
 	}
 
 	public VerticalLayout mainLayou = new VerticalLayout();
@@ -194,6 +213,7 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 	public Grid<Usuario> gridUsuarioImport = new Grid<>();
 	public List<Usuario> listUsuariosImport = new ArrayList<>();
 
+	@SuppressWarnings("unchecked")
 	public Component buildUI() {
 
 		cmbLaboratorio.setWidth("100%");
@@ -246,34 +266,36 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 		toolbar.addComponents(cmbLaboratorio, btnAddLaboratorio);
 		toolbar.setVisible(false);
 
-		tabSheet.addTab(laboratorioReactivoLayout, "Reactivos", new ThemeResource("images/quimica.png"));
-		tabSheet.addTab(laboratorioEquipoLayout, "Equipos", new ThemeResource("images/microscopio.png"));
-		tabSheet.addTab(laboratorioMaterialesLayout, "Materiales", new ThemeResource("images/mortero.png"));
-		tabSheet.addTab(laboratorioMedioCultivoLayout, "M. Cultivo", new ThemeResource("images/molecule.png"));
-
+		if(laboratorio == 1) { //PROCESOS QUIMICOS
+			tabSheet.addTab(laboratorioReactivoLayout, "Reactivos", new ThemeResource("images/quimica.png"));
+			tabSheet.addTab(laboratorioEquipoLayout, "Equipos", new ThemeResource("images/microscopio.png"));
+			tabSheet.addTab(laboratorioMaterialesLayout, "Materiales", new ThemeResource("images/mortero.png"));
+			//tabSheet.addTab(laboratorioMedioCultivoLayout, "M. Cultivo", new ThemeResource("images/molecule.png"));
+		}else if(laboratorio == 2) { // MICROBIOLOGIA
+			tabSheet.addTab(laboratorioReactivoLayout, "Reactivos", new ThemeResource("images/quimica.png"));
+			tabSheet.addTab(laboratorioEquipoLayout, "Equipos", new ThemeResource("images/microscopio.png"));
+			tabSheet.addTab(laboratorioMaterialesLayout, "Materiales", new ThemeResource("images/mortero.png"));
+			tabSheet.addTab(laboratorioMedioCultivoLayout, "M. Cultivo", new ThemeResource("images/molecule.png"));
+		}else if(laboratorio == 3) { // OPERACIONES UNITARIAS
+			//tabSheet.addTab(laboratorioReactivoLayout, "Reactivos", new ThemeResource("images/quimica.png"));
+			tabSheet.addTab(laboratorioEquipoLayout, "Equipos", new ThemeResource("images/microscopio.png"));
+			tabSheet.addTab(laboratorioMaterialesLayout, "Materiales", new ThemeResource("images/mortero.png"));
+			//tabSheet.addTab(laboratorioMedioCultivoLayout, "M. Cultivo", new ThemeResource("images/molecule.png"));
+		}else if(laboratorio == 4) { // ANALISIS DE AGUAS
+			tabSheet.addTab(laboratorioReactivoLayout, "Reactivos", new ThemeResource("images/quimica.png"));
+			tabSheet.addTab(laboratorioEquipoLayout, "Equipos", new ThemeResource("images/microscopio.png"));
+			tabSheet.addTab(laboratorioMaterialesLayout, "Materiales", new ThemeResource("images/mortero.png"));
+			//tabSheet.addTab(laboratorioMedioCultivoLayout, "M. Cultivo", new ThemeResource("images/molecule.png"));
+		}else if(laboratorio == 5) { // ECOTOXICOLOGIA
+			tabSheet.addTab(laboratorioReactivoLayout, "Reactivos", new ThemeResource("images/quimica.png"));
+			tabSheet.addTab(laboratorioEquipoLayout, "Equipos", new ThemeResource("images/microscopio.png"));
+			tabSheet.addTab(laboratorioMaterialesLayout, "Materiales", new ThemeResource("images/mortero.png"));
+			//tabSheet.addTab(laboratorioMedioCultivoLayout, "M. Cultivo", new ThemeResource("images/molecule.png"));
+		}
+		
+		
+		
 		// **REACTIVO**// 
-		toolbarReactivo.setWidth("100%");
-		toolbarReactivo.setSpacing(true);
-		toolbarReactivo.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
-		toolbarReactivo.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
-		toolbarReactivo.setResponsive(true);
-		toolbarReactivo.addComponents(mainMenuRectivo);
-
-		mainMenuRectivo.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
-		mainMenuRectivo.addStyleName(ValoTheme.MENUBAR_SMALL);
-		mainMenuRectivo.setResponsive(true);
-
-		mainMenuRectivo.addItem("Nuevo reactivo", VaadinIcons.PLUS_CIRCLE, new Command() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void menuSelected(MenuItem selectedItem) {
-				/*codigoReactivo.setReadOnly(false);
-				newEditReactivo(null);
-				reactivoAction = "guardar";*/
-			}
-		});
-
 		filterReactivotxt.setPlaceholder("Buscar por codigo o nombre");
 		filterReactivotxt.setValueChangeMode(ValueChangeMode.LAZY);
 		filterReactivotxt.setSizeFull();
@@ -303,10 +325,6 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 			return lb;
 		}).setCaption("NOMBRE").setExpandRatio(0);
 
-		gridReactivo.addColumn(Reactivo -> Reactivo.getEntrada() + " " + Reactivo.getUnidad().getNombre().toLowerCase())
-				.setCaption("ENTRADA").setId("ENTRADA").setExpandRatio(0);
-		gridReactivo.addColumn(Reactivo -> Reactivo.getGasto() + " " + Reactivo.getUnidad().getNombre().toLowerCase())
-				.setCaption("GASTO").setId("GASTO").setExpandRatio(0);
 		gridReactivo.addColumn(Reactivo -> Reactivo.getSaldo() + " " + Reactivo.getUnidad().getNombre().toLowerCase())
 				.setCaption("SALDO").setId("SALDO").setExpandRatio(0);
 		gridReactivo.addColumn(Reactivo -> Reactivo.getFechaCaducidad(), new LocalDateRenderer("dd/MM/yyyy"))
@@ -314,46 +332,145 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 
 		gridReactivo.addComponentColumn(Reactivo -> {
 
-			Button b = new Button("Editar");
+			Button b = new Button("Agregar");
 			b.addClickListener(clickb -> {
-
-				/*codigoReactivo.setValue(Reactivo.getCodigo());
-				codigoReactivo.setReadOnly(true);
-				nombreReactivo.setValue(Reactivo.getNombre());
-				entradaReactivo.setValue(String.valueOf(Reactivo.getEntrada()));
-				gastoRectivo.setValue(String.valueOf(Reactivo.getGasto()));
-				saldoRectivo.setValue(String.valueOf(Reactivo.getSaldo()));
-				cmbUnidad.setValue(Reactivo.getUnidad());
-				fechaCaducidadRectivo.setValue(Reactivo.getFechaCaducidad());
-
-				reactivoAction = "modificar";*/
+				
+				TrazabilidadReactivo tr = new TrazabilidadReactivo();
+				tr.setReactivo(Reactivo);
+				
+				if(laboratorio == 1) {// PROCESOS QUIMICOS
+					if(!vwtrazabilidad.listReactivosPQ.contains(tr)) {
+						NumberField  txt = new NumberField("Cantidad de reactivo a usar");
+						txt.setLocale(Locale.FRANCE);
+						txt.setDecimalPrecision(2);
+						txt.setDecimalSeparator('.');
+						txt.setMinimumFractionDigits(2);
+						
+						MessageBox.createQuestion()
+						.withCaption("Información")
+						.withCancelButton(ButtonOption.caption("Cancelar"))
+			    		.withMessage(txt)
+			    		.withOkButton(() -> {
+			    			float gasto, saldo;
+			    			gasto = Float.parseFloat(txt.getValue());
+			    			saldo = Reactivo.getSaldo();
+			    			if(gasto > saldo) {
+			    				message.warringMessage("Gasto excede el saldo del reactivo");
+			    			}else {
+			    				tr.setGasto(Float.parseFloat(txt.getValue()));
+				    			vwtrazabilidad.listReactivosPQ.add(tr);
+								vwtrazabilidad.gridReactivoPQ.setItems(vwtrazabilidad.listReactivosPQ);	
+			    			}
+			    			
+			    		},ButtonOption.caption("Aceptar"))
+			    		.open();
+					}else {
+						message.warringMessage("El registro ya se encuentra agregado");
+					}
+				}else if(laboratorio == 2) {//MICROBIOLOGIA
+					if(!vwtrazabilidad.listReactivosMi.contains(tr)) {
+						NumberField  txt = new NumberField("Cantidad de reactivo a usar");
+						txt.setLocale(Locale.FRANCE);
+						txt.setDecimalPrecision(2);
+						txt.setDecimalSeparator('.');
+						txt.setMinimumFractionDigits(2);
+						
+						MessageBox.createQuestion()
+						.withCaption("Información")
+						.withCancelButton(ButtonOption.caption("Cancelar"))
+			    		.withMessage(txt)
+			    		.withOkButton(() -> {
+			    			float gasto, saldo;
+			    			gasto = Float.parseFloat(txt.getValue());
+			    			saldo = Reactivo.getSaldo();
+			    			if(gasto > saldo) {
+			    				message.warringMessage("Gasto excede el saldo del reactivo");
+			    			}else {
+			    				tr.setGasto(Float.parseFloat(txt.getValue()));
+				    			vwtrazabilidad.listReactivosMi.add(tr);
+								vwtrazabilidad.gridReactivoMi.setItems(vwtrazabilidad.listReactivosMi);	
+			    			}
+			    			
+			    		},ButtonOption.caption("Aceptar"))
+			    		.open();
+					}else {
+						message.warringMessage("El registro ya se encuentra agregado");
+					}
+				}else if(laboratorio == 4) {//ANALISIS DE AGUAS
+					if(!vwtrazabilidad.listReactivosAG.contains(tr)) {
+						NumberField  txt = new NumberField("Cantidad de reactivo a usar");
+						txt.setLocale(Locale.FRANCE);
+						txt.setDecimalPrecision(2);
+						txt.setDecimalSeparator('.');
+						txt.setMinimumFractionDigits(2);
+						
+						MessageBox.createQuestion()
+						.withCaption("Información")
+						.withCancelButton(ButtonOption.caption("Cancelar"))
+			    		.withMessage(txt)
+			    		.withOkButton(() -> {
+			    			float gasto, saldo;
+			    			gasto = Float.parseFloat(txt.getValue());
+			    			saldo = Reactivo.getSaldo();
+			    			if(gasto > saldo) {
+			    				message.warringMessage("Gasto excede el saldo del reactivo");
+			    			}else {
+			    				tr.setGasto(Float.parseFloat(txt.getValue()));
+				    			vwtrazabilidad.listReactivosAG.add(tr);
+								vwtrazabilidad.gridReactivoAG.setItems(vwtrazabilidad.listReactivosAG);	
+			    			}
+			    			
+			    		},ButtonOption.caption("Aceptar"))
+			    		.open();
+					}else {
+						message.warringMessage("El registro ya se encuentra agregado");
+					}
+				}else if(laboratorio == 5) {//ECOTOXICOLOGIA
+					if(!vwtrazabilidad.listReactivosEC.contains(tr)) {
+						NumberField  txt = new NumberField("Cantidad de reactivo a usar");
+						txt.setLocale(Locale.FRANCE);
+						txt.setDecimalPrecision(2);
+						txt.setDecimalSeparator('.');
+						txt.setMinimumFractionDigits(2);
+						
+						MessageBox.createQuestion()
+						.withCaption("Información")
+						.withCancelButton(ButtonOption.caption("Cancelar"))
+			    		.withMessage(txt)
+			    		.withOkButton(() -> {
+			    			float gasto, saldo;
+			    			gasto = Float.parseFloat(txt.getValue());
+			    			saldo = Reactivo.getSaldo();
+			    			if(gasto > saldo) {
+			    				message.warringMessage("Gasto excede el saldo del reactivo");
+			    			}else {
+			    				tr.setGasto(Float.parseFloat(txt.getValue()));
+				    			vwtrazabilidad.listReactivosEC.add(tr);
+								vwtrazabilidad.gridReactivoEC.setItems(vwtrazabilidad.listReactivosEC);	
+			    			}
+			    			
+			    		},ButtonOption.caption("Aceptar"))
+			    		.open();
+					}else {
+						message.warringMessage("El registro ya se encuentra agregado");
+					}
+				}
+			
 
 			});
 			b.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			b.addStyleName(ValoTheme.BUTTON_SMALL);
-			b.setIcon(VaadinIcons.EDIT);
-
-			Button b2 = new Button("Eliminar");
-			b2.addClickListener(clickb2 -> {
-				 listReactivos.remove(Reactivo); 
-				 gridReactivo.setItems(listReactivos);
-				 Reactivo.setEstado(0); 
-				 ReactivoController.update(Reactivo);
-				 
-				 message.normalMessage("Reactivo eliminado");
-			});
-			b2.setStyleName(ValoTheme.BUTTON_DANGER);
-			b2.addStyleName(ValoTheme.BUTTON_SMALL);
-			b2.setIcon(VaadinIcons.ERASER);
+			b.setIcon(VaadinIcons.PLUS);
 
 			HorizontalLayout hl = new HorizontalLayout();
 			hl.setSpacing(false);
 			hl.setSizeFull();
-			hl.addComponents(b, b2);
+			hl.addComponents(b);
 			return hl;
 		}).setCaption("Opciones");
 
 		gridReactivo.setWidth("100%");
+		gridReactivo.setHeight("310px");
 		gridReactivo.setSelectionMode(SelectionMode.NONE);
 
 		laboratorioReactivoLayout.addComponents(filteringReactivo, gridReactivo);
@@ -362,29 +479,6 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 		// **FIN REACTIVO**//
 
 		// **EQUIPO**//
-		toolbarEquipos.setWidth("100%");
-		toolbarEquipos.setSpacing(true);
-		toolbarEquipos.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
-		toolbarEquipos.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
-		toolbarEquipos.setResponsive(true);
-		toolbarEquipos.addComponents(mainMenuEquipo);
-
-		mainMenuEquipo.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
-		mainMenuEquipo.addStyleName(ValoTheme.MENUBAR_SMALL);
-		mainMenuEquipo.setResponsive(true);
-
-		mainMenuEquipo.addItem("Nuevo equipo", VaadinIcons.PLUS_CIRCLE, new Command() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void menuSelected(MenuItem selectedItem) {
-				codigoEquipo.setReadOnly(false);
-				//newEditEquipo(null);
-				pnlComponente.setVisible(false);
-				equipoAction = "guardar";
-			}
-		});
-
 		filterEquipotxt.setPlaceholder("Buscar por codigo o nombre");
 		filterEquipotxt.setValueChangeMode(ValueChangeMode.LAZY);
 		filterEquipotxt.setSizeFull();
@@ -416,174 +510,103 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 		
 		
 		gridEquipo.addColumn(Equipo -> Equipo.getMarca()).setCaption("MARCA").setId("EQUIPOMARCA").setExpandRatio(0);
-		
-		gridEquipo.addComponentColumn(Equipo -> {
-			Label lb = new Label();
-			lb.setContentMode(ContentMode.HTML);
-			String comp = "";
-			Iterator<Componente> iterator = ComponenteController.getAllComponentByEquipo(Equipo.getIdEquipo()).iterator();
-			while(iterator.hasNext()) {
-				Componente c = iterator.next();
-				comp = comp + c.getNombre() + ", ";
-			}
-			lb.setValue("<font size='1'>"+comp+"</font>");
-			
-			lb.setSizeFull();
-			return lb;
-		}).setCaption("COMPONENTES").setExpandRatio(0);
-		
-		gridEquipo.addColumn(Equipo -> Equipo.getCantidad()).setCaption("CANT").setId("CANTIDADEQUIPO").setExpandRatio(0);
+	
 		gridEquipo.addColumn(Equipo -> Equipo.getEstadoEquipo()).setCaption("ESTADO").setId("ESTADOEQUIPO").setExpandRatio(0);
 
 		gridEquipo.addComponentColumn(Equipo -> {
 
-			Button b = new Button("Editar");
+			Button b = new Button("Agregar");
 			b.addClickListener(clickb -> {
-				
-				//newEditEquipo(Equipo);
-				pnlComponente.setVisible(true);
-				codigoEquipo.setValue(Equipo.getCodigo());
-				codigoEquipo.setReadOnly(true);
-				nombreEquipo.setValue(Equipo.getNombre());
-				equipoMarca.setValue(Equipo.getMarca());
-				cantidadEquipo.setValue(String.valueOf(Equipo.getCantidad()));
-				rbEstadoEquipo.setValue(Equipo.getEstadoEquipo());
-				equipoObservacion.setValue(Equipo.getObservacion());
-				equipoCaracteristicas.setValue(Equipo.getCaracteristicas());
-				equipoFechaAdquisicion.setValue(Equipo.getFechaAdquisicion());
-				equipoAction = "modificar";
-				equipo = Equipo;
-				
-				//cargarDatosComponente(Equipo);
+
+				TrazabilidadEquipo te = new TrazabilidadEquipo();
+				te.setEquipo(Equipo);
+				if(laboratorio == 1) { //PROCESOS QUIMICOS
+					if(!vwtrazabilidad.listEquiposPQ.contains(te)) {
+						vwtrazabilidad.listEquiposPQ.add(te);
+						vwtrazabilidad.gridEquipoPQ.setItems(vwtrazabilidad.listEquiposPQ);	
+					}else {
+						message.warringMessage("El registro ya se encuentra agregado");
+					}
+				}else if(laboratorio == 2) { //MICROBIOLOGIA
+					if(!vwtrazabilidad.listEquiposMi.contains(te)) {
+						vwtrazabilidad.listEquiposMi.add(te);
+						vwtrazabilidad.gridEquipoMi.setItems(vwtrazabilidad.listEquiposMi);	
+					}else {
+						message.warringMessage("El registro ya se encuentra agregado");
+					}
+				}else if(laboratorio == 3) {//OPERACIONES UNITARIAS
+					HorizontalLayout hl = new HorizontalLayout();
+					if(!vwtrazabilidad.listEquiposOU.contains(te)) {
+						hl.setCaption("Componentes del equipo a utilizar");
+						Iterator<Componente> iterator = ComponenteController.getAllComponentByEquipo(Equipo.getIdEquipo()).iterator();
+						List<Componente> listComp = new ArrayList<>();
+						TwinColSelect<Componente> twComp = new TwinColSelect<>();
+						while(iterator.hasNext()) {
+							Componente c = iterator.next();
+							listComp.add(c);
+						}	
+						twComp.setItems(listComp);
+						twComp.setItemCaptionGenerator(Componente::getNombre);
+						twComp.setRows(6);
+						twComp.setWidth("530px");
+
+						hl.addComponents(twComp);
+
+						MessageBox.createQuestion()
+						.withCaption("Información")
+						.withCancelButton(ButtonOption.caption("Cancelar"))
+						.withMessage(hl)
+						.withOkButton(() -> {
+
+							List<Componente> complist = new ArrayList<>(twComp.getSelectedItems());
+							te.setComponentes(complist);
+							vwtrazabilidad.listEquiposOU.add(te);
+							vwtrazabilidad.gridEquipoOU.setItems(vwtrazabilidad.listEquiposOU);	
+
+						},ButtonOption.caption("Aceptar"))
+						.open();
+					}else {
+						message.warringMessage("El registro ya se encuentra agregado");
+					}
+				}else if(laboratorio == 4) { //ANALISIS DE AGUAS
+					if(!vwtrazabilidad.listEquiposAG.contains(te)) {
+						vwtrazabilidad.listEquiposAG.add(te);
+						vwtrazabilidad.gridEquipoAG.setItems(vwtrazabilidad.listEquiposAG);	
+					}else {
+						message.warringMessage("El registro ya se encuentra agregado");
+					}
+				}else if(laboratorio == 5) { //ECOTOXICOLOGIA
+					if(!vwtrazabilidad.listEquiposEC.contains(te)) {
+						vwtrazabilidad.listEquiposEC.add(te);
+						vwtrazabilidad.gridEquipoEC.setItems(vwtrazabilidad.listEquiposEC);	
+					}else {
+						message.warringMessage("El registro ya se encuentra agregado");
+					}
+				}
+
 
 			});
 			b.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			b.addStyleName(ValoTheme.BUTTON_SMALL);
-			b.setIcon(VaadinIcons.EDIT);
-
-			Button b2 = new Button("Eliminar");
-			b2.addClickListener(clickb2 -> {
-				 listEquipos.remove(Equipo); 
-				 gridEquipo.setItems(listEquipos);
-				 Equipo.setEstado(0); 
-				 EquipoController.update(Equipo);
-				 message.normalMessage("Reactivo eliminado");
-			});
-			b2.setStyleName(ValoTheme.BUTTON_DANGER);
-			b2.addStyleName(ValoTheme.BUTTON_SMALL);
-			b2.setIcon(VaadinIcons.ERASER);
+			b.setIcon(VaadinIcons.PLUS);
 
 			HorizontalLayout hl = new HorizontalLayout();
 			hl.setSpacing(false);
 			hl.setSizeFull();
-			hl.addComponents(b, b2);
+			hl.addComponents(b);
 			return hl;
 		}).setCaption("Opciones");
 
 		gridEquipo.setWidth("100%");
+		gridEquipo.setHeight("310px");
 		gridEquipo.setSelectionMode(SelectionMode.NONE);
 
 		laboratorioEquipoLayout.addComponents(filteringEquipo, gridEquipo);
 		laboratorioEquipoLayout.setSpacing(true);
 		laboratorioEquipoLayout.setMargin(true);
-		
-		//COMPONENTES DE EQUIPO COMPUESTO
-		toolbarComponente.setWidth("100%");
-		toolbarComponente.setSpacing(true);
-		toolbarComponente.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
-		toolbarComponente.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
-		toolbarComponente.setResponsive(true);
-		toolbarComponente.addComponents(mainMenuComponente);
-
-		mainMenuComponente.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
-		mainMenuComponente.addStyleName(ValoTheme.MENUBAR_SMALL);
-		mainMenuComponente.setResponsive(true);
-
-		mainMenuComponente.addItem("Nuevo componente", VaadinIcons.PLUS_CIRCLE, new Command() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void menuSelected(MenuItem selectedItem) {
-				//newEditComponente(null,equipo);
-				componenteAction = "guardar";
-			}
-		});
-		
-		gridComponente.setRowHeight(35.00); 
-		gridComponente.setHeight("190px");
-		gridComponente.addColumn(Componente -> Componente.getNombre()).setCaption("NOMBRE").setExpandRatio(0);
-		gridComponente.addColumn(Componente -> Componente.getMarca()).setCaption("MARCA").setExpandRatio(0);
-		gridComponente.addColumn(Componente -> Componente.getCapacidad()).setCaption("CAPACIDAD").setExpandRatio(0);
-		gridComponente.addColumn(Componente -> Componente.getCantidad()).setCaption("CANTIDAD").setExpandRatio(0);
-		gridComponente.setWidth("100%");
-		gridComponente.setSelectionMode(SelectionMode.NONE);
-		
-		gridComponente.addComponentColumn(Componente -> {
-
-			Button b = new Button("Editar");
-			b.addClickListener(clickb -> {
-				//newEditComponente(Componente, equipo);
-				nombreComponente.setValue(Componente.getNombre()); 
-				marcaComponente.setValue(Componente.getMarca());  
-				capacidadComponente.setValue(Componente.getCapacidad()); 
-				cantidadComponente.setValue(String.valueOf(Componente.getCantidad())); 
-				componenteAction = "modificar";
-
-			});
-			b.setStyleName(ValoTheme.BUTTON_FRIENDLY);
-			b.addStyleName(ValoTheme.BUTTON_SMALL);
-			b.setIcon(VaadinIcons.EDIT);
-
-			Button b2 = new Button("Quitar");
-			b2.addClickListener(clickb2 -> {
-				 Componente.setEstado(0); 
-				 ComponenteController.update(Componente);
-				 message.normalMessage("Componente eliminado");
-				// cargarDatosComponente(equipo);
-			});
-			b2.setStyleName(ValoTheme.BUTTON_DANGER);
-			b2.addStyleName(ValoTheme.BUTTON_SMALL);
-			b2.setIcon(VaadinIcons.ERASER);
-
-			HorizontalLayout hl = new HorizontalLayout();
-			hl.setSpacing(false);
-			hl.setSizeFull();
-			hl.addComponents(b, b2);
-			return hl;
-		}).setCaption("Opciones"); 
-		
-		laboratorioComponenteLayout.addComponents(toolbarComponente, gridComponente);
-		laboratorioComponenteLayout.setMargin(true);
-		
-		pnlComponente.setCaption("Gestión de componentes");
-		pnlComponente.setIcon(VaadinIcons.FLASK);
-		pnlComponente.setContent(laboratorioComponenteLayout);
-		
 		// **FIN EQUIPO**//
 
 		// **MATERIAL**//
-		toolbarMaterial.setWidth("100%");
-		toolbarMaterial.setSpacing(true);
-		toolbarMaterial.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
-		toolbarMaterial.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
-		toolbarMaterial.setResponsive(true);
-		toolbarMaterial.addComponents(mainMenuMaterial);
-
-		mainMenuMaterial.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
-		mainMenuMaterial.addStyleName(ValoTheme.MENUBAR_SMALL);
-		mainMenuMaterial.setResponsive(true);
-
-		mainMenuMaterial.addItem("Nuevo material", VaadinIcons.PLUS_CIRCLE, new Command() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void menuSelected(MenuItem selectedItem) {
-				codigoMaterial.setReadOnly(false);
-				//newEditMaterial(null);
-				materialAction = "guardar";
-			}
-		});
-
 		filterMaterialtxt.setPlaceholder("Buscar por codigo o nombre");
 		filterMaterialtxt.setValueChangeMode(ValueChangeMode.LAZY);
 		filterMaterialtxt.setSizeFull();
@@ -613,54 +636,63 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 			return lb;
 		}).setCaption("NOMBRE").setExpandRatio(0);
 
-		gridMaterial.addColumn(Material -> Material.getMarca()).setCaption("MARCA").setExpandRatio(0);
 		gridMaterial.addColumn(Material -> Material.getTipoMaterial()).setCaption("TIPO").setExpandRatio(0);
 		gridMaterial.addColumn(Material -> Material.getCapacidad()).setCaption("CAPACIDAD").setExpandRatio(0);
-		gridMaterial.addColumn(Material -> Material.getCantidad()).setCaption("CANTIDAD").setExpandRatio(0);
 
 		gridMaterial.addComponentColumn(Material -> {
 
-			Button b = new Button("Editar");
+			Button b = new Button("Agregar");
 			b.addClickListener(clickb -> {
-			//	newEditMaterial(Material);
-				
-				codigoMaterial.setReadOnly(true);
-				codigoMaterial.setValue(Material.getCodigo());
-				nombreMaterial.setValue(Material.getNombre());
-				marcaMaterial.setValue(Material.getMarca());
-				tipoMaterial.setValue(Material.getTipoMaterial());
-				capacidadMaterial.setValue(Material.getCapacidad());
-				cantidadMaterial.setValue(String.valueOf(Material.getCantidad()));
-				observacionMaterial.setValue(Material.getObservacion());
-				
-				materialAction = "modificar";
-
+				if(laboratorio == 1) { //PROCESOS QUIMICOS
+					if(!vwtrazabilidad.listMaterialesPQ.contains(Material)) {
+						vwtrazabilidad.listMaterialesPQ.add(Material);
+						vwtrazabilidad.gridMaterialPQ.setItems(vwtrazabilidad.listMaterialesPQ);
+					}else {
+						message.warringMessage("El registro ya se encuentra agregado");
+					}
+				}else if(laboratorio == 2) { //MICROBIOLOGIA
+					if(!vwtrazabilidad.listMaterialesMi.contains(Material)) {
+						vwtrazabilidad.listMaterialesMi.add(Material);
+						vwtrazabilidad.gridMaterialMi.setItems(vwtrazabilidad.listMaterialesMi);
+					}else {
+						message.warringMessage("El registro ya se encuentra agregado");
+					}
+				}else if(laboratorio == 3) {//OPERACIONES UNITARIAS
+					if(!vwtrazabilidad.listMaterialesOU.contains(Material)) {
+						vwtrazabilidad.listMaterialesOU.add(Material);
+						vwtrazabilidad.gridMaterialOU.setItems(vwtrazabilidad.listMaterialesOU);
+					}else {
+						message.warringMessage("El registro ya se encuentra agregado");
+					}
+				}else if(laboratorio == 4) { //ANALISIS DE AGUAS
+					if(!vwtrazabilidad.listMaterialesAG.contains(Material)) {
+						vwtrazabilidad.listMaterialesAG.add(Material);
+						vwtrazabilidad.gridMaterialAG.setItems(vwtrazabilidad.listMaterialesAG);
+					}else {
+						message.warringMessage("El registro ya se encuentra agregado");
+					}
+				}else if(laboratorio == 5) { //ECOTOXICOLOGIA
+					if(!vwtrazabilidad.listMaterialesEC.contains(Material)) {
+						vwtrazabilidad.listMaterialesEC.add(Material);
+						vwtrazabilidad.gridMaterialEC.setItems(vwtrazabilidad.listMaterialesEC);
+					}else {
+						message.warringMessage("El registro ya se encuentra agregado");
+					}
+				}
 			});
 			b.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			b.addStyleName(ValoTheme.BUTTON_SMALL);
-			b.setIcon(VaadinIcons.EDIT);
-
-			Button b2 = new Button("Eliminar");
-			b2.addClickListener(clickb2 -> {
-				 listMateriales.remove(Material); 
-				 gridMaterial.setItems(listMateriales);
-				 Material.setEstado(0); 
-				 MaterialController.update(Material);
-				 
-				 message.normalMessage("Material eliminado");
-			});
-			b2.setStyleName(ValoTheme.BUTTON_DANGER);
-			b2.addStyleName(ValoTheme.BUTTON_SMALL);
-			b2.setIcon(VaadinIcons.ERASER);
+			b.setIcon(VaadinIcons.PLUS);
 
 			HorizontalLayout hl = new HorizontalLayout();
 			hl.setSpacing(false);
 			hl.setSizeFull();
-			hl.addComponents(b, b2);
+			hl.addComponents(b);
 			return hl;
 		}).setCaption("Opciones");
 
 		gridMaterial.setWidth("100%");
+		gridMaterial.setHeight("310px");
 		gridMaterial.setSelectionMode(SelectionMode.NONE);
 
 		laboratorioMaterialesLayout.addComponents(filteringMaterial, gridMaterial);
@@ -772,6 +804,7 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 		}).setCaption("Opciones");
  
 		gridMedioCultivo.setWidth("100%");
+		gridMedioCultivo.setHeight("310px");
 		gridMedioCultivo.setSelectionMode(SelectionMode.NONE);
 
 		laboratorioMedioCultivoLayout.addComponents(filteringMedioCultivo, gridMedioCultivo);

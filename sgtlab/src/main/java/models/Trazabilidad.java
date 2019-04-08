@@ -51,10 +51,8 @@ public class Trazabilidad implements Serializable {
 	@OneToMany(mappedBy = "trazabilidad", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<TrazabilidadReactivo>  trazabilidadReactivos = new ArrayList<>();
 	
-	@ManyToMany
-	@JoinTable(name = "TBL_TRAZABILIDAD_EQUIPO", joinColumns= @JoinColumn(name = "ID_TRAZABILIDAD"), 
-	inverseJoinColumns = @JoinColumn(name ="ID_EQUIPO"))
-	private List<Equipo> equipos = new ArrayList<>();
+	@OneToMany(mappedBy = "trazabilidad", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<TrazabilidadEquipo>  trazabilidadEquipos = new ArrayList<>();
 	
 	@ManyToMany
 	@JoinTable(name = "TBL_TRAZABILIDAD_MATERIAL", joinColumns= @JoinColumn(name = "ID_TRAZABILIDAD"), 
@@ -162,12 +160,12 @@ public class Trazabilidad implements Serializable {
 		this.trazabilidadReactivos = trazabilidadReactivos;
 	}
 
-	public List<Equipo> getEquipos() {
-		return equipos;
+	public List<TrazabilidadEquipo> getTrazabilidadEquipos() {
+		return trazabilidadEquipos;
 	}
 
-	public void setEquipos(List<Equipo> equipos) {
-		this.equipos = equipos;
+	public void setTrazabilidadEquipos(List<TrazabilidadEquipo> trazabilidadEquipos) {
+		this.trazabilidadEquipos = trazabilidadEquipos;
 	}
 
 	public List<Material> getMateriales() {
