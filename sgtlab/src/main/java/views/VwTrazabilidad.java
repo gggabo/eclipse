@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.vaadin.data.Binder;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
@@ -29,10 +32,12 @@ import controllers.ComponenteController;
 import models.Componente;
 import models.Equipo;
 import models.Material;
+import models.Proyecto;
 import models.Trazabilidad;
 import models.TrazabilidadEquipo;
 import models.TrazabilidadMedioCultivo;
 import models.TrazabilidadReactivo;
+import utils.UploadImageEvidencia;
 import utils.dialogWindow;
 import utils.message;
 import viewComponents.ProcesoComponent;
@@ -49,6 +54,7 @@ public class VwTrazabilidad extends Panel {
 	private Grid<Trazabilidad> gridTrazabilidad = new Grid<>();
 	private List<Trazabilidad> listTrazabildiad = new ArrayList<>();
 	private VerticalLayout trazas = new VerticalLayout();
+	private String trazabilidadAction = "guardar";
 	
 	public VwTrazabilidad(VwProyectos vwproyectos) {
 		this.vwproyectos = vwproyectos;
@@ -59,6 +65,7 @@ public class VwTrazabilidad extends Panel {
 		setContent(buildUI());
 		cargarDatos();
 		initTraza();
+		addValidation();
 	}
 	
 	public Component buildUI() {
@@ -219,6 +226,8 @@ public class VwTrazabilidad extends Panel {
 	
 	private RichTextArea descripcionProceso = new RichTextArea("Descripción de proceso");
 	private HorizontalLayout vroot = new HorizontalLayout();
+	private VerticalLayout vlDescripcionProceso = new VerticalLayout();
+	private UploadImageEvidencia evidencia = new UploadImageEvidencia();
 	 
 	public void initTraza() {
 		
@@ -229,10 +238,12 @@ public class VwTrazabilidad extends Panel {
 		accordion.addTab(layoutOU,"Laboratorio Operaciones Unitarias",VaadinIcons.BULLSEYE);
 		accordion.addTab(layoutEcotoxicologia,"Laboratorio Ecotoxicología",VaadinIcons.FILTER);
 		accordion.setWidth("500px");
-		accordion.setHeight("400px");
+		accordion.setHeight("410px");
 		
-		descripcionProceso.setHeight("400px");
-		vroot.addComponents(accordion,descripcionProceso);	 
+		//descripcionProceso.setHeight("400px");
+		vlDescripcionProceso.setMargin(false);
+		vlDescripcionProceso.addComponents(descripcionProceso, evidencia);
+		vroot.addComponents(accordion,vlDescripcionProceso);	 
 		vroot.setMargin(false); 
 		
 		/*LABORATORIO DE PROCESOS QUIMICOS*/
@@ -519,7 +530,7 @@ public class VwTrazabilidad extends Panel {
 			return lb;
 		}).setCaption("NOMBRE").setExpandRatio(0);
 
-		gridMedioCultivoMi.addColumn(Trazabilidad -> Trazabilidad.getGasto() + " " +Trazabilidad.getMedioCultivo().getNombre().toLowerCase())
+		gridMedioCultivoMi.addColumn(Trazabilidad -> Trazabilidad.getGasto() + " " +Trazabilidad.getMedioCultivo().getUnidad().getNombre().toLowerCase())
 		.setCaption("GASTO").setId("GASTO").setExpandRatio(0);
 		gridMedioCultivoMi.addComponentColumn(Trazabilidad -> {
 
@@ -950,37 +961,37 @@ public class VwTrazabilidad extends Panel {
 		formLayoutReactivo.setMargin(false);
 		formLayoutReactivo.addComponents(codigoReactivo, nombreReactivo, entradaReactivo, gastoRectivo, saldoRectivo,
 				hl, fechaCaducidadRectivo);
-
+*/
 		dialogReactivoWindow.getOkButton().addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
 				
-				if (!validatorReactivo.isValid()) {
-					validatorReactivo.validate();
+				if (!validatorTrazabilidad.isValid()) {
+					validatorTrazabilidad.validate();
 
 					message.warringMessage("Hay errores en los campos de texto");
 					return;
 				}
 
-				if (reactivoAction.equals("guardar")) {
+				if (trazabilidadAction.equals("guardar")) {
 					
-					if (ReactivoController.DBcontainsCodReactivo(codigoReactivo.getValue())) {
+					/*if (ReactivoController.DBcontainsCodReactivo(codigoReactivo.getValue())) {
 						message.warringMessage("El codigo del reactivo ya se encuentra registrado");
 						return;
-					}
+					}*/
 										
-					Reactivo react = new Reactivo(codigoReactivo.getValue().toUpperCase().trim(),
+					/*Reactivo react = new Reactivo(codigoReactivo.getValue().toUpperCase().trim(),
 							nombreReactivo.getValue().toUpperCase().trim(),
 							Float.parseFloat(entradaReactivo.getValue()), fechaCaducidadRectivo.getValue(),
 							Float.parseFloat(gastoRectivo.getValue()), Float.parseFloat(saldoRectivo.getValue()),
 							cmbUnidad.getValue(), cmbLaboratorio.getValue(), 1);
 
-					ReactivoController.save(react);
+					ReactivoController.save(react);*/
 				} else {
 
-					reactMod.setCodigo(codigoReactivo.getValue().toUpperCase().trim());
+					/*reactMod.setCodigo(codigoReactivo.getValue().toUpperCase().trim());
 					reactMod.setNombre(nombreReactivo.getValue().toUpperCase().trim());
 					reactMod.setEntrada(Float.parseFloat(entradaReactivo.getValue()));
 					reactMod.setFechaCaducidad(fechaCaducidadRectivo.getValue());
@@ -990,12 +1001,12 @@ public class VwTrazabilidad extends Panel {
 					reactMod.setLaboratorio(cmbLaboratorio.getValue());
 
 					ReactivoController.update(reactMod);
-					codigoReactivo.setReadOnly(false);
+					codigoReactivo.setReadOnly(false);*/
 				}
 
 				message.normalMessage("Acción realizada con éxito");
 
-				cargarDatosReactivo();
+				cargarDatos();
 				dialogReactivoWindow.close();
 			}
 		});
@@ -1003,7 +1014,7 @@ public class VwTrazabilidad extends Panel {
 		dialogReactivoWindow.getCancelButton().addClickListener(e -> {
 			dialogReactivoWindow.close();
 		});
-*/
+
 		dialogReactivoWindow.setResponsive(true);
 		dialogReactivoWindow.setWidth("85%");
 		dialogReactivoWindow.addComponentBody(vroot);
@@ -1026,6 +1037,11 @@ public class VwTrazabilidad extends Panel {
 		toolbar.addStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
 	}
 	
+	Binder<Trazabilidad> validatorTrazabilidad = new Binder<>();
+	 private void addValidation() {
+		 validatorTrazabilidad.forField(descripcionProceso).asRequired("Campo requerido").bind(Trazabilidad::getDescripcion,
+				 Trazabilidad::setDescripcion);
+	 }
 	
 	
 	

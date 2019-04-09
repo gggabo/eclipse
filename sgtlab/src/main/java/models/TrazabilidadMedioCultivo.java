@@ -73,12 +73,14 @@ public class TrazabilidadMedioCultivo implements Serializable {
 		this.gasto = gasto;
 	}
 
+	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + Float.floatToIntBits(gasto);
 		result = prime * result + (int) (idTrazabilidadReactivo ^ (idTrazabilidadReactivo >>> 32));
+		result = prime * result + ((medioCultivo == null) ? 0 : medioCultivo.hashCode());
 		return result;
 	}
 
@@ -91,9 +93,12 @@ public class TrazabilidadMedioCultivo implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		TrazabilidadMedioCultivo other = (TrazabilidadMedioCultivo) obj;
-		if (Float.floatToIntBits(gasto) != Float.floatToIntBits(other.gasto))
-			return false;
 		if (idTrazabilidadReactivo != other.idTrazabilidadReactivo)
+			return false;
+		if (medioCultivo == null) {
+			if (other.medioCultivo != null)
+				return false;
+		} else if (!medioCultivo.equals(other.medioCultivo))
 			return false;
 		return true;
 	}

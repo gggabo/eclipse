@@ -32,7 +32,7 @@ public class UploadImageEvidencia extends HorizontalLayout implements Receiver {
 	
 	private ProgressBar progress = new ProgressBar();
 	private ByteArrayOutputStream byteArrayOutputStream;
-	private VerticalLayout rootLayout;
+	private HorizontalLayout rootLayout;
 	
 	public UploadImageEvidencia() { 
 		
@@ -54,11 +54,11 @@ public class UploadImageEvidencia extends HorizontalLayout implements Receiver {
 			clear();
 		});
 		
-		HorizontalLayout hl = new HorizontalLayout();
-		hl.setSpacing(false);
+		VerticalLayout hl = new VerticalLayout();
+		//hl.setSpacing(false);
 		hl.addComponents(upload,btnClear);
 		
-		rootLayout = new VerticalLayout(hl,image,progress);
+		rootLayout = new HorizontalLayout(image,hl,progress);
 		rootLayout.setSpacing(false);
 		rootLayout.setMargin(false);
 		rootLayout.setComponentAlignment(image, Alignment.MIDDLE_CENTER);

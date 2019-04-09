@@ -52,6 +52,7 @@ import models.MedioCultivo;
 import models.Reactivo;
 import models.Rol;
 import models.TrazabilidadEquipo;
+import models.TrazabilidadMedioCultivo;
 import models.TrazabilidadReactivo;
 import models.Unidad;
 import models.Usuario;
@@ -213,7 +214,7 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 	public Grid<Usuario> gridUsuarioImport = new Grid<>();
 	public List<Usuario> listUsuariosImport = new ArrayList<>();
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unlikely-arg-type")
 	public Component buildUI() {
 
 		cmbLaboratorio.setWidth("100%");
@@ -701,28 +702,6 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 		// **FIN MATERIAL**//
 
 		// **MEDIOS DE CULTIVO**//
-		toolbarMedioCultivo.setWidth("100%");
-		toolbarMedioCultivo.setSpacing(true);
-		toolbarMedioCultivo.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
-		toolbarMedioCultivo.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
-		toolbarMedioCultivo.setResponsive(true);
-		toolbarMedioCultivo.addComponents(mainMenuMedioCultivo);
-
-		mainMenuMedioCultivo.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
-		mainMenuMedioCultivo.addStyleName(ValoTheme.MENUBAR_SMALL);
-		mainMenuMedioCultivo.setResponsive(true);
-
-		mainMenuMedioCultivo.addItem("Nuevo medio cultivo", VaadinIcons.PLUS_CIRCLE, new Command() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void menuSelected(MenuItem selectedItem) {
-				codigoMedioCultivo.setReadOnly(false);
-				//newEditMedioCultivo(null);
-				MedioCultivoAction = "guardar";
-			}
-		});
-
 		filterMedioCultivotxt.setPlaceholder("Buscar por codigo o nombre");
 		filterMedioCultivotxt.setValueChangeMode(ValueChangeMode.LAZY);
 		filterMedioCultivotxt.setSizeFull();
@@ -752,10 +731,6 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 			return lb;
 		}).setCaption("NOMBRE").setExpandRatio(0);
 
-		gridMedioCultivo.addColumn(MedioCultivo -> MedioCultivo.getEntrada() + " " + MedioCultivo.getUnidad().getNombre().toLowerCase())
-				.setCaption("ENTRADA").setId("ENTRADA").setExpandRatio(0);
-		gridMedioCultivo.addColumn(MedioCultivo -> MedioCultivo.getGasto() + " " + MedioCultivo.getUnidad().getNombre().toLowerCase())
-				.setCaption("GASTO").setId("GASTO").setExpandRatio(0);
 		gridMedioCultivo.addColumn(MedioCultivo -> MedioCultivo.getSaldo() + " " + MedioCultivo.getUnidad().getNombre().toLowerCase())
 				.setCaption("SALDO").setId("SALDO").setExpandRatio(0);
 		gridMedioCultivo.addColumn(MedioCultivo -> MedioCultivo.getFechaCaducidad(), new LocalDateRenderer("dd/MM/yyyy"))
@@ -763,43 +738,51 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 
 		gridMedioCultivo.addComponentColumn(MedioCultivo -> {
 
-			Button b = new Button("Editar");
+			Button b = new Button("Agregar");
 			b.addClickListener(clickb -> {
-				//newEditMedioCultivo(MedioCultivo);
-
-				codigoMedioCultivo.setValue(MedioCultivo.getCodigo());
-				codigoMedioCultivo.setReadOnly(true);
-				nombreMedioCultivo.setValue(MedioCultivo.getNombre());
-				entradaMedioCultivo.setValue(String.valueOf(MedioCultivo.getEntrada()));
-				gastoMedioCultivo.setValue(String.valueOf(MedioCultivo.getGasto()));
-				saldoMedioCultivo.setValue(String.valueOf(MedioCultivo.getSaldo()));
-				cmbUnidadMedioCultivo.setValue(MedioCultivo.getUnidad());
-				fechaCaducidadMedioCultivo.setValue(MedioCultivo.getFechaCaducidad());
-
-				MedioCultivoAction = "modificar";
-
+				
+				TrazabilidadMedioCultivo mc = new TrazabilidadMedioCultivo();
+				mc.setMedioCultivo(MedioCultivo);
+				
+				if(laboratorio == 2) {//MICROBIOLOGIA
+					if(!vwtrazabilidad.listMediosCultivosMi.contains(mc)) {
+						NumberField  txt = new NumberField("Cantidad de M. de cultivo a usar");
+						txt.setLocale(Locale.FRANCE);
+						txt.setDecimalPrecision(2);
+						txt.setDecimalSeparator('.');
+						txt.setMinimumFractionDigits(2);
+						
+						MessageBox.createQuestion()
+						.withCaption("Información")
+						.withCancelButton(ButtonOption.caption("Cancelar"))
+			    		.withMessage(txt)
+			    		.withOkButton(() -> {
+			    			float gasto, saldo;
+			    			gasto = Float.parseFloat(txt.getValue());
+			    			saldo = MedioCultivo.getSaldo();
+			    			if(gasto > saldo) {
+			    				message.warringMessage("Gasto excede el saldo del M. de cultivo");
+			    			}else {
+			    				mc.setGasto(Float.parseFloat(txt.getValue()));
+				    			vwtrazabilidad.listMediosCultivosMi.add(mc);
+								vwtrazabilidad.gridMedioCultivoMi.setItems(vwtrazabilidad.listMediosCultivosMi);	
+			    			}
+			    			
+			    		},ButtonOption.caption("Aceptar"))
+			    		.open();
+					}else {
+						message.warringMessage("El registro ya se encuentra agregado");
+					}
+				}
 			});
 			b.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			b.addStyleName(ValoTheme.BUTTON_SMALL);
-			b.setIcon(VaadinIcons.EDIT);
-
-			Button b2 = new Button("Eliminar");
-			b2.addClickListener(clickb2 -> {
-				 listMediosCultivos.remove(MedioCultivo); 
-				 gridMedioCultivo.setItems(listMediosCultivos);
-				 MedioCultivo.setEstado(0); 
-				 MedioCultivoController.update(MedioCultivo);
-				 
-				 message.normalMessage("Medio de cultivo eliminado");
-			});
-			b2.setStyleName(ValoTheme.BUTTON_DANGER);
-			b2.addStyleName(ValoTheme.BUTTON_SMALL);
-			b2.setIcon(VaadinIcons.ERASER);
+			b.setIcon(VaadinIcons.PLUS);
 
 			HorizontalLayout hl = new HorizontalLayout();
 			hl.setSpacing(false);
 			hl.setSizeFull();
-			hl.addComponents(b, b2);
+			hl.addComponents(b);
 			return hl;
 		}).setCaption("Opciones");
  

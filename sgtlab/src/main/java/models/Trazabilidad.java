@@ -68,8 +68,13 @@ public class Trazabilidad implements Serializable {
 	@Column(name = "ESTADO") 
 	private int estado; 
 	
-	@Column(name = "REVISOR")
-	private String revisor;
+	@ManyToMany
+	@JoinTable(name = "TBL_TRAZABILIDAD_REVISOR", joinColumns= @JoinColumn(name = "ID_TRAZABILIDAD"), 
+	inverseJoinColumns = @JoinColumn(name ="ID_USUARIO"))
+	private List<Usuario> revisores = new ArrayList<>();
+	
+	/*@Column(name = "REVISOR")
+	private String revisor;*/
 	
 	@ManyToOne
 	@JoinColumn(name = "ID_USUARIO")
@@ -185,12 +190,12 @@ public class Trazabilidad implements Serializable {
 		this.trazabilidadMediosCultivo = trazabilidadMediosCultivo;
 	}
 
-	public String getRevisor() {
-		return revisor;
+	public List<Usuario> getRevisor() {
+		return revisores;
 	}
 
-	public void setRevisor(String revisor) {
-		this.revisor = revisor;
+	public void setRevisor(List<Usuario> revisor) {
+		this.revisores = revisor;
 	}
 
 	public Usuario getUsuario() {

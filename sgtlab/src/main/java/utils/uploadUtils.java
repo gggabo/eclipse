@@ -95,6 +95,30 @@ public class uploadUtils implements Serializable{
 		return imageResource;
 	}
 	
+	public static StreamResource byteToImgEvidencia(byte[] imagen) {
+		
+		if(imagen == null) {
+			 /*File directory = new File("./");
+			    System.out.println(directory.getAbsolutePath());*/
+			imagenResult = imgToByte(new File(path+"/images/NO_IMAGE.png"));
+		}else {
+			imagenResult = imagen;
+		}
+		
+		StreamResource.StreamSource imageSource = null;
+		imageSource = new StreamResource.StreamSource() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public InputStream getStream() {
+				return new ByteArrayInputStream(imagenResult);
+			}
+		};
+		StreamResource imageResource = new StreamResource(imageSource, generarCodigoImg());
+		imageResource.setCacheTime(0);
+		return imageResource;
+	}
+	
 	//OBTENER LA URL DE UNA IMG
 	public String getImageUrl(Image image) {
 	

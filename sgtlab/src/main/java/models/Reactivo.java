@@ -174,24 +174,16 @@ public class Reactivo implements Serializable {
 		this.estado = estado;
 	}
 
+
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
-		result = prime * result + Float.floatToIntBits(entrada);
-		result = prime * result + ((fechaCaducidad == null) ? 0 : fechaCaducidad.hashCode());
-		result = prime * result + Float.floatToIntBits(gasto);
 		result = prime * result + (int) (idReactivo ^ (idReactivo >>> 32));
-		//result = prime * result + Arrays.hashCode(imagen);
-		result = prime * result + ((laboratorio == null) ? 0 : laboratorio.hashCode());
-		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
-		result = prime * result + Float.floatToIntBits(saldo);
-		result = prime * result + ((unidad == null) ? 0 : unidad.hashCode());
 		return result;
 	}
-
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -207,40 +199,10 @@ public class Reactivo implements Serializable {
 				return false;
 		} else if (!codigo.equals(other.codigo))
 			return false;
-		if (Float.floatToIntBits(entrada) != Float.floatToIntBits(other.entrada))
-			return false;
-		if (fechaCaducidad == null) {
-			if (other.fechaCaducidad != null)
-				return false;
-		} else if (!fechaCaducidad.equals(other.fechaCaducidad))
-			return false;
-		if (Float.floatToIntBits(gasto) != Float.floatToIntBits(other.gasto))
-			return false;
 		if (idReactivo != other.idReactivo)
-			return false;
-		/*if (!Arrays.equals(imagen, other.imagen))
-			return false;*/
-		if (laboratorio == null) {
-			if (other.laboratorio != null)
-				return false;
-		} else if (!laboratorio.equals(other.laboratorio))
-			return false;
-		if (nombre == null) {
-			if (other.nombre != null)
-				return false;
-		} else if (!nombre.equals(other.nombre))
-			return false;
-		if (Float.floatToIntBits(saldo) != Float.floatToIntBits(other.saldo))
-			return false;
-		if (unidad == null) {
-			if (other.unidad != null)
-				return false;
-		} else if (!unidad.equals(other.unidad))
 			return false;
 		return true;
 	}
-
-
 
 	@Override
 	public String toString() {

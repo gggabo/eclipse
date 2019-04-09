@@ -74,11 +74,12 @@ public class TrazabilidadReactivo implements Serializable {
 	}
 
 	
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + (int) (idTrazabilidadReactivo ^ (idTrazabilidadReactivo >>> 32));
 		result = prime * result + ((reactivo == null) ? 0 : reactivo.hashCode());
 		return result;
 	}
@@ -89,9 +90,11 @@ public class TrazabilidadReactivo implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (getClass() != obj.getClass()) 
 			return false;
 		TrazabilidadReactivo other = (TrazabilidadReactivo) obj;
+		if (idTrazabilidadReactivo != other.idTrazabilidadReactivo)
+			return false;
 		if (reactivo == null) {
 			if (other.reactivo != null)
 				return false;
