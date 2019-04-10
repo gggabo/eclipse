@@ -95,14 +95,15 @@ public class uploadUtils implements Serializable{
 		return imageResource;
 	}
 	
+	static byte[] imagenResultEvidencia= null;
 	public static StreamResource byteToImgEvidencia(byte[] imagen) {
 		
 		if(imagen == null) {
 			 /*File directory = new File("./");
 			    System.out.println(directory.getAbsolutePath());*/
-			imagenResult = imgToByte(new File(path+"/images/NO_IMAGE.png"));
+			imagenResultEvidencia = imgToByte(new File(path+"/images/NO_IMAGE.png"));
 		}else {
-			imagenResult = imagen;
+			imagenResultEvidencia = imagen;
 		}
 		
 		StreamResource.StreamSource imageSource = null;
@@ -111,7 +112,29 @@ public class uploadUtils implements Serializable{
 
 			@Override
 			public InputStream getStream() {
-				return new ByteArrayInputStream(imagenResult);
+				return new ByteArrayInputStream(imagenResultEvidencia);
+			}
+		};
+		StreamResource imageResource = new StreamResource(imageSource, generarCodigoImg());
+		imageResource.setCacheTime(0);
+		return imageResource;
+	}
+	
+	
+	public static StreamResource byteToImgUser(byte[] imagen) {
+		
+		/*if(imagen == null) {
+			
+			imagen = imgToByte(new File(path+"/images/NO_USER.png"));
+		}*/
+		
+		StreamResource.StreamSource imageSource = null;
+		imageSource = new StreamResource.StreamSource() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public InputStream getStream() {
+				return new ByteArrayInputStream(imagen);
 			}
 		};
 		StreamResource imageResource = new StreamResource(imageSource, generarCodigoImg());

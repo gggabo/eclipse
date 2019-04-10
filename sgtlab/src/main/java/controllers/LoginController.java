@@ -41,6 +41,7 @@ public class LoginController implements Serializable {
 				VaadinSession.getCurrent().setAttribute("LOGIN", u.getNombre_usuario());
 				roles = u.getRoles();
 				
+				//System.out.println(u);
 				System.out.println(VaadinSession.getCurrent().getAttribute("NOMBRE_USUARIO")
 						+" "+VaadinSession.getCurrent().getAttribute("ID_USUARIO")+" "
 				+VaadinSession.getCurrent().getAttribute("NOMBRE_PERSONA")+" "+VaadinSession.getCurrent().getAttribute("TIPO_USUARIO"));		

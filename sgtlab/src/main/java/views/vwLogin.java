@@ -164,7 +164,7 @@ public class vwLogin extends CssLayout implements Serializable {
 	
     private void login() {
     	
-    	if(LoginController.login(username.getValue(), password.getValue())) {
+    	if(LoginController.login(username.getValue(), password.getValue())) { 
     		mainView = new MainView(UIistance);
     		UIistance.setContent(mainView);
     	}else {

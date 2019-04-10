@@ -1,12 +1,18 @@
 package views;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import com.vaadin.data.Binder;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.StreamResource;
+import com.vaadin.server.SystemError;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
@@ -29,10 +35,14 @@ import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.themes.ValoTheme;
 
 import controllers.ComponenteController;
+import controllers.LoginController;
+import controllers.TrazabilidadController;
+import controllers.UsuarioController;
 import models.Componente;
 import models.Equipo;
 import models.Material;
 import models.Proyecto;
+import models.Rol;
 import models.Trazabilidad;
 import models.TrazabilidadEquipo;
 import models.TrazabilidadMedioCultivo;
@@ -40,6 +50,7 @@ import models.TrazabilidadReactivo;
 import utils.UploadImageEvidencia;
 import utils.dialogWindow;
 import utils.message;
+import utils.uploadUtils;
 import viewComponents.ProcesoComponent;
 
 public class VwTrazabilidad extends Panel {
@@ -51,12 +62,16 @@ public class VwTrazabilidad extends Panel {
 	public VerticalLayout trazabilidadLayout = new VerticalLayout();
 	public MenuBar mainMenu = new MenuBar();
 	private VwProyectos vwproyectos;
-	private Grid<Trazabilidad> gridTrazabilidad = new Grid<>();
-	private List<Trazabilidad> listTrazabildiad = new ArrayList<>();
+	private List<Trazabilidad> listTrazabilidad = new ArrayList<>();
 	private VerticalLayout trazas = new VerticalLayout();
 	private String trazabilidadAction = "guardar";
+	Proyecto proyecto;
+	private long idUsuario = (long) VaadinSession.getCurrent().getAttribute("ID_USUARIO");
+	@SuppressWarnings("unchecked")
+	private List<Rol> roles = (List<Rol>) VaadinSession.getCurrent().getAttribute("TIPO_USUARIO");
 	
-	public VwTrazabilidad(VwProyectos vwproyectos) {
+	public VwTrazabilidad(VwProyectos vwproyectos, Proyecto proyecto) {
+		this.proyecto = proyecto;
 		this.vwproyectos = vwproyectos;
 		setCaption("Gestión de trazabilidad de producto");
 		setIcon(VaadinIcons.FILE_PROCESS);
@@ -103,6 +118,14 @@ public class VwTrazabilidad extends Panel {
 				//buildUIProyect(); 
 			}
 		});	 
+		
+		mainMenu.addItem("Actualizar", VaadinIcons.REFRESH, new Command() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void menuSelected(MenuItem selectedItem) {
+				cargarDatos();
+			}
+		});
 
 		trazabilidadLayout.addComponents(toolbar,trazas);//,gridTrazabilidad);//, buildUIProyect());
 		trazabilidadLayout.setMargin(false);
@@ -111,20 +134,51 @@ public class VwTrazabilidad extends Panel {
 	}
 
 	public void cargarDatos() {
-		/*listTrazabildiad.add(new Trazabilidad(LocalDate.now(), LocalTime.now(), "HHHH", null, 1));
-		listTrazabildiad.add(new Trazabilidad(LocalDate.now(), LocalTime.now(), "HHHHsss", null, 1));
-		listTrazabildiad.add(new Trazabilidad(LocalDate.now(), LocalTime.now(), "HHHHeeeeee", null, 1));
+		listTrazabilidad.clear();
+		trazas.removeAllComponents();
+		listTrazabilidad.addAll(TrazabilidadController.getAllTrazasByProyecto(proyecto.getIdProyecto()));
 		
-		gridTrazabilidad.setItems(listTrazabildiad);*/
-		//trazas.setWidth("100%");
-		trazas.addComponent(new ProcesoComponent());
-		trazas.addComponent(new ProcesoComponent());
-	
-		trazas.addComponent(new ProcesoComponent());
-		trazas.addComponent(new ProcesoComponent());
-		trazas.addComponent(new ProcesoComponent());
-		trazas.addComponent(new ProcesoComponent());
-		
+		Iterator<Trazabilidad> iteratorTrazabilidad = listTrazabilidad.iterator();
+		Trazabilidad traza;
+		List<Rol> rolesAsignados = new ArrayList<>();
+		while(iteratorTrazabilidad.hasNext()) {
+			traza = iteratorTrazabilidad.next();
+			ProcesoComponent pc = new ProcesoComponent();
+			pc.getEstadoProyecto().setValue(traza.getEstadoRevision());
+			pc.getDescripcionProceso().setValue(traza.getDescripcion());	
+			pc.getNombreUsuario().setValue(traza.getUsuario().getApellido_paterno()+" "+traza.getUsuario().getNombre_uno());
+			pc.getFechaPublicacion().setValue(traza.getFecha().toString());
+			pc.getHoraPublicacion().setValue(traza.getHora().toString());
+			if(traza.getUsuario().getImagen()!=null) {
+				pc.getImgUser().setSource(uploadUtils.byteToImgUser(traza.getUsuario().getImagen()));
+			}else {
+				pc.getImgUser().setSource(new ThemeResource("images/NO_USER.png"));
+			} 
+			
+			if(idUsuario != traza.getUsuario().getId()) {
+				pc.getEditButton().setVisible(false);
+				pc.getDelButton().setVisible(false);
+			}else {
+				pc.getEditButton().setVisible(true);
+				pc.getDelButton().setVisible(true);
+			}
+		    
+			rolesAsignados.clear();
+			rolesAsignados.addAll(roles);
+			Iterator<Rol> rol = rolesAsignados.iterator();
+			Long idrol;
+			while(rol.hasNext()) {
+				idrol = rol.next().getIdRol();
+				if(idrol == 2 || idrol == 1) {//1: ADMINISTRADOR 2: DOCENTE 
+					pc.getRevisarButton().setVisible(true);
+				}else {
+					pc.getRevisarButton().setVisible(false);
+				}
+			}
+			
+			trazas.addComponent(pc);
+		}   
+				
 	}
 	
 	private Accordion accordion = new Accordion();
@@ -973,9 +1027,74 @@ public class VwTrazabilidad extends Panel {
 
 					message.warringMessage("Hay errores en los campos de texto");
 					return;
-				}
+				} 
 
 				if (trazabilidadAction.equals("guardar")) {
+					
+					Trazabilidad traz = new Trazabilidad(LocalDate.now(), LocalTime.now(), 
+							descripcionProceso.getValue().trim(), evidencia.getValue(), 1);
+				
+					traz.setProyecto(proyecto);
+					traz.setEstadoRevision("Esperando revisión");
+					
+					System.out.println(LoginController.u.getNombre_usuario());
+					
+					traz.setUsuario(UsuarioController.getSpecificUserById(idUsuario));
+					
+					//REACTIVOS
+					List<TrazabilidadReactivo> listReactivos = new ArrayList<>();
+					listReactivos.addAll(listReactivosPQ);
+					listReactivos.addAll(listReactivosMi);
+					listReactivos.addAll(listReactivosEC);
+					listReactivos.addAll(listReactivosAG);
+				
+					Iterator<TrazabilidadReactivo> iteratorReactivo = listReactivos.iterator();
+					TrazabilidadReactivo trazReactivo;
+					while(iteratorReactivo.hasNext()) {
+						trazReactivo = iteratorReactivo.next();
+						trazReactivo.setTrazabilidad(traz);
+					}
+					traz.setTrazabilidadReactivos(listReactivos);
+					
+					//EQUIPOS
+					List<TrazabilidadEquipo> listEquipos = new ArrayList<>();
+					listEquipos.addAll(listEquiposPQ);
+					listEquipos.addAll(listEquiposMi);
+					listEquipos.addAll(listEquiposEC);
+					listEquipos.addAll(listEquiposAG);
+					listEquipos.addAll(listEquiposOU);
+				
+					Iterator<TrazabilidadEquipo> iteratorEquipos = listEquipos.iterator();
+					TrazabilidadEquipo trazEquipo;
+					while(iteratorEquipos.hasNext()) {
+						trazEquipo = iteratorEquipos.next();
+						trazEquipo.setTrazabilidad(traz);
+					}
+					traz.setTrazabilidadEquipos(listEquipos);					
+					
+					//MATERIALES
+					List<Material> listMateriales = new ArrayList<>();
+					listMateriales.addAll(listMaterialesPQ);
+					listMateriales.addAll(listMaterialesMi);
+					listMateriales.addAll(listMaterialesEC);
+					listMateriales.addAll(listMaterialesAG);
+					listMateriales.addAll(listMaterialesOU);
+
+					traz.setMateriales(listMateriales);
+					
+					//EQUIPOS
+					List<TrazabilidadMedioCultivo> listMediosCultivo = new ArrayList<>();
+					listMediosCultivo.addAll(listMediosCultivosMi);
+				
+					Iterator<TrazabilidadMedioCultivo> iteratorMediosCultivo = listMediosCultivo.iterator();
+					TrazabilidadMedioCultivo trazMediosCultivo;
+					while(iteratorMediosCultivo.hasNext()) {
+						trazMediosCultivo = iteratorMediosCultivo.next();
+						trazMediosCultivo.setTrazabilidad(traz);
+					}
+					traz.setTrazabilidadMediosCultivo(listMediosCultivo);	
+					
+				    TrazabilidadController.save(traz);
 					
 					/*if (ReactivoController.DBcontainsCodReactivo(codigoReactivo.getValue())) {
 						message.warringMessage("El codigo del reactivo ya se encuentra registrado");
@@ -1026,6 +1145,12 @@ public class VwTrazabilidad extends Panel {
 		dialogReactivoWindow.setResponsive(true);
 		dialogReactivoWindow.setWidth("60%");
 		dialogReactivoWindow.addComponentBody(new VwLaboratoriosBuscar(VwTrazabilidad.this, lab));
+		dialogReactivoWindow.getOkButton().setVisible(false);
+		dialogReactivoWindow.getCancelButton().setCaption("Cerrar");
+		dialogReactivoWindow.getCancelButton().addClickListener(e ->{
+			dialogReactivoWindow.close();
+		});
+		dialogReactivoWindow.getFooterText().setCaption("Opciones");
 		UI.getCurrent().addWindow(dialogReactivoWindow);
 	}
 	

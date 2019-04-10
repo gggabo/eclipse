@@ -10,6 +10,7 @@ import com.vaadin.data.Binder;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -57,7 +58,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	private static final long serialVersionUID = -5759789185491799696L;
 	
 	public static final String VIEW_NAME = "proyectos";
-	//public static long idUsuario = LoginController.u.getId();
+	public long idUsuario = (long) VaadinSession.getCurrent().getAttribute("ID_USUARIO");
 	
 	public VerticalLayout mainLayout = new VerticalLayout();
 	public Panel pnlPrincipal = new Panel();
@@ -130,7 +131,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 			layoutProyectos.removeAllComponents();
 		}
 		
-		List<ProyectoParticipante> pp = ProyectoController.getProyectoByUser(LoginController.u.getId());
+		List<ProyectoParticipante> pp = ProyectoController.getProyectoByUser(idUsuario);
 		Iterator<ProyectoParticipante> iteratorPp = pp.iterator();
 		
 		
@@ -159,7 +160,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 			
 			p.getOkButton().addClickListener(e ->{
 				mainLayout.removeComponent(pnlPrincipal);
-				VwTrazabilidad tr = new VwTrazabilidad(this);
+				VwTrazabilidad tr = new VwTrazabilidad(this, prop.getProyecto());
 				mainLayout.addComponent(tr);
 			});
 			

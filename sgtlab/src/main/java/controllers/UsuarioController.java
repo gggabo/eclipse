@@ -61,6 +61,22 @@ public class UsuarioController implements Serializable {
 		
 		return us;
 	} 
+	
+	public static  Usuario getSpecificUserById(long id) {		
+		JPAService.runInTransaction(em ->{
+			Query query = em.createQuery("select u from Usuario u where u.id = ?1 and u.estado = 1");
+			query.setParameter(1, id);
+
+			if(query.getResultList().size()>0) {
+				us = (Usuario) query.getSingleResult();
+			}
+			
+			return null;
+		}
+        ); 
+		
+		return us;
+	} 
 		
 	@SuppressWarnings("unchecked")
 	public static List<Usuario> search(String searchField){
