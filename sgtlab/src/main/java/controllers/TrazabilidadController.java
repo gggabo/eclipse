@@ -9,6 +9,7 @@ import models.Laboratorio;
 import models.Proyecto;
 import models.Reactivo;
 import models.Trazabilidad;
+import models.Usuario;
 import services.JPAService;
 
 public class TrazabilidadController implements Serializable {
@@ -62,6 +63,18 @@ public class TrazabilidadController implements Serializable {
 		}); 	
 		return pr.getTrazabilidad();
 	}
+	
+
+	public static List<Usuario> getRevisoresByTraza(long idTraza) {		
+		JPAService.runInTransaction(em ->{
+			trazabilidad = em.find(Trazabilidad.class, idTraza);
+			trazabilidad.getRevisor().size();		
+			return null;	
+		}); 	
+		return trazabilidad.getRevisor();
+	}
+	
+	
 	
 /*	public static boolean DBcontainsCodReactivo(String cod) {
 		if(!JPAService.runInTransaction(em ->{

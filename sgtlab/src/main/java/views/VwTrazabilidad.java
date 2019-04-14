@@ -36,17 +36,21 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import controllers.ComponenteController;
 import controllers.LoginController;
+import controllers.ProyectoController;
+import controllers.ProyectoParticipanteController;
 import controllers.TrazabilidadController;
 import controllers.UsuarioController;
 import models.Componente;
 import models.Equipo;
 import models.Material;
 import models.Proyecto;
+import models.ProyectoParticipante;
 import models.Rol;
 import models.Trazabilidad;
 import models.TrazabilidadEquipo;
 import models.TrazabilidadMedioCultivo;
 import models.TrazabilidadReactivo;
+import models.Usuario;
 import utils.UploadImageEvidencia;
 import utils.dialogWindow;
 import utils.message;
@@ -133,15 +137,18 @@ public class VwTrazabilidad extends Panel {
 		return trazabilidadLayout; 
 	}
 
+	//Trazabilidad traza;
+	
 	public void cargarDatos() {
 		listTrazabilidad.clear();
 		trazas.removeAllComponents();
 		listTrazabilidad.addAll(TrazabilidadController.getAllTrazasByProyecto(proyecto.getIdProyecto()));
 		
 		Iterator<Trazabilidad> iteratorTrazabilidad = listTrazabilidad.iterator();
-		Trazabilidad traza;
+		
 		List<Rol> rolesAsignados = new ArrayList<>();
 		while(iteratorTrazabilidad.hasNext()) {
+			Trazabilidad traza = new Trazabilidad();
 			traza = iteratorTrazabilidad.next();
 			ProcesoComponent pc = new ProcesoComponent();
 			pc.getEstadoProyecto().setValue(traza.getEstadoRevision());
@@ -163,19 +170,71 @@ public class VwTrazabilidad extends Panel {
 				pc.getDelButton().setVisible(true);
 			}
 		    
+			boolean isDocente = false;
+			boolean isAdmin = false;
+						
 			rolesAsignados.clear();
 			rolesAsignados.addAll(roles);
 			Iterator<Rol> rol = rolesAsignados.iterator();
 			Long idrol;
 			while(rol.hasNext()) {
 				idrol = rol.next().getIdRol();
-				if(idrol == 2 || idrol == 1) {//1: ADMINISTRADOR 2: DOCENTE 
-					pc.getRevisarButton().setVisible(true);
-				}else {
-					pc.getRevisarButton().setVisible(false);
+				if(idrol == 2) {//2: DOCENTE 
+					isDocente = true;
+				}
+				
+				if(idrol == 1) {//1: ADMINISTRADOR 
+					isAdmin = true;
 				}
 			}
+						
+			if(ProyectoController.userIsResponsable(idUsuario, proyecto) && isDocente) {
+				pc.getRevisarButton().setVisible(true);
+				pc.getEditButton().setVisible(true);
+				pc.getDelButton().setVisible(true);
+			}else {
+				pc.getRevisarButton().setVisible(false);
+			}
+						
+			if(isAdmin) {
+				pc.getRevisarButton().setVisible(true);
+				pc.getEditButton().setVisible(true);
+				pc.getDelButton().setVisible(true);
+			}
 			
+			
+			Iterator<Usuario> iteratorUsers = TrazabilidadController.getRevisoresByTraza(traza.getIdTrazabilidad()).iterator();
+			Usuario revisor;
+			
+			while(iteratorUsers.hasNext()) {
+				revisor = iteratorUsers.next();
+				pc.getRevisores().setValue(revisor.getApellido_paterno()+" "+revisor.getNombre_uno()+"<br>");				
+			}
+			
+			//List<Usuario> us = new ArrayList<>();
+			//us.add(revisorCheck);
+			
+			Trazabilidad trazaUp = traza;
+			pc.getRevisarButton().addClickListener(e ->{	
+				Usuario revisorCheck = UsuarioController.getSpecificUserById(idUsuario);	
+				//trazaUp.getRevisor().add(revisorCheck);
+				List<Usuario> usuariosRevisores = new ArrayList<>();
+				usuariosRevisores.addAll(TrazabilidadController.getRevisoresByTraza(trazaUp.getIdTrazabilidad()));
+				usuariosRevisores.add(revisorCheck);
+				trazaUp.setRevisor(usuariosRevisores);
+				/*Iterator<Usuario> iteratorUs = usuariosRevisores.iterator();
+				Usuario rev;
+				
+				while(iteratorUs.hasNext()) {
+					rev = iteratorUs.next();
+					pc.getRevisores().setValue(rev.getApellido_paterno()+" "+rev.getNombre_uno()+"<br>");				
+				}*/
+				
+				TrazabilidadController.update(trazaUp);
+								
+				message.normalMessage("Acción realizada con éxito");
+			});
+						
 			trazas.addComponent(pc);
 		}   
 				

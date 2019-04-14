@@ -25,7 +25,7 @@ public class ProcesoComponent extends HorizontalLayout implements Serializable {
 	private Button editButton = new Button("Editar", VaadinIcons.EDIT);
 	private VerticalLayout layout = new VerticalLayout();
 	private HorizontalLayout footer = new HorizontalLayout();
-	private Label footerText = new Label("Revisado por: Gabriel Salvatierra Tumbaco<br> Katherine Mendoza", ContentMode.HTML);
+	private Label revisores = new Label("", ContentMode.HTML);
 	private VerticalLayout layoutComponent = new VerticalLayout();
 	private FormLayout form = new FormLayout();
 	private RichTextArea descripcionProceso = new RichTextArea();
@@ -60,12 +60,13 @@ public class ProcesoComponent extends HorizontalLayout implements Serializable {
 		viewButton.addStyleName(ValoTheme.BUTTON_SMALL);
         
 		footer.setSpacing(true);
-		footer.addComponents(footerText, viewButton, editButton,revisarButton,delButton);
+		footer.addComponents(revisores, viewButton, editButton,revisarButton,delButton);
 		footer.setWidth("100%");
-		footer.setExpandRatio(footerText, 1); 
+		footer.setExpandRatio(revisores, 1); 
 		
-		footerText.setSizeUndefined(); 
-	    footerText.setStyleName(ValoTheme.LABEL_TINY);
+		revisores.setSizeUndefined(); 
+	    revisores.setStyleName(ValoTheme.LABEL_TINY);
+	    revisores.setCaption("Revisado:");
 	    
 	    estadoProyecto.addStyleName(ValoTheme.LABEL_SMALL);
 	    estadoProyecto.setCaption("Estado proceso");
@@ -120,6 +121,16 @@ public class ProcesoComponent extends HorizontalLayout implements Serializable {
 	}
 		
 	
+	public Label getRevisores() {
+		return revisores;
+	}
+
+
+	public void setRevisores(Label revisores) {
+		this.revisores = revisores;
+	}
+
+
 	public void addComponentBody(Component c) {
 		layoutComponent.addComponent(c);
 	}
@@ -188,12 +199,12 @@ public class ProcesoComponent extends HorizontalLayout implements Serializable {
 
 
 	public Label getFooterText() {
-		return footerText;
+		return revisores;
 	}
 
 
 	public void setFooterText(Label footerText) {
-		this.footerText = footerText;
+		this.revisores = footerText;
 	}
 
 

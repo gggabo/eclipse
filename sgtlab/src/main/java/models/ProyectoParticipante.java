@@ -32,8 +32,6 @@ public class ProyectoParticipante implements Serializable {
 	@Column(name = "RESPONSABLE") 
 	private boolean responsable; 
 	
-	
-	
 	public ProyectoParticipante() {
 		// TODO Auto-generated constructor stub
 	}

@@ -258,7 +258,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 			while(rol.hasNext()) {
 				idrol = rol.next().getIdRol();
 				
-				if(idrol == 2) {//2: DOCENTE
+				if(idrol == 2 || idrol == 1) {//2: DOCENTE 1: ADMINISTRADOR
 					yesNo = true;
 				}
 				

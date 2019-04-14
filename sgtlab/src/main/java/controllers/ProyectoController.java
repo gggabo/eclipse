@@ -52,6 +52,24 @@ public class ProyectoController implements Serializable {
 		
 	}
 	
+	static boolean t;
+	public static boolean userIsResponsable(long idUsuario, Proyecto proyecto) {	
+		
+		JPAService.runInTransaction(em ->{
+			Query query = em.createQuery("select 1 from ProyectoParticipante p where p.usuario.id = ?1 and p.proyecto = ?2 and p.responsable = true");
+			query.setParameter(1, idUsuario);
+			query.setParameter(2, proyecto);
+
+			if(query.getResultList().size()>0) {
+				t = true;
+			}else {
+				t = false;
+			}
+			return null;
+		}
+        ); 
+		return t;
+	}
 	
 	@SuppressWarnings("unchecked")
 	public static List<ProyectoParticipante> getProyectoByUser(long idUser){
