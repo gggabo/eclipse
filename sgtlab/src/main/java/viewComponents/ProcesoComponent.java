@@ -35,7 +35,7 @@ public class ProcesoComponent extends HorizontalLayout implements Serializable {
 	private Label nombreUsuario = new Label();
 	private Label fechaPublicacion = new Label();
 	private Label horaPublicacion = new Label();
-	private Label estadoProyecto = new Label();
+	private Label estadoProceso = new Label();
 
 	public ProcesoComponent() {
 		layoutInformacion.addStyleName(ValoTheme.LAYOUT_CARD);
@@ -66,12 +66,12 @@ public class ProcesoComponent extends HorizontalLayout implements Serializable {
 		
 		revisores.setSizeUndefined(); 
 	    revisores.setStyleName(ValoTheme.LABEL_TINY);
-	    revisores.setCaption("Revisado:");
+	    revisores.setCaption("Revisado por:");
 	    
-	    estadoProyecto.addStyleName(ValoTheme.LABEL_SMALL);
-	    estadoProyecto.setCaption("Estado proceso");
-	    estadoProyecto.setValue("Esperando revisión");
-	    estadoProyecto.addStyleName("v-label-esperando-revision");
+	    estadoProceso.addStyleName(ValoTheme.LABEL_SMALL);
+	    estadoProceso.setCaption("Estado proceso");
+	    estadoProceso.setValue("Esperando revisión");
+	    estadoProceso.addStyleName("v-label-esperando-revision");
 	    		
 		descripcionProceso.addStyleName(ValoTheme.LABEL_SMALL);
 		descripcionProceso.setCaption("Proceso");
@@ -81,7 +81,7 @@ public class ProcesoComponent extends HorizontalLayout implements Serializable {
 				"\r\n" + 
 				"Morbi odio eros, volutpat ut pharetra vitae, lobortis sed nibh. Quam diu etiam furor iste tuus nos eludet? Cum sociis natoque penatibus et magnis dis parturient. Quam diu etiam furor iste tuus nos eludet? Tityre, tu patulae recubans sub tegmine fagi dolor.\r\n" ); 
 			*/	       
-		form.addComponents(estadoProyecto,descripcionProceso);
+		form.addComponents(estadoProceso,descripcionProceso);
 				 
 		layoutComponent.setSpacing(false);
 		layoutComponent.setMargin(false);
@@ -258,13 +258,13 @@ public class ProcesoComponent extends HorizontalLayout implements Serializable {
 	}
 
 
-	public Label getEstadoProyecto() {
-		return estadoProyecto;
+	public Label getEstadoProceso() {
+		return estadoProceso;
 	}
 
 
 	public void setEstadoProyecto(Label estadoProyecto) {
-		this.estadoProyecto = estadoProyecto;
+		this.estadoProceso = estadoProyecto;
 	}
 	
 	

@@ -89,12 +89,14 @@ public class TrazabilidadEquipo implements Serializable {
 	}
 
 
+	
+
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((equipo == null) ? 0 : equipo.hashCode());
-		result = prime * result + (int) (idTrazabilidadEquipo ^ (idTrazabilidadEquipo >>> 32));
 		return result;
 	}
 
@@ -112,8 +114,6 @@ public class TrazabilidadEquipo implements Serializable {
 			if (other.equipo != null)
 				return false;
 		} else if (!equipo.equals(other.equipo))
-			return false;
-		if (idTrazabilidadEquipo != other.idTrazabilidadEquipo)
 			return false;
 		return true;
 	}

@@ -6,6 +6,7 @@ import com.example.sgtlab.MainUI;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
@@ -17,10 +18,10 @@ public class MainView extends HorizontalLayout implements Serializable {
 		setSpacing(false);
 		setStyleName("main-screen");
 		 
-		VerticalLayout viewContainer = new VerticalLayout();
-		viewContainer.addStyleName("v-scrollable");
-		viewContainer.addStyleName("custom-margin-layout");
+		CssLayout viewContainer = new CssLayout();
 		viewContainer.setSizeFull();
+		//viewContainer.addStyleName("v-scrollable");
+		viewContainer.addStyleName("custom-margin-layout");
 		
 		final Navigator navigator = new Navigator(ui, viewContainer);
 		navigator.setErrorView(ErrorView.class); 

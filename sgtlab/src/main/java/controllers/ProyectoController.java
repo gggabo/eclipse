@@ -74,7 +74,7 @@ public class ProyectoController implements Serializable {
 	@SuppressWarnings("unchecked")
 	public static List<ProyectoParticipante> getProyectoByUser(long idUser){
 		return JPAService.runInTransaction(em->{
-			Query query = em.createQuery("select pp from ProyectoParticipante pp where pp.usuario.id =?1 ORDER BY proyecto.fecha DESC");
+			Query query = em.createQuery("select pp from ProyectoParticipante pp where pp.usuario.id =?1 and pp.proyecto.estado = 1 ORDER BY proyecto.fecha DESC");
 			query.setParameter(1,idUser);
 			return query.getResultList(); 
 		});

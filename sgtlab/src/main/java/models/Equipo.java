@@ -195,20 +195,14 @@ public class Equipo implements Serializable {
 		}
 	}
 
+	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + cantidad;
-		result = prime * result + ((caracteristicas == null) ? 0 : caracteristicas.hashCode());
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
-		result = prime * result + estado;
-		result = prime * result + ((estadoEquipo == null) ? 0 : estadoEquipo.hashCode());
-		result = prime * result + ((fechaAdquisicion == null) ? 0 : fechaAdquisicion.hashCode());
 		result = prime * result + (int) (idEquipo ^ (idEquipo >>> 32));
-		result = prime * result + ((marca == null) ? 0 : marca.hashCode());
-		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
-		result = prime * result + ((observacion == null) ? 0 : observacion.hashCode());
 		return result;
 	}
 
@@ -221,46 +215,12 @@ public class Equipo implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Equipo other = (Equipo) obj;
-		if (cantidad != other.cantidad)
-			return false;
-		if (caracteristicas == null) {
-			if (other.caracteristicas != null)
-				return false;
-		} else if (!caracteristicas.equals(other.caracteristicas))
-			return false;
 		if (codigo == null) {
 			if (other.codigo != null)
 				return false;
 		} else if (!codigo.equals(other.codigo))
 			return false;
-		if (estado != other.estado)
-			return false;
-		if (estadoEquipo == null) {
-			if (other.estadoEquipo != null)
-				return false;
-		} else if (!estadoEquipo.equals(other.estadoEquipo))
-			return false;
-		if (fechaAdquisicion == null) {
-			if (other.fechaAdquisicion != null)
-				return false;
-		} else if (!fechaAdquisicion.equals(other.fechaAdquisicion))
-			return false;
 		if (idEquipo != other.idEquipo)
-			return false;
-		if (marca == null) {
-			if (other.marca != null)
-				return false;
-		} else if (!marca.equals(other.marca))
-			return false;
-		if (nombre == null) {
-			if (other.nombre != null)
-				return false;
-		} else if (!nombre.equals(other.nombre))
-			return false;
-		if (observacion == null) {
-			if (other.observacion != null)
-				return false;
-		} else if (!observacion.equals(other.observacion))
 			return false;
 		return true;
 	}

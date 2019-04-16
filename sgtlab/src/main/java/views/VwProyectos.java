@@ -41,7 +41,10 @@ import controllers.MateriaController;
 import controllers.ProyectoController;
 import controllers.ProyectoParticipanteController;
 import controllers.TipoProyectoController;
+import controllers.TrazabilidadController;
 import controllers.UsuarioController;
+import de.steinwedel.messagebox.ButtonOption;
+import de.steinwedel.messagebox.MessageBox;
 import fi.jasoft.qrcode.QRCode;
 import models.Materia;
 import models.Proyecto;
@@ -117,6 +120,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		pnlPrincipal.setCaption("Gestión de proyectos");
 		pnlPrincipal.setIcon(VaadinIcons.USERS);
 		pnlPrincipal.setContent(proyectoLayout);
+		pnlPrincipal.setHeight("600px");
 		
 		mainLayout.addComponents(pnlPrincipal);
 		mainLayout.setHeight("100%");
@@ -185,6 +189,23 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 				
 				listMateria.addAll(ProyectoController.getAllMateriaByProject(prop.getProyecto().getIdProyecto()));
 				gridMateria.setItems(listMateria);
+				
+			});
+			
+			p.getCancelButton().addClickListener(e ->{
+								
+				MessageBox.createQuestion()
+				.withCaption("Confirmación de eliminación")
+	    		.withMessage("Está seguro de eliminar este registro?")
+	    		.withOkButton(() -> {
+	    			Proyecto proyectoUp = prop.getProyecto();
+					proyectoUp.setEstado(0);
+					ProyectoController.update(proyectoUp);
+					layoutProyectos.removeComponent(p);		
+	    			message.normalMessage("Registro eliminado");
+	    		},ButtonOption.caption("Si"))
+	    		.withCancelButton(ButtonOption.caption("No"))
+	    		.open();
 				
 			});
 			

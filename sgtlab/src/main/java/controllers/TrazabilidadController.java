@@ -1,14 +1,20 @@
 package controllers;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.Query;
 
 import models.Laboratorio;
+import models.Material;
 import models.Proyecto;
 import models.Reactivo;
 import models.Trazabilidad;
+import models.TrazabilidadEquipo;
+import models.TrazabilidadMedioCultivo;
+import models.TrazabilidadReactivo;
 import models.Usuario;
 import services.JPAService;
 
@@ -64,6 +70,95 @@ public class TrazabilidadController implements Serializable {
 		return pr.getTrazabilidad();
 	}
 	
+	public static List<TrazabilidadReactivo> getAllReactivoTraza(long idProyecto) {		
+		JPAService.runInTransaction(em ->{
+			trazabilidad = em.find(Trazabilidad.class, idProyecto);
+			trazabilidad.getTrazabilidadReactivos().size();		
+			return null;	
+		}); 	
+		return trazabilidad.getTrazabilidadReactivos();
+	}
+	
+@SuppressWarnings("unchecked")
+public static List<TrazabilidadReactivo> getReactivoTrazaByLab(long idTrazabilidad, long laboratorio) {		
+		
+		return JPAService.runInTransaction(em->{
+			Query query = em.createQuery("select tr from TrazabilidadReactivo tr where tr.trazabilidad.idTrazabilidad = ?1"
+					+ " and tr.reactivo.laboratorio.idLaboratorio = ?2"
+					);
+			query.setParameter(1, idTrazabilidad);
+			query.setParameter(2, laboratorio);
+			
+			return query.getResultList();
+		});
+	
+	}
+
+@SuppressWarnings("unchecked")
+public static List<TrazabilidadEquipo> getEquipoTrazaByLab(long idTrazabilidad, long laboratorio) {		
+		
+		return JPAService.runInTransaction(em->{
+			Query query = em.createQuery("select te from TrazabilidadEquipo te where te.trazabilidad.idTrazabilidad = ?1"
+					+ " and te.equipo.laboratorio.idLaboratorio = ?2"
+					);
+			query.setParameter(1, idTrazabilidad);
+			query.setParameter(2, laboratorio);
+			
+			List<TrazabilidadEquipo> tEquipo = new ArrayList<>();
+			tEquipo.addAll(query.getResultList());
+			
+			Iterator<TrazabilidadEquipo> iteratorTEquipo = tEquipo.iterator();
+			TrazabilidadEquipo te;
+			
+			while(iteratorTEquipo.hasNext()) {
+				te = iteratorTEquipo.next();
+				te.getComponentes().size();
+			}
+			
+			return tEquipo;
+		});
+	
+}
+
+
+public static List<Material> getMaterialTrazaByLab(long idTrazabilidad, long laboratorio) {		
+	List<Material> listReturn = new ArrayList<>();
+	JPAService.runInTransaction(em ->{
+		trazabilidad = em.find(Trazabilidad.class, idTrazabilidad);
+		trazabilidad.getMateriales().size();
+		
+		List<Material> listMat = new ArrayList<>();
+		listMat.addAll(trazabilidad.getMateriales());
+		Iterator<Material> iteratorMat = listMat.iterator();
+		Material m;
+		
+		while(iteratorMat.hasNext()) {
+			m = iteratorMat.next();
+			if(m.getLaboratorio().getIdLaboratorio() == laboratorio) {
+				listReturn.add(m);
+			}
+		}
+		
+		return null;	
+	}); 	
+	return listReturn;
+	
+}
+
+@SuppressWarnings("unchecked")
+public static List<TrazabilidadMedioCultivo> getMedioCultivoTrazaByLab(long idTrazabilidad, long laboratorio) {		
+		
+		return JPAService.runInTransaction(em->{
+			Query query = em.createQuery("select tmc from TrazabilidadMedioCultivo tmc where tmc.trazabilidad.idTrazabilidad = ?1"
+					+ " and tmc.medioCultivo.laboratorio.idLaboratorio = ?2"
+					);
+			query.setParameter(1, idTrazabilidad);
+			query.setParameter(2, laboratorio);
+			
+			return query.getResultList();
+		});
+	
+	}
 
 	public static List<Usuario> getRevisoresByTraza(long idTraza) {		
 		JPAService.runInTransaction(em ->{

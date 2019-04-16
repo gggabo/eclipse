@@ -353,6 +353,7 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 			    		.withMessage(txt)
 			    		.withOkButton(() -> {
 			    			float gasto, saldo;
+			    			if(txt.isEmpty()) txt.setValue("0");
 			    			gasto = Float.parseFloat(txt.getValue());
 			    			saldo = Reactivo.getSaldo();
 			    			if(gasto > saldo) {
@@ -382,6 +383,7 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 			    		.withMessage(txt)
 			    		.withOkButton(() -> {
 			    			float gasto, saldo;
+			    			if(txt.isEmpty()) txt.setValue("0");
 			    			gasto = Float.parseFloat(txt.getValue());
 			    			saldo = Reactivo.getSaldo();
 			    			if(gasto > saldo) {
@@ -411,6 +413,7 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 			    		.withMessage(txt)
 			    		.withOkButton(() -> {
 			    			float gasto, saldo;
+			    			if(txt.isEmpty()) txt.setValue("0");
 			    			gasto = Float.parseFloat(txt.getValue());
 			    			saldo = Reactivo.getSaldo();
 			    			if(gasto > saldo) {
@@ -440,6 +443,7 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 			    		.withMessage(txt)
 			    		.withOkButton(() -> {
 			    			float gasto, saldo;
+			    			if(txt.isEmpty()) txt.setValue("0");
 			    			gasto = Float.parseFloat(txt.getValue());
 			    			saldo = Reactivo.getSaldo();
 			    			if(gasto > saldo) {
@@ -758,6 +762,7 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 			    		.withMessage(txt)
 			    		.withOkButton(() -> {
 			    			float gasto, saldo;
+			    			if(txt.isEmpty()) txt.setValue("0");
 			    			gasto = Float.parseFloat(txt.getValue());
 			    			saldo = MedioCultivo.getSaldo();
 			    			if(gasto > saldo) {

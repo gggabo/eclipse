@@ -40,6 +40,8 @@ import controllers.ProyectoController;
 import controllers.ProyectoParticipanteController;
 import controllers.TrazabilidadController;
 import controllers.UsuarioController;
+import de.steinwedel.messagebox.ButtonOption;
+import de.steinwedel.messagebox.MessageBox;
 import models.Componente;
 import models.Equipo;
 import models.Material;
@@ -79,6 +81,8 @@ public class VwTrazabilidad extends Panel {
 		this.vwproyectos = vwproyectos;
 		setCaption("Gestión de trazabilidad de producto");
 		setIcon(VaadinIcons.FILE_PROCESS);
+		//setSizeFull();
+		//addStyleName("v-scrollable");
 		setHeight("600px"); 
 		setCss(); 
 		setContent(buildUI());
@@ -111,7 +115,8 @@ public class VwTrazabilidad extends Panel {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
-				newEditTraza();
+				trazabilidadAction = "guardar";
+				newEditTraza(null);
 			}
 		});	
 		
@@ -131,6 +136,8 @@ public class VwTrazabilidad extends Panel {
 			}
 		});
 
+		trazas.addStyleName("v-scrollable");
+		//trazas.setSizeFull();
 		trazabilidadLayout.addComponents(toolbar,trazas);//,gridTrazabilidad);//, buildUIProyect());
 		trazabilidadLayout.setMargin(false);
 		
@@ -151,7 +158,7 @@ public class VwTrazabilidad extends Panel {
 			Trazabilidad traza = new Trazabilidad();
 			traza = iteratorTrazabilidad.next();
 			ProcesoComponent pc = new ProcesoComponent();
-			pc.getEstadoProyecto().setValue(traza.getEstadoRevision());
+			pc.getEstadoProceso().setValue(traza.getEstadoRevision());
 			pc.getDescripcionProceso().setValue(traza.getDescripcion());	
 			pc.getNombreUsuario().setValue(traza.getUsuario().getApellido_paterno()+" "+traza.getUsuario().getNombre_uno());
 			pc.getFechaPublicacion().setValue(traza.getFecha().toString());
@@ -202,37 +209,76 @@ public class VwTrazabilidad extends Panel {
 				pc.getDelButton().setVisible(true);
 			}
 			
-			
+			//CARGAR REVISORES DE PROCESO
 			Iterator<Usuario> iteratorUsers = TrazabilidadController.getRevisoresByTraza(traza.getIdTrazabilidad()).iterator();
 			Usuario revisor;
-			
+			boolean estadoRevision = false;
+			String strRevisores = "";
 			while(iteratorUsers.hasNext()) {
-				revisor = iteratorUsers.next();
-				pc.getRevisores().setValue(revisor.getApellido_paterno()+" "+revisor.getNombre_uno()+"<br>");				
+				revisor = iteratorUsers.next();		
+				strRevisores = strRevisores + revisor.getApellido_paterno()+" "+revisor.getNombre_uno()+"<br>";
+				estadoRevision = true;
+			}
+			pc.getRevisores().setValue(strRevisores);
+			if(estadoRevision) {
+				pc.getEstadoProceso().setValue("Revisado");
+				pc.getEstadoProceso().addStyleName("v-label-revisado");
 			}
 			
-			//List<Usuario> us = new ArrayList<>();
-			//us.add(revisorCheck);
+			//VER
+			Trazabilidad trazaMod = traza;
+			pc.getEditButton().addClickListener(e->{
+				trazabilidadAction = "modificar";
+				newEditTraza(trazaMod);
+				
+			});
 			
+			//REVISAR
 			Trazabilidad trazaUp = traza;
 			pc.getRevisarButton().addClickListener(e ->{	
 				Usuario revisorCheck = UsuarioController.getSpecificUserById(idUsuario);	
-				//trazaUp.getRevisor().add(revisorCheck);
 				List<Usuario> usuariosRevisores = new ArrayList<>();
 				usuariosRevisores.addAll(TrazabilidadController.getRevisoresByTraza(trazaUp.getIdTrazabilidad()));
-				usuariosRevisores.add(revisorCheck);
-				trazaUp.setRevisor(usuariosRevisores);
-				/*Iterator<Usuario> iteratorUs = usuariosRevisores.iterator();
-				Usuario rev;
 				
+				if(!usuariosRevisores.contains(revisorCheck)) {
+					usuariosRevisores.add(revisorCheck);
+				}else {
+					message.warringMessage("El usuario ya realizó la revisión");
+					return;
+				}  
+				
+				trazaUp.setRevisor(usuariosRevisores);
+				trazaUp.setEstadoRevision("Revisado"); 
+				TrazabilidadController.update(trazaUp);
+				
+				Iterator<Usuario> iteratorUs = usuariosRevisores.iterator();
+				Usuario rev;
+				String srtRevisoresUp = "";
 				while(iteratorUs.hasNext()) {
 					rev = iteratorUs.next();
-					pc.getRevisores().setValue(rev.getApellido_paterno()+" "+rev.getNombre_uno()+"<br>");				
-				}*/
+					srtRevisoresUp = srtRevisoresUp + rev.getApellido_paterno()+" "+rev.getNombre_uno()+"<br>";			
+				}	
+				pc.getRevisores().setValue(srtRevisoresUp);	
+				pc.getEstadoProceso().setValue("Revisado");
+				pc.getEstadoProceso().addStyleName("v-label-revisado");
 				
-				TrazabilidadController.update(trazaUp);
-								
 				message.normalMessage("Acción realizada con éxito");
+			});
+			
+			//ELIMINAR
+			Trazabilidad trazaDel = traza;
+			pc.getDelButton().addClickListener(e ->{
+				MessageBox.createQuestion()
+				.withCaption("Confirmación de eliminación")
+	    		.withMessage("Está seguro de eliminar este registro?")
+	    		.withOkButton(() -> {
+	    			trazaDel.setEstado(0);
+	    			TrazabilidadController.update(trazaDel);
+	    			trazas.removeComponent(pc);		
+	    			message.normalMessage("Registro eliminado");
+	    		},ButtonOption.caption("Si"))
+	    		.withCancelButton(ButtonOption.caption("No"))
+	    		.open();						
 			});
 						
 			trazas.addComponent(pc);
@@ -1060,21 +1106,65 @@ public class VwTrazabilidad extends Panel {
 		
 	}
 	
-	public void newEditTraza() {
-		//limpiarReactivo();
-
+	public void newEditTraza(Trazabilidad trazMod) {
+	
 		dialogWindow dialogReactivoWindow = new dialogWindow("Registro de procesos", VaadinIcons.ARROW_RIGHT);
+		
+		limpiarTraza();
 
-		/*hl.setCaption("Unidad");
-		hl.setSpacing(false);
-		hl.setMargin(false);
-		hl.addComponents(cmbUnidad, btnAddUnidad);
-		 
-		formLayoutReactivo.setSpacing(false);
-		formLayoutReactivo.setMargin(false);
-		formLayoutReactivo.addComponents(codigoReactivo, nombreReactivo, entradaReactivo, gastoRectivo, saldoRectivo,
-				hl, fechaCaducidadRectivo);
-*/
+		if(trazabilidadAction.equals("modificar")) {
+			
+			listReactivosPQ.addAll(TrazabilidadController.getReactivoTrazaByLab(trazMod.getIdTrazabilidad(), 1));
+			gridReactivoPQ.setItems(listReactivosPQ);
+			
+			listEquiposPQ.addAll(TrazabilidadController.getEquipoTrazaByLab(trazMod.getIdTrazabilidad(), 1));
+			gridEquipoPQ.setItems(listEquiposPQ);
+			
+			listMaterialesPQ.addAll(TrazabilidadController.getMaterialTrazaByLab(trazMod.getIdTrazabilidad(), 1));
+			gridMaterialPQ.setItems(listMaterialesPQ);
+			
+			
+			listReactivosMi.addAll(TrazabilidadController.getReactivoTrazaByLab(trazMod.getIdTrazabilidad(), 2));
+			gridReactivoMi.setItems(listReactivosMi);
+			
+			listEquiposMi.addAll(TrazabilidadController.getEquipoTrazaByLab(trazMod.getIdTrazabilidad(), 2));
+			gridEquipoMi.setItems(listEquiposMi);
+			
+			listMaterialesMi.addAll(TrazabilidadController.getMaterialTrazaByLab(trazMod.getIdTrazabilidad(), 2));
+			gridMaterialMi.setItems(listMaterialesMi);
+						
+			listMediosCultivosMi.addAll(TrazabilidadController.getMedioCultivoTrazaByLab(trazMod.getIdTrazabilidad(), 2));
+			gridMedioCultivoMi.setItems(listMediosCultivosMi);
+			
+			
+			listEquiposOU.addAll(TrazabilidadController.getEquipoTrazaByLab(trazMod.getIdTrazabilidad(), 3));
+			gridEquipoOU.setItems(listEquiposOU); 
+			
+			listMaterialesOU.addAll(TrazabilidadController.getMaterialTrazaByLab(trazMod.getIdTrazabilidad(), 3));
+			gridMaterialOU.setItems(listMaterialesOU);
+			
+			
+			listReactivosAG.addAll(TrazabilidadController.getReactivoTrazaByLab(trazMod.getIdTrazabilidad(), 4));
+			gridReactivoAG.setItems(listReactivosAG);
+			
+			listEquiposAG.addAll(TrazabilidadController.getEquipoTrazaByLab(trazMod.getIdTrazabilidad(), 4));
+			gridEquipoAG.setItems(listEquiposAG);
+			
+			listMaterialesAG.addAll(TrazabilidadController.getMaterialTrazaByLab(trazMod.getIdTrazabilidad(), 4));
+			gridMaterialAG.setItems(listMaterialesAG);
+			
+			
+			listReactivosEC.addAll(TrazabilidadController.getReactivoTrazaByLab(trazMod.getIdTrazabilidad(), 5));
+			gridReactivoEC.setItems(listReactivosEC);
+			
+			listEquiposEC.addAll(TrazabilidadController.getEquipoTrazaByLab(trazMod.getIdTrazabilidad(), 5));
+			gridEquipoEC.setItems(listEquiposEC);
+			
+			listMaterialesEC.addAll(TrazabilidadController.getMaterialTrazaByLab(trazMod.getIdTrazabilidad(), 5));
+			gridMaterialEC.setItems(listMaterialesEC);
+			
+		}
+		
 		dialogReactivoWindow.getOkButton().addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 
@@ -1154,19 +1244,7 @@ public class VwTrazabilidad extends Panel {
 					traz.setTrazabilidadMediosCultivo(listMediosCultivo);	
 					
 				    TrazabilidadController.save(traz);
-					
-					/*if (ReactivoController.DBcontainsCodReactivo(codigoReactivo.getValue())) {
-						message.warringMessage("El codigo del reactivo ya se encuentra registrado");
-						return;
-					}*/
-										
-					/*Reactivo react = new Reactivo(codigoReactivo.getValue().toUpperCase().trim(),
-							nombreReactivo.getValue().toUpperCase().trim(),
-							Float.parseFloat(entradaReactivo.getValue()), fechaCaducidadRectivo.getValue(),
-							Float.parseFloat(gastoRectivo.getValue()), Float.parseFloat(saldoRectivo.getValue()),
-							cmbUnidad.getValue(), cmbLaboratorio.getValue(), 1);
-
-					ReactivoController.save(react);*/
+				    
 				} else {
 
 					/*reactMod.setCodigo(codigoReactivo.getValue().toUpperCase().trim());
@@ -1180,6 +1258,7 @@ public class VwTrazabilidad extends Panel {
 
 					ReactivoController.update(reactMod);
 					codigoReactivo.setReadOnly(false);*/
+					trazabilidadAction = "guardar";
 				}
 
 				message.normalMessage("Acción realizada con éxito");
@@ -1214,7 +1293,42 @@ public class VwTrazabilidad extends Panel {
 	}
 	
 	public void limpiarTraza() {
+		listReactivosPQ.clear();
+		gridReactivoPQ.setItems(listReactivosPQ);
+		listEquiposPQ.clear();
+		gridEquipoPQ.setItems(listEquiposPQ);
+		listMaterialesPQ.clear();
+		gridMaterialPQ.setItems(listMaterialesPQ);
 		
+		listReactivosMi.clear();
+		gridReactivoMi.setItems(listReactivosMi);
+		listEquiposMi.clear();
+		gridEquipoMi.setItems(listEquiposMi);
+		listMaterialesMi.clear();
+		gridMaterialMi.setItems(listMaterialesMi);
+		listMediosCultivosMi.clear();
+		gridMedioCultivoMi.setItems(listMediosCultivosMi);
+		
+		listEquiposOU.clear();
+		gridEquipoOU.setItems(listEquiposOU);
+		listMaterialesOU.clear();
+		gridMaterialOU.setItems(listMaterialesOU);
+		
+		listReactivosAG.clear();
+		gridReactivoAG.setItems(listReactivosAG);
+		listEquiposAG.clear();
+		gridEquipoAG.setItems(listEquiposAG);
+		listMaterialesAG.clear();
+		gridMaterialAG.setItems(listMaterialesAG);
+		
+		listReactivosEC.clear();
+		gridReactivoEC.setItems(listReactivosEC);
+		listEquiposEC.clear();
+		gridEquipoEC.setItems(listEquiposEC);
+		listMaterialesEC.clear();
+		gridMaterialEC.setItems(listMaterialesEC);
+		
+		descripcionProceso.clear();
 	}
 	
 	public void setCss() {
