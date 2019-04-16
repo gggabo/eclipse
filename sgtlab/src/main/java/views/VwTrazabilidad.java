@@ -225,12 +225,18 @@ public class VwTrazabilidad extends Panel {
 				pc.getEstadoProceso().addStyleName("v-label-revisado");
 			}
 			
-			//VER
+			//EDITAR
 			Trazabilidad trazaMod = traza;
 			pc.getEditButton().addClickListener(e->{
 				trazabilidadAction = "modificar";
 				newEditTraza(trazaMod);
-				
+			});
+			
+			//EDITAR
+			Trazabilidad trazaView = traza;
+			pc.getViewButton().addClickListener(e->{
+				trazabilidadAction = "ver";
+				newEditTraza(trazaView);
 			});
 			
 			//REVISAR
@@ -463,7 +469,7 @@ public class VwTrazabilidad extends Panel {
 			hl.addComponents(b2);
 			return hl;
 			
-		}).setCaption("Opciones"); 
+		}).setCaption("Opciones").setId("Opciones"); 
 
 		gridReactivoPQ.setWidth("100%");
 		gridReactivoPQ.setHeight("150px");
@@ -496,7 +502,7 @@ public class VwTrazabilidad extends Panel {
 			hl.setSizeFull();
 			hl.addComponents(b2);
 			return hl;
-		}).setCaption("Opciones");
+		}).setCaption("Opciones").setId("Opciones"); 
 
 		gridEquipoPQ.setWidth("100%");
 		gridEquipoPQ.setHeight("150px");
@@ -533,7 +539,7 @@ public class VwTrazabilidad extends Panel {
 			hl.setSizeFull();
 			hl.addComponents(b2);
 			return hl;
-		}).setCaption("Opciones");
+		}).setCaption("Opciones").setId("Opciones"); 
 
 		gridMaterialPQ.setWidth("100%");
 		gridMaterialPQ.setHeight("150px");
@@ -1163,6 +1169,70 @@ public class VwTrazabilidad extends Panel {
 			listMaterialesEC.addAll(TrazabilidadController.getMaterialTrazaByLab(trazMod.getIdTrazabilidad(), 5));
 			gridMaterialEC.setItems(listMaterialesEC);
 			
+			evidencia.setValue(trazMod.getEvidencia());
+			
+			descripcionProceso.setValue(trazMod.getDescripcion());
+			
+		}else {
+			listReactivosPQ.addAll(TrazabilidadController.getReactivoTrazaByLab(trazMod.getIdTrazabilidad(), 1));
+			gridReactivoPQ.setItems(listReactivosPQ);
+			
+			listEquiposPQ.addAll(TrazabilidadController.getEquipoTrazaByLab(trazMod.getIdTrazabilidad(), 1));
+			gridEquipoPQ.setItems(listEquiposPQ);
+			
+			listMaterialesPQ.addAll(TrazabilidadController.getMaterialTrazaByLab(trazMod.getIdTrazabilidad(), 1));
+			gridMaterialPQ.setItems(listMaterialesPQ);
+			
+			
+			listReactivosMi.addAll(TrazabilidadController.getReactivoTrazaByLab(trazMod.getIdTrazabilidad(), 2));
+			gridReactivoMi.setItems(listReactivosMi);
+			
+			listEquiposMi.addAll(TrazabilidadController.getEquipoTrazaByLab(trazMod.getIdTrazabilidad(), 2));
+			gridEquipoMi.setItems(listEquiposMi);
+			
+			listMaterialesMi.addAll(TrazabilidadController.getMaterialTrazaByLab(trazMod.getIdTrazabilidad(), 2));
+			gridMaterialMi.setItems(listMaterialesMi);
+						
+			listMediosCultivosMi.addAll(TrazabilidadController.getMedioCultivoTrazaByLab(trazMod.getIdTrazabilidad(), 2));
+			gridMedioCultivoMi.setItems(listMediosCultivosMi);
+			
+			
+			listEquiposOU.addAll(TrazabilidadController.getEquipoTrazaByLab(trazMod.getIdTrazabilidad(), 3));
+			gridEquipoOU.setItems(listEquiposOU); 
+			
+			listMaterialesOU.addAll(TrazabilidadController.getMaterialTrazaByLab(trazMod.getIdTrazabilidad(), 3));
+			gridMaterialOU.setItems(listMaterialesOU);
+			
+			
+			listReactivosAG.addAll(TrazabilidadController.getReactivoTrazaByLab(trazMod.getIdTrazabilidad(), 4));
+			gridReactivoAG.setItems(listReactivosAG);
+			
+			listEquiposAG.addAll(TrazabilidadController.getEquipoTrazaByLab(trazMod.getIdTrazabilidad(), 4));
+			gridEquipoAG.setItems(listEquiposAG);
+			
+			listMaterialesAG.addAll(TrazabilidadController.getMaterialTrazaByLab(trazMod.getIdTrazabilidad(), 4));
+			gridMaterialAG.setItems(listMaterialesAG);
+			
+			
+			listReactivosEC.addAll(TrazabilidadController.getReactivoTrazaByLab(trazMod.getIdTrazabilidad(), 5));
+			gridReactivoEC.setItems(listReactivosEC);
+			
+			listEquiposEC.addAll(TrazabilidadController.getEquipoTrazaByLab(trazMod.getIdTrazabilidad(), 5));
+			gridEquipoEC.setItems(listEquiposEC);
+			
+			listMaterialesEC.addAll(TrazabilidadController.getMaterialTrazaByLab(trazMod.getIdTrazabilidad(), 5));
+			gridMaterialEC.setItems(listMaterialesEC);
+			
+			evidencia.setValue(trazMod.getEvidencia());
+			
+			descripcionProceso.setValue(trazMod.getDescripcion());
+			
+			descripcionProceso.setEnabled(false);
+			gridReactivoPQ.getColumn("Opciones").setHidden(true);
+			gridEquipoPQ.getColumn("Opciones").setHidden(true);
+			gridMaterialPQ.getColumn("Opciones").setHidden(true);
+			
+			dialogReactivoWindow.getOkButton().setVisible(false);
 		}
 		
 		dialogReactivoWindow.getOkButton().addClickListener(new ClickListener() {
@@ -1186,7 +1256,7 @@ public class VwTrazabilidad extends Panel {
 					traz.setProyecto(proyecto);
 					traz.setEstadoRevision("Esperando revisión");
 					
-					System.out.println(LoginController.u.getNombre_usuario());
+					System.out.println("Proceso creado por: "+LoginController.u.getNombre_usuario());
 					
 					traz.setUsuario(UsuarioController.getSpecificUserById(idUsuario));
 					
@@ -1247,18 +1317,65 @@ public class VwTrazabilidad extends Panel {
 				    
 				} else {
 
-					/*reactMod.setCodigo(codigoReactivo.getValue().toUpperCase().trim());
-					reactMod.setNombre(nombreReactivo.getValue().toUpperCase().trim());
-					reactMod.setEntrada(Float.parseFloat(entradaReactivo.getValue()));
-					reactMod.setFechaCaducidad(fechaCaducidadRectivo.getValue());
-					reactMod.setGasto(Float.parseFloat(gastoRectivo.getValue()));
-					reactMod.setSaldo(Float.parseFloat(saldoRectivo.getValue()));
-					reactMod.setUnidad(cmbUnidad.getValue());
-					reactMod.setLaboratorio(cmbLaboratorio.getValue());
+					trazMod.setProyecto(proyecto);
+					trazMod.setDescripcion(descripcionProceso.getValue());
+					trazMod.setEvidencia(evidencia.getValue());
+					
+					//REACTIVOS
+					List<TrazabilidadReactivo> listReactivos = new ArrayList<>();
+					listReactivos.addAll(listReactivosPQ);
+					listReactivos.addAll(listReactivosMi);
+					listReactivos.addAll(listReactivosEC);
+					listReactivos.addAll(listReactivosAG);
+				
+					Iterator<TrazabilidadReactivo> iteratorReactivo = listReactivos.iterator();
+					TrazabilidadReactivo trazReactivo;
+					while(iteratorReactivo.hasNext()) {
+						trazReactivo = iteratorReactivo.next();
+						trazReactivo.setTrazabilidad(trazMod);
+					}
+					trazMod.setTrazabilidadReactivos(listReactivos);
+					
+					//EQUIPOS
+					List<TrazabilidadEquipo> listEquipos = new ArrayList<>();
+					listEquipos.addAll(listEquiposPQ);
+					listEquipos.addAll(listEquiposMi);
+					listEquipos.addAll(listEquiposEC);
+					listEquipos.addAll(listEquiposAG);
+					listEquipos.addAll(listEquiposOU);
+				
+					Iterator<TrazabilidadEquipo> iteratorEquipos = listEquipos.iterator();
+					TrazabilidadEquipo trazEquipo;
+					while(iteratorEquipos.hasNext()) {
+						trazEquipo = iteratorEquipos.next();
+						trazEquipo.setTrazabilidad(trazMod);
+					}
+					trazMod.setTrazabilidadEquipos(listEquipos);					
+					
+					//MATERIALES
+					List<Material> listMateriales = new ArrayList<>();
+					listMateriales.addAll(listMaterialesPQ);
+					listMateriales.addAll(listMaterialesMi);
+					listMateriales.addAll(listMaterialesEC);
+					listMateriales.addAll(listMaterialesAG);
+					listMateriales.addAll(listMaterialesOU);
 
-					ReactivoController.update(reactMod);
-					codigoReactivo.setReadOnly(false);*/
-					trazabilidadAction = "guardar";
+					trazMod.setMateriales(listMateriales);
+					
+					//EQUIPOS
+					List<TrazabilidadMedioCultivo> listMediosCultivo = new ArrayList<>();
+					listMediosCultivo.addAll(listMediosCultivosMi);
+				
+					Iterator<TrazabilidadMedioCultivo> iteratorMediosCultivo = listMediosCultivo.iterator();
+					TrazabilidadMedioCultivo trazMediosCultivo;
+					while(iteratorMediosCultivo.hasNext()) {
+						trazMediosCultivo = iteratorMediosCultivo.next();
+						trazMediosCultivo.setTrazabilidad(trazMod);
+					}
+					trazMod.setTrazabilidadMediosCultivo(listMediosCultivo);	
+					
+				    TrazabilidadController.update(trazMod);
+
 				}
 
 				message.normalMessage("Acción realizada con éxito");
@@ -1329,6 +1446,8 @@ public class VwTrazabilidad extends Panel {
 		gridMaterialEC.setItems(listMaterialesEC);
 		
 		descripcionProceso.clear();
+		
+		evidencia.clear();
 	}
 	
 	public void setCss() {
