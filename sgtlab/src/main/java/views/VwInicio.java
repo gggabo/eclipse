@@ -33,7 +33,7 @@ public class VwInicio extends VerticalLayout implements View, Serializable {
 		String strRol = "";
 		while(iteratorRol.hasNext()) {
 			rol = iteratorRol.next();
-			strRol = strRol + rol.getNombre()+"&nbsp;";
+			strRol = strRol + rol.getNombre()+"&nbsp;&nbsp;";
 		} 
 		
 		HorizontalLayout h = new HorizontalLayout();

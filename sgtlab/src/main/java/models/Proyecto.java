@@ -2,6 +2,7 @@ package models;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,9 @@ public class Proyecto implements Serializable {
 	@Column(name = "FECHA")
 	private LocalDate fecha;
 	
+	@Column(name = "HORA")
+	private LocalTime hora;
+	
 	@ManyToOne//(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ID_TIPOPROYECTO")
 	private TipoProyecto tipoProyecto;
@@ -65,18 +69,27 @@ public class Proyecto implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Proyecto(String codigo, LocalDate fecha, TipoProyecto tipoProyecto, String tema, String descripcion,String estadoProyecto,
+	public Proyecto(String codigo, LocalDate fecha,LocalTime hora , TipoProyecto tipoProyecto, String tema, String descripcion,String estadoProyecto,
 			int estado) {
 		super();
 		this.codigo = codigo;
 		this.fecha = fecha;
+		this.hora = hora;
 		this.tipoProyecto = tipoProyecto;
 		this.tema = tema;
 		this.descripcion = descripcion;
 		this.estadoProyecto = estadoProyecto;
 		this.estado = estado;
 	}
-	
+		
+	public LocalTime getHora() {
+		return hora;
+	}
+
+	public void setHora(LocalTime hora) {
+		this.hora = hora;
+	}
+
 	public List<Trazabilidad> getTrazabilidad() {
 		return trazabilidad;
 	}

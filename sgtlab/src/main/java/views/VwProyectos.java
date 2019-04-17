@@ -2,6 +2,7 @@ package views;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -137,7 +138,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		
 		List<ProyectoParticipante> pp = ProyectoController.getProyectoByUser(idUsuario);
 		Iterator<ProyectoParticipante> iteratorPp = pp.iterator();
-		
+		 
 		
 		List<ProyectoParticipante> ppU = null;
 		Iterator<ProyectoParticipante> iteratorPpU;// = ppU.iterator();
@@ -434,7 +435,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 				}
 				
 				if(proyectoAction.equals("guardar")) {
-					Proyecto p = new Proyecto(codigoProject.getValue(), fechaProyecto.getValue(), cmbTipo.getValue(), 
+					Proyecto p = new Proyecto(codigoProject.getValue(), fechaProyecto.getValue(), LocalTime.now(),cmbTipo.getValue(), 
 							temaProject.getValue().toUpperCase().trim(), descripcionProject.getValue().toUpperCase().trim(), "EJECUCIÓN",1);
 					
 					p.setMaterias(listMateria);
@@ -522,6 +523,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		qr.setValue(cod.toUpperCase());
 		temaProject.clear();
 		fechaProyecto.setValue(LocalDate.now());
+		fechaProyecto.setEnabled(false);
 		descripcionProject.clear();
 		listProyectoParticipante.clear();
 		gridParticipante.setItems(listProyectoParticipante);
