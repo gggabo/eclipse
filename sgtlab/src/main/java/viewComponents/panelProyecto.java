@@ -17,9 +17,10 @@ import fi.jasoft.qrcode.QRCode;
 
 public class panelProyecto extends Panel implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private Button trazButton = new Button("", VaadinIcons.BOOK);
+	private Button trazButton = new Button("", VaadinIcons.FILE_TREE_SMALL);
 	private Button delButton = new Button("", VaadinIcons.CLOSE_CIRCLE_O);
 	private Button editButton = new Button("", VaadinIcons.EDIT);
+	private Button printButton = new Button("", VaadinIcons.PRINT);
 	private VerticalLayout layout = new VerticalLayout();
 	private HorizontalLayout footer = new HorizontalLayout();
 	private Label footerText = new Label("Opciones");
@@ -36,11 +37,13 @@ public class panelProyecto extends Panel implements Serializable {
 		addStyleName(ValoTheme.PANEL_SCROLL_INDICATOR);
 		
 		trazButton.addStyleName(ValoTheme.BUTTON_PRIMARY);
+		printButton.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		delButton.addStyleName(ValoTheme.BUTTON_DANGER);
 		editButton.addStyleName(ValoTheme.BUTTON_FRIENDLY);
 		trazButton.addStyleName(ValoTheme.BUTTON_SMALL);
 		delButton.addStyleName(ValoTheme.BUTTON_SMALL);
 		editButton.addStyleName(ValoTheme.BUTTON_SMALL);
+		printButton.addStyleName(ValoTheme.BUTTON_SMALL);
 		
         footerText.setSizeUndefined(); 
         footerText.setStyleName(ValoTheme.LABEL_H3);
@@ -48,7 +51,7 @@ public class panelProyecto extends Panel implements Serializable {
         
 		footer.setSpacing(true);
 		footer.addStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
-		footer.addComponents(footerText, editButton,trazButton,delButton);
+		footer.addComponents(footerText, editButton,trazButton,printButton,delButton);
 		footer.setWidth("445px");
 		footer.setExpandRatio(footerText, 1);
 		
@@ -65,8 +68,6 @@ public class panelProyecto extends Panel implements Serializable {
 
 		form.addStyleName(ValoTheme.FORMLAYOUT_LIGHT);
 		form.setWidth("310px");
-		//form2.addStyleName(ValoTheme.FORMLAYOUT_LIGHT);
-		//form.setWidth("310px");
 		
 		Label lb1 = new Label("Información del proyecto");
 		lb1.setStyleName(ValoTheme.LABEL_H3);
@@ -96,8 +97,7 @@ public class panelProyecto extends Panel implements Serializable {
 		layout.addComponents(hl,footer);
 		layout.setSizeFull();
 		setContent(layout);
-		//setSizeFull();
-		//setResponsive(true);
+		
 	}
 		
 	
@@ -139,6 +139,17 @@ public class panelProyecto extends Panel implements Serializable {
 
 	public void setUsuariosProyecto(Label usuariosProyecto) {
 		this.usuariosProyecto = usuariosProyecto;
+	}
+
+	
+
+	public Button getPrintButton() {
+		return printButton;
+	}
+
+
+	public void setPrintButton(Button printButton) {
+		this.printButton = printButton;
 	}
 
 

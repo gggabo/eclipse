@@ -7,6 +7,8 @@ import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import controllers.ProyectoController;
+
 
 public class classGeneradorCodigo implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -25,13 +27,21 @@ public class classGeneradorCodigo implements Serializable {
 		Calendar fecha_sistema = Calendar.getInstance();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 		String date = dateFormat.format(fecha_sistema.getTime());
-		codPdf=date;
+		codPdf=date; 
 		return codPdf;
 	} 
 	
 	public static String genCode() {
 		SecureRandom random = new SecureRandom();
-		String code = new BigInteger(80, random).toString(32);		
+		String code = null;
+		Boolean exist = true;
+		while(exist) {
+			code = new BigInteger(25, random).toString(32);	
+			if(!ProyectoController.codeContainsDB(code)) {
+				exist = false;
+			}
+		}
+		
 		return code;
 	}
 

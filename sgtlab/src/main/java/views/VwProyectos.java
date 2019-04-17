@@ -168,10 +168,15 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 				mainLayout.addComponent(tr);
 			});
 			
+			p.getPrintButton().addClickListener(e->{
+				 
+			});
+			
 			p.getEditButton().addClickListener(e ->{
 				proyectoAction = "modificar";
 				buildNewEditProject(prop);
 				codigoProject.setValue(prop.getProyecto().getCodigo());
+				this.qr.setValue(prop.getProyecto().getCodigo());
 				fechaProyecto.setValue(prop.getProyecto().getFecha());
 				cmbTipo.setValue(prop.getProyecto().getTipoProyecto());
 				temaProject.setValue(prop.getProyecto().getTema());

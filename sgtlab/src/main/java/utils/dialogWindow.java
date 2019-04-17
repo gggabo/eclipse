@@ -81,6 +81,18 @@ public class dialogWindow extends Window implements Serializable {
 		this.layoutComponent = layoutComponent;
 	}
 
+    
+
+	public HorizontalLayout getFooter() {
+		return footer;
+	}
+
+
+
+	public void setFooter(HorizontalLayout footer) {
+		this.footer = footer;
+	}
+
 
 
 	public Label getFooterText() {

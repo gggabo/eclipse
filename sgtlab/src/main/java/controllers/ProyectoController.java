@@ -71,6 +71,24 @@ public class ProyectoController implements Serializable {
 		return t;
 	}
 	
+	static boolean codDB;
+	public static boolean codeContainsDB(String cod) {	
+		
+		JPAService.runInTransaction(em ->{
+			Query query = em.createQuery("select 1 from Proyecto p where p.codigo = ?1");
+			query.setParameter(1, cod);
+
+			if(query.getResultList().size()>0) {
+				codDB = true;
+			}else {
+				codDB = false;
+			}
+			return null;
+		}
+        ); 
+		return codDB;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static List<ProyectoParticipante> getProyectoByUser(long idUser){
 		return JPAService.runInTransaction(em->{

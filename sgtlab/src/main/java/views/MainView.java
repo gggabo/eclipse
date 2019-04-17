@@ -22,6 +22,7 @@ public class MainView extends HorizontalLayout implements Serializable {
 		viewContainer.setSizeFull();
 		//viewContainer.addStyleName("v-scrollable");
 		viewContainer.addStyleName("custom-margin-layout");
+		viewContainer.addStyleName("login-screen");
 		
 		final Navigator navigator = new Navigator(ui, viewContainer);
 		navigator.setErrorView(ErrorView.class); 

@@ -607,7 +607,7 @@ public class VwTrazabilidad extends Panel {
 			hl.addComponents(b2);
 			return hl;
 			
-		}).setCaption("Opciones");
+		}).setCaption("Opciones").setId("Opciones"); 
 
 		gridReactivoMi.setWidth("100%");
 		gridReactivoMi.setHeight("150px");
@@ -640,7 +640,7 @@ public class VwTrazabilidad extends Panel {
 			hl.setSizeFull();
 			hl.addComponents(b2);
 			return hl;
-		}).setCaption("Opciones");
+		}).setCaption("Opciones").setId("Opciones"); 
 
 		gridEquipoMi.setWidth("100%");
 		gridEquipoMi.setHeight("150px");
@@ -677,7 +677,7 @@ public class VwTrazabilidad extends Panel {
 			hl.setSizeFull();
 			hl.addComponents(b2);
 			return hl;
-		}).setCaption("Opciones");
+		}).setCaption("Opciones").setId("Opciones"); 
 
 		gridMaterialMi.setWidth("100%");
 		gridMaterialMi.setHeight("150px");
@@ -714,7 +714,7 @@ public class VwTrazabilidad extends Panel {
 			hl.addComponents(b2);
 			return hl;
 
-		}).setCaption("Opciones");
+		}).setCaption("Opciones").setId("Opciones"); 
 
 		gridMedioCultivoMi.setWidth("100%");
 		gridMedioCultivoMi.setHeight("150px");
@@ -780,7 +780,7 @@ public class VwTrazabilidad extends Panel {
 			hl.addComponents(b2);
 			return hl;
 			
-		}).setCaption("Opciones");
+		}).setCaption("Opciones").setId("Opciones"); 
 
 		gridReactivoAG.setWidth("100%");
 		gridReactivoAG.setHeight("150px");
@@ -813,7 +813,7 @@ public class VwTrazabilidad extends Panel {
 			hl.setSizeFull();
 			hl.addComponents(b2);
 			return hl;
-		}).setCaption("Opciones");
+		}).setCaption("Opciones").setId("Opciones"); 
 
 		gridEquipoAG.setWidth("100%");
 		gridEquipoAG.setHeight("150px");
@@ -850,7 +850,7 @@ public class VwTrazabilidad extends Panel {
 			hl.setSizeFull();
 			hl.addComponents(b2);
 			return hl;
-		}).setCaption("Opciones");
+		}).setCaption("Opciones").setId("Opciones"); 
 
 		gridMaterialAG.setWidth("100%");
 		gridMaterialAG.setHeight("150px");
@@ -926,7 +926,7 @@ public class VwTrazabilidad extends Panel {
 			hl.setSizeFull();
 			hl.addComponents(b2);
 			return hl;
-		}).setCaption("Opciones");
+		}).setCaption("Opciones").setId("Opciones"); 
 
 		gridEquipoOU.setWidth("100%");
 		gridEquipoOU.setHeight("150px");
@@ -963,7 +963,7 @@ public class VwTrazabilidad extends Panel {
 			hl.setSizeFull();
 			hl.addComponents(b2);
 			return hl;
-		}).setCaption("Opciones");
+		}).setCaption("Opciones").setId("Opciones"); 
 
 		gridMaterialOU.setWidth("100%");
 		gridMaterialOU.setHeight("150px");
@@ -1030,7 +1030,7 @@ public class VwTrazabilidad extends Panel {
 			hl.addComponents(b2);
 			return hl;
 			
-		}).setCaption("Opciones");
+		}).setCaption("Opciones").setId("Opciones"); 
 
 		gridReactivoEC.setWidth("100%");
 		gridReactivoEC.setHeight("150px");
@@ -1063,7 +1063,7 @@ public class VwTrazabilidad extends Panel {
 			hl.setSizeFull();
 			hl.addComponents(b2);
 			return hl;
-		}).setCaption("Opciones");
+		}).setCaption("Opciones").setId("Opciones"); 
 
 		gridEquipoEC.setWidth("100%");
 		gridEquipoEC.setHeight("150px");
@@ -1100,7 +1100,7 @@ public class VwTrazabilidad extends Panel {
 			hl.setSizeFull();
 			hl.addComponents(b2);
 			return hl;
-		}).setCaption("Opciones");
+		}).setCaption("Opciones").setId("Opciones");
 
 		gridMaterialEC.setWidth("100%");
 		gridMaterialEC.setHeight("150px");
@@ -1227,12 +1227,37 @@ public class VwTrazabilidad extends Panel {
 			
 			descripcionProceso.setValue(trazMod.getDescripcion());
 			
-			descripcionProceso.setEnabled(false);
+			descripcionProceso.setReadOnly(true);
+				
+			
+			toolbarProcesosQuimicos.setVisible(false);			
+			toolbarMicrobiologia.setVisible(false);			
+			toolbarOU.setVisible(false);			
+			toolbarAG.setVisible(false);
+			toolbarEcotoxicologia.setVisible(false);
+			
 			gridReactivoPQ.getColumn("Opciones").setHidden(true);
 			gridEquipoPQ.getColumn("Opciones").setHidden(true);
 			gridMaterialPQ.getColumn("Opciones").setHidden(true);
 			
+			gridReactivoMi.getColumn("Opciones").setHidden(true);
+			gridEquipoMi.getColumn("Opciones").setHidden(true);
+			gridMaterialMi.getColumn("Opciones").setHidden(true);
+			gridMedioCultivoMi.getColumn("Opciones").setHidden(true);
+			
+			gridEquipoOU.getColumn("Opciones").setHidden(true);
+			gridMaterialOU.getColumn("Opciones").setHidden(true);
+			
+			gridReactivoAG.getColumn("Opciones").setHidden(true);
+			gridEquipoAG.getColumn("Opciones").setHidden(true);
+			gridMaterialAG.getColumn("Opciones").setHidden(true);
+			
+			gridReactivoEC.getColumn("Opciones").setHidden(true);
+			gridEquipoEC.getColumn("Opciones").setHidden(true);
+			gridMaterialEC.getColumn("Opciones").setHidden(true);
+			
 			dialogReactivoWindow.getOkButton().setVisible(false);
+			dialogReactivoWindow.getFooter().setVisible(false);
 		}
 		
 		dialogReactivoWindow.getOkButton().addClickListener(new ClickListener() {
@@ -1446,8 +1471,34 @@ public class VwTrazabilidad extends Panel {
 		gridMaterialEC.setItems(listMaterialesEC);
 		
 		descripcionProceso.clear();
+		descripcionProceso.setReadOnly(false);
 		
 		evidencia.clear();
+		
+		toolbarProcesosQuimicos.setVisible(true);
+		gridReactivoPQ.getColumn("Opciones").setHidden(false);
+		gridEquipoPQ.getColumn("Opciones").setHidden(false);
+		gridMaterialPQ.getColumn("Opciones").setHidden(false);
+		
+		toolbarMicrobiologia.setVisible(true);
+		gridReactivoMi.getColumn("Opciones").setHidden(false);
+		gridEquipoMi.getColumn("Opciones").setHidden(false);
+		gridMaterialMi.getColumn("Opciones").setHidden(false);
+		gridMedioCultivoMi.getColumn("Opciones").setHidden(false);
+		
+		toolbarOU.setVisible(true);
+		gridEquipoOU.getColumn("Opciones").setHidden(false);
+		gridMaterialOU.getColumn("Opciones").setHidden(false);
+		
+		toolbarAG.setVisible(true);
+		gridReactivoAG.getColumn("Opciones").setHidden(false);
+		gridEquipoAG.getColumn("Opciones").setHidden(false);
+		gridMaterialAG.getColumn("Opciones").setHidden(false);
+		
+		toolbarEcotoxicologia.setVisible(true);
+		gridReactivoEC.getColumn("Opciones").setHidden(false);
+		gridEquipoEC.getColumn("Opciones").setHidden(false);
+		gridMaterialEC.getColumn("Opciones").setHidden(false);
 	}
 	
 	public void setCss() {
