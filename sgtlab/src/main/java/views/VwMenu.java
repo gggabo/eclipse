@@ -157,6 +157,7 @@ public class VwMenu extends CssLayout implements Serializable {
      */
     public void addView(Class<? extends View> viewClass, final String name,
             String caption, Resource icon) {
+    	
         navigator.addView(name, viewClass);
         createViewButton(name, caption, icon);
     }

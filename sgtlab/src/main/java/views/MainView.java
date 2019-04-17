@@ -1,19 +1,25 @@
 package views;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import com.example.sgtlab.MainUI;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.VerticalLayout;
+import models.Rol;
 
 public class MainView extends HorizontalLayout implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private VwMenu menu;
 	private VwUsuarios usuario = new VwUsuarios();
+	@SuppressWarnings("unchecked")
+	private List<Rol> roles = (List<Rol>) VaadinSession.getCurrent().getAttribute("TIPO_USUARIO");
 	public MainView(MainUI ui) {
 		setSpacing(false);
 		setStyleName("main-screen");
@@ -28,11 +34,54 @@ public class MainView extends HorizontalLayout implements Serializable {
 		navigator.setErrorView(ErrorView.class); 
 		
 		menu = new VwMenu(navigator);
-		menu.addView(new VwInicio(), "inicio", "Inicio", VaadinIcons.HOME);
-		menu.addView(new VwProyectos(), "proyectos", "Proyectos", VaadinIcons.NOTEBOOK);
-		menu.addView(usuario, "usuarios", "Usuarios", VaadinIcons.USERS);
-		//menu.addView(new VwProyectos(), "categorias-cursos", "Categorias y cursos", VaadinIcons.ACADEMY_CAP);
-		menu.addView(new VwLaboratorios(), "laboratorios", "Laboratorios", VaadinIcons.FLASK);
+		List<String> menuAdd = new ArrayList<>();		
+		
+		Iterator<Rol> iteratorRol = roles.iterator();
+		Rol rol;
+		while(iteratorRol.hasNext()) {
+			rol = iteratorRol.next(); 
+			
+			if(rol.getIdRol()==1) {//ADMINISTRADOR
+				if(!menuAdd.contains("inicio")) {
+					menu.addView(new VwInicio(), "inicio", "Inicio", VaadinIcons.HOME);
+					menuAdd.add("inicio");
+				}
+				if(!menuAdd.contains("proyectos")) {
+					menu.addView(new VwProyectos(), "proyectos", "Proyectos", VaadinIcons.NOTEBOOK);
+					menuAdd.add("proyectos");
+				}
+				
+				if(!menuAdd.contains("usuarios")) {
+					menu.addView(usuario, "usuarios", "Usuarios", VaadinIcons.USERS);
+					menuAdd.add("usuarios");
+				}
+				
+				if(!menuAdd.contains("laboratorios")) {
+					menu.addView(new VwLaboratorios(), "laboratorios", "Laboratorios", VaadinIcons.FLASK);
+					menuAdd.add("laboratorios");
+				}
+
+			}else if(rol.getIdRol()==2) {//DOCENTE
+				if(!menuAdd.contains("inicio")) {
+					menu.addView(new VwInicio(), "inicio", "Inicio", VaadinIcons.HOME);
+					menuAdd.add("inicio");
+				}
+				if(!menuAdd.contains("proyectos")) {
+					menu.addView(new VwProyectos(), "proyectos", "Proyectos", VaadinIcons.NOTEBOOK);
+					menuAdd.add("proyectos");
+				}
+				
+			}else if(rol.getIdRol()==3) {//ESTUDIANTE
+				if(!menuAdd.contains("inicio")) {
+					menu.addView(new VwInicio(), "inicio", "Inicio", VaadinIcons.HOME);
+					menuAdd.add("inicio");
+				}
+				if(!menuAdd.contains("proyectos")) {
+					menu.addView(new VwProyectos(), "proyectos", "Proyectos", VaadinIcons.NOTEBOOK);
+					menuAdd.add("proyectos");
+				}
+			}
+		} 
 		
 		navigator.addViewChangeListener(viewChangeListener);
 		
