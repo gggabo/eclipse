@@ -212,7 +212,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 
 	public Grid<Usuario> gridUsuarioImport = new Grid<>();
 	public List<Usuario> listUsuariosImport = new ArrayList<>();
-
+    long laboratorio;
 	public Component buildUI() {
 
 		cmbLaboratorio.setWidth("100%");
@@ -222,6 +222,34 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		// cmbLaboratorio.setEmptySelectionCaption("Seleccionar laboratorio");
 
 		cmbLaboratorio.addValueChangeListener(e -> {
+			laboratorio = e.getValue().getIdLaboratorio();
+			if(laboratorio == 1) { //PROCESOS QUIMICOS
+			tabSheet.getTab(0).setVisible(true);
+			tabSheet.getTab(1).setVisible(true);
+			tabSheet.getTab(2).setVisible(true);
+			tabSheet.getTab(3).setVisible(false);
+		}else if(laboratorio == 2) {//MICROBIOLOGIA
+			tabSheet.getTab(0).setVisible(true);
+			tabSheet.getTab(1).setVisible(true);
+			tabSheet.getTab(2).setVisible(true);
+			tabSheet.getTab(3).setVisible(true);
+		}else if(laboratorio == 3) { // OPERACIONES UNITARIAS
+			tabSheet.getTab(0).setVisible(false);
+			tabSheet.getTab(1).setVisible(true);
+			tabSheet.getTab(2).setVisible(true);
+			tabSheet.getTab(3).setVisible(false);
+		}else if(laboratorio == 4) { // ANALISIS DE AGUAS
+			tabSheet.getTab(0).setVisible(true);
+			tabSheet.getTab(1).setVisible(true);
+			tabSheet.getTab(2).setVisible(true);
+			tabSheet.getTab(3).setVisible(false);
+		}else if(laboratorio == 5) { // ECOTOXICOLOGIA
+			tabSheet.getTab(0).setVisible(true);
+			tabSheet.getTab(1).setVisible(true);
+			tabSheet.getTab(2).setVisible(true);
+			tabSheet.getTab(3).setVisible(false);
+		}
+			
 			listReactivos.clear();
 			gridReactivo.setItems(listReactivos);
 			
@@ -240,14 +268,14 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 			}
 
 			listReactivos.addAll(
-					ReactivoController.getAllReactiveByLaboratory(cmbLaboratorio.getValue().getIdLaboratorio()));
+					ReactivoController.searchReactiveByLaboratory(cmbLaboratorio.getValue(),filterReactivotxt.getValue()));
 			gridReactivo.setItems(listReactivos);
 			
 			listEquipos.addAll(
 					EquipoController.searchEquipoByLaboratory(cmbLaboratorio.getValue(), filterEquipotxt.getValue()));
 			gridEquipo.setItems(listEquipos);
 			
-			listMateriales.addAll(
+			listMateriales.addAll( 
 					MaterialController.searchMaterialByLaboratory(cmbLaboratorio.getValue(), filterMaterialtxt.getValue()));
 			gridMaterial.setItems(listMateriales);
 			

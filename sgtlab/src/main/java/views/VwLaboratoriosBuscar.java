@@ -242,7 +242,7 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 			}
 
 			listReactivos.addAll(
-					ReactivoController.getAllReactiveByLaboratory(cmbLaboratorio.getValue().getIdLaboratorio()));
+					ReactivoController.searchReactiveByLaboratory(cmbLaboratorio.getValue(),filterReactivotxt.getValue()));
 			gridReactivo.setItems(listReactivos);
 			
 			listEquipos.addAll(

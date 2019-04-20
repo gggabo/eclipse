@@ -36,8 +36,10 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import controllers.ComponenteController;
 import controllers.LoginController;
+import controllers.MedioCultivoController;
 import controllers.ProyectoController;
 import controllers.ProyectoParticipanteController;
+import controllers.ReactivoController;
 import controllers.TrazabilidadController;
 import controllers.UsuarioController;
 import de.steinwedel.messagebox.ButtonOption;
@@ -45,8 +47,10 @@ import de.steinwedel.messagebox.MessageBox;
 import models.Componente;
 import models.Equipo;
 import models.Material;
+import models.MedioCultivo;
 import models.Proyecto;
 import models.ProyectoParticipante;
+import models.Reactivo;
 import models.Rol;
 import models.Trazabilidad;
 import models.TrazabilidadEquipo;
@@ -1173,7 +1177,7 @@ public class VwTrazabilidad extends Panel {
 			
 			descripcionProceso.setValue(trazMod.getDescripcion());
 			
-		}else {
+		}else if(trazabilidadAction.equals("ver")){
 			listReactivosPQ.addAll(TrazabilidadController.getReactivoTrazaByLab(trazMod.getIdTrazabilidad(), 1));
 			gridReactivoPQ.setItems(listReactivosPQ);
 			
@@ -1294,9 +1298,24 @@ public class VwTrazabilidad extends Panel {
 				
 					Iterator<TrazabilidadReactivo> iteratorReactivo = listReactivos.iterator();
 					TrazabilidadReactivo trazReactivo;
+					Reactivo rUp; 
+					float gasto = 0, saldoUp = 0, gastoUp = 0; 
+					
 					while(iteratorReactivo.hasNext()) {
+						gasto = 0; 
+						saldoUp = 0; 
+						gastoUp = 0; 
 						trazReactivo = iteratorReactivo.next();
-						trazReactivo.setTrazabilidad(traz);
+						trazReactivo.setTrazabilidad(traz); 
+						gasto = trazReactivo.getGasto();
+						rUp = ReactivoController.getSpecificReactivoById(trazReactivo.getReactivo().getIdReactivo());
+						saldoUp = rUp.getSaldo() - gasto;
+						gastoUp = rUp.getGasto() + gasto;
+						rUp.setGasto(gastoUp); 
+						rUp.setSaldo(saldoUp);  
+						System.out.println(rUp.getNombre()+" "+saldoUp);
+						
+						ReactivoController.update(rUp);
 					}
 					traz.setTrazabilidadReactivos(listReactivos);
 					
@@ -1326,15 +1345,29 @@ public class VwTrazabilidad extends Panel {
 
 					traz.setMateriales(listMateriales);
 					
-					//EQUIPOS
+					//MEDIOS DE CULTIVO
 					List<TrazabilidadMedioCultivo> listMediosCultivo = new ArrayList<>();
 					listMediosCultivo.addAll(listMediosCultivosMi);
 				
 					Iterator<TrazabilidadMedioCultivo> iteratorMediosCultivo = listMediosCultivo.iterator();
 					TrazabilidadMedioCultivo trazMediosCultivo;
+					MedioCultivo mc;
+					float gastoMc = 0, saldoMcUp = 0, gastoMcUp = 0; 
+					
 					while(iteratorMediosCultivo.hasNext()) {
+						gastoMc = 0; 
+						saldoMcUp = 0; 
+						gastoMcUp = 0; 
 						trazMediosCultivo = iteratorMediosCultivo.next();
 						trazMediosCultivo.setTrazabilidad(traz);
+						gastoMc = trazMediosCultivo.getGasto();
+						mc = MedioCultivoController.getSpecificReactivoById(trazMediosCultivo.getMedioCultivo().getIdMedioCultivo());
+						saldoMcUp = mc.getSaldo() - gastoMcUp;
+						gastoMcUp = mc.getGasto() + gastoMc;
+						mc.setGasto(gastoMcUp);
+						mc.setSaldo(saldoMcUp);  
+						System.out.println(mc.getNombre()+" "+saldoMcUp);
+						MedioCultivoController.update(mc);
 					}
 					traz.setTrazabilidadMediosCultivo(listMediosCultivo);	
 					
@@ -1355,9 +1388,24 @@ public class VwTrazabilidad extends Panel {
 				
 					Iterator<TrazabilidadReactivo> iteratorReactivo = listReactivos.iterator();
 					TrazabilidadReactivo trazReactivo;
+					Reactivo rUp; 
+					float gasto = 0, saldoUp = 0, gastoUp = 0; 
+					
 					while(iteratorReactivo.hasNext()) {
+						gasto = 0; 
+						saldoUp = 0; 
+						gastoUp = 0; 
 						trazReactivo = iteratorReactivo.next();
-						trazReactivo.setTrazabilidad(trazMod);
+						trazReactivo.setTrazabilidad(trazMod); 
+						gasto = trazReactivo.getGasto();
+						rUp = ReactivoController.getSpecificReactivoById(trazReactivo.getReactivo().getIdReactivo());
+						saldoUp = rUp.getSaldo() - gasto;
+						gastoUp = rUp.getGasto() + gasto;
+						rUp.setGasto(gastoUp); 
+						rUp.setSaldo(saldoUp);  
+						System.out.println(rUp.getNombre()+" "+saldoUp);
+						
+						//ReactivoController.update(rUp);
 					}
 					trazMod.setTrazabilidadReactivos(listReactivos);
 					
@@ -1387,15 +1435,32 @@ public class VwTrazabilidad extends Panel {
 
 					trazMod.setMateriales(listMateriales);
 					
-					//EQUIPOS
+					//MEDIOS DE CULTIVO
 					List<TrazabilidadMedioCultivo> listMediosCultivo = new ArrayList<>();
 					listMediosCultivo.addAll(listMediosCultivosMi);
 				
 					Iterator<TrazabilidadMedioCultivo> iteratorMediosCultivo = listMediosCultivo.iterator();
 					TrazabilidadMedioCultivo trazMediosCultivo;
+					MedioCultivo mc;
+					float gastoMc = 0, saldoMcUp = 0, gastoMcUp = 0; 
+					
 					while(iteratorMediosCultivo.hasNext()) {
+						gastoMc = 0; 
+						saldoMcUp = 0; 
+						gastoMcUp = 0; 
 						trazMediosCultivo = iteratorMediosCultivo.next();
 						trazMediosCultivo.setTrazabilidad(trazMod);
+						
+						
+						
+						gastoMc = trazMediosCultivo.getGasto();
+						mc = MedioCultivoController.getSpecificReactivoById(trazMediosCultivo.getMedioCultivo().getIdMedioCultivo());
+						saldoMcUp = mc.getSaldo() - gastoMcUp;
+						gastoMcUp = mc.getGasto() + gastoMc;
+						mc.setGasto(gastoMcUp);
+						mc.setSaldo(saldoMcUp);  
+						System.out.println(mc.getNombre()+" "+saldoMcUp);
+						//MedioCultivoController.update(mc);
 					}
 					trazMod.setTrazabilidadMediosCultivo(listMediosCultivo);	
 					
@@ -1430,7 +1495,7 @@ public class VwTrazabilidad extends Panel {
 		dialogReactivoWindow.getCancelButton().addClickListener(e ->{
 			dialogReactivoWindow.close();
 		});
-		dialogReactivoWindow.getFooterText().setCaption("Opciones");
+		dialogReactivoWindow.getFooterText().setValue("Opciones");
 		UI.getCurrent().addWindow(dialogReactivoWindow);
 	}
 	

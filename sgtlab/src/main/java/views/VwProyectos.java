@@ -71,6 +71,10 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	public HorizontalLayout layoutProyectos = new HorizontalLayout();
 	public VerticalLayout proyectoLayout = new VerticalLayout();
 	public MenuBar mainMenu = new MenuBar();
+	public CssLayout filteringProject = new CssLayout();
+	public Button clearFilterProject = new Button(VaadinIcons.CLOSE_CIRCLE);
+	public TextField filtertxtProject = new TextField();
+	
 	
 	 public VwProyectos() {
 		 addComponent(buildUI());
@@ -78,6 +82,8 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		 initUI();
 		 setCss();
 		 addValidation();
+		 
+		 setEvents();
 		 
 		 initBuscarUsuario();
 		 initBuscarMateria();
@@ -111,11 +117,20 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
-				buildUIProyect();
+				buildUIProyect("");
 			}
 		});	
-			
-		proyectoLayout.addComponents(toolbar, buildUIProyect());
+		
+		filtertxtProject.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+		filtertxtProject.setIcon(VaadinIcons.SEARCH);
+		filtertxtProject.setPlaceholder("Buscar por codigo");
+		filtertxtProject.setWidth("100%");
+		filtertxtProject.setValueChangeMode(ValueChangeMode.LAZY);
+		filteringProject.addComponents(filtertxtProject,clearFilterProject);
+		filteringProject.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
+		filteringProject.addStyleName("custom-margins");
+		
+		proyectoLayout.addComponents(toolbar, filteringProject, buildUIProyect(""));
 		proyectoLayout.setMargin(false);
 		
 		pnlPrincipal.setCaption("Gestión de proyectos");
@@ -129,14 +144,23 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		
 	}
 	
+	public void setEvents() {
+		filtertxtProject.addValueChangeListener(e->{
+			buildUIProyect(e.getValue());
+		});
+		
+		clearFilterProject.addClickListener(e->{
+			filtertxtProject.clear();
+		});
+	}
 	
-	public Component buildUIProyect() {
+	public Component buildUIProyect(String search) {
 		
 		if(layoutProyectos.getComponentCount() >= 1) {
 			layoutProyectos.removeAllComponents();
 		}
 		
-		List<ProyectoParticipante> pp = ProyectoController.getProyectoByUser(idUsuario);
+		List<ProyectoParticipante> pp = ProyectoController.getProyectoByUser(idUsuario,search);
 		Iterator<ProyectoParticipante> iteratorPp = pp.iterator();
 		 
 		
@@ -476,7 +500,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 				
 				listProyectoParticipante.clear();
 				message.normalMessage("Acción realizada con éxito");
-				buildUIProyect();
+				buildUIProyect("");
 				dialogReactivoWindow.close();
 			}
 		});

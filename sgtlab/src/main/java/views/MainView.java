@@ -71,6 +71,11 @@ public class MainView extends HorizontalLayout implements Serializable {
 					menuAdd.add("proyectos");
 				}
 				
+				if(!menuAdd.contains("laboratorios")) {
+					menu.addView(new VwLaboratorios(), "laboratorios", "Laboratorios", VaadinIcons.FLASK);
+					menuAdd.add("laboratorios");
+				}
+				
 			}else if(rol.getIdRol()==3) {//ESTUDIANTE
 				if(!menuAdd.contains("inicio")) {
 					menu.addView(new VwInicio(), "inicio", "Inicio", VaadinIcons.HOME);

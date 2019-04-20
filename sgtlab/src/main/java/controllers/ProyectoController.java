@@ -90,10 +90,12 @@ public class ProyectoController implements Serializable {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static List<ProyectoParticipante> getProyectoByUser(long idUser){
+	public static List<ProyectoParticipante> getProyectoByUser(long idUser, String busc){
 		return JPAService.runInTransaction(em->{
-			Query query = em.createQuery("select pp from ProyectoParticipante pp where pp.usuario.id =?1 and pp.proyecto.estado = 1 ORDER BY proyecto.idProyecto DESC");
-			query.setParameter(1,idUser);
+			Query query = em.createQuery("select pp from ProyectoParticipante pp where pp.proyecto.codigo LIKE ?1 and pp.usuario.id =?2 and pp.proyecto.estado = 1 ORDER BY proyecto.idProyecto DESC");
+			query.setParameter(1,"%" + busc + "%");
+			query.setParameter(2,idUser);
+			
 			return query.getResultList();  
 		});
 	}
