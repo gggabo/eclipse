@@ -37,17 +37,17 @@ import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.themes.ValoTheme;
 
-import controllers.LoginController;
 import controllers.MateriaController;
+import controllers.NotificacionController;
 import controllers.ProyectoController;
 import controllers.ProyectoParticipanteController;
 import controllers.TipoProyectoController;
-import controllers.TrazabilidadController;
 import controllers.UsuarioController;
 import de.steinwedel.messagebox.ButtonOption;
 import de.steinwedel.messagebox.MessageBox;
 import fi.jasoft.qrcode.QRCode;
 import models.Materia;
+import models.Notificacion;
 import models.Proyecto;
 import models.ProyectoParticipante;
 import models.Rol;
@@ -63,6 +63,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	
 	public static final String VIEW_NAME = "proyectos";
 	public long idUsuario = (long) VaadinSession.getCurrent().getAttribute("ID_USUARIO");
+	private String nombreUsuario = VaadinSession.getCurrent().getAttribute("NOMBRE_PERSONA").toString();
 	
 	public VerticalLayout mainLayout = new VerticalLayout();
 	public Panel pnlPrincipal = new Panel();
@@ -111,7 +112,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 			}
 		});		
 		
-		mainMenu.addItem("Ver otros proyectos", VaadinIcons.SEARCH, null);		
+		//mainMenu.addItem("Ver otros proyectos", VaadinIcons.SEARCH, null);		
 		
 		mainMenu.addItem("Actualizar", VaadinIcons.REFRESH, new Command() {
 			private static final long serialVersionUID = 1L;
@@ -187,6 +188,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 			String qr = prop.getProyecto().getCodigo(); 
 			p.getQr().setValue(qr);
 			
+			//TRAZABILIDAD
 			p.getOkButton().addClickListener(e ->{
 				mainLayout.removeComponent(pnlPrincipal);
 				VwTrazabilidad tr = new VwTrazabilidad(this, prop.getProyecto());
@@ -430,7 +432,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	private Label lb1 = new Label("Información del proyecto");
 	private QRCode qr = new QRCode();
 	private TabSheet tabProyecto = new  TabSheet();	
-	private List<ProyectoParticipante> listProyectoParticipante = new ArrayList<>();
+	public List<ProyectoParticipante> listProyectoParticipante = new ArrayList<>();
 	
 	private void buildNewEditProject(ProyectoParticipante prop) {
 		limpiarProyecto();
@@ -471,6 +473,11 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 						pp = ppIterator.next();
 						pp.setProyecto(p);
 						ProyectoParticipanteController.save(pp);
+						if(pp.getUsuario().getId() != idUsuario) {
+							Notificacion not = new Notificacion("El usuario "+nombreUsuario+" te agregó a un nuevo proyecto con tema "+pp.getProyecto().getTema(), pp.getUsuario(), 1);
+							NotificacionController.save(not);
+						}
+						
 					}
 					
 				}else {
@@ -491,6 +498,10 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 					while(ppIterator.hasNext()) {
 						pp = ppIterator.next();
 						pp.setProyecto(p);
+						if(pp.getUsuario().getId() != idUsuario) {
+							Notificacion not = new Notificacion("El usuario "+nombreUsuario+" modificó el proyecto con tema "+pp.getProyecto().getTema(), pp.getUsuario(), 1);
+							NotificacionController.save(not);
+						}
 					}
 					
 					p.setProyectoParticipantes(listProyectoParticipante);

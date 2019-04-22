@@ -80,6 +80,7 @@ public class ProyectoParticipante implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + (int) (idProyectoParticipante ^ (idProyectoParticipante >>> 32));
 		result = prime * result + ((usuario == null) ? 0 : usuario.hashCode());
 		return result;
 	}
@@ -93,6 +94,8 @@ public class ProyectoParticipante implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		ProyectoParticipante other = (ProyectoParticipante) obj;
+		if (idProyectoParticipante != other.idProyectoParticipante)
+			return false;
 		if (usuario == null) {
 			if (other.usuario != null)
 				return false;

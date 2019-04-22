@@ -23,7 +23,6 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
-import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
@@ -214,7 +213,6 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 	public Grid<Usuario> gridUsuarioImport = new Grid<>();
 	public List<Usuario> listUsuariosImport = new ArrayList<>();
 
-	@SuppressWarnings("unlikely-arg-type")
 	public Component buildUI() {
 
 		cmbLaboratorio.setWidth("100%");
@@ -540,9 +538,9 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 						message.warringMessage("El registro ya se encuentra agregado");
 					}
 				}else if(laboratorio == 3) {//OPERACIONES UNITARIAS
-					HorizontalLayout hl = new HorizontalLayout();
+					//HorizontalLayout hl = new HorizontalLayout();
 					if(!vwtrazabilidad.listEquiposOU.contains(te)) {
-						hl.setCaption("Componentes del equipo a utilizar");
+						/*hl.setCaption("Componentes del equipo a utilizar");
 						Iterator<Componente> iterator = ComponenteController.getAllComponentByEquipo(Equipo.getIdEquipo()).iterator();
 						List<Componente> listComp = new ArrayList<>();
 						TwinColSelect<Componente> twComp = new TwinColSelect<>();
@@ -564,12 +562,12 @@ public class VwLaboratoriosBuscar extends VerticalLayout implements Serializable
 						.withOkButton(() -> {
 
 							List<Componente> complist = new ArrayList<>(twComp.getSelectedItems());
-							te.setComponentes(complist);
+							te.setComponentes(complist);*/
 							vwtrazabilidad.listEquiposOU.add(te);
 							vwtrazabilidad.gridEquipoOU.setItems(vwtrazabilidad.listEquiposOU);	
 
-						},ButtonOption.caption("Aceptar"))
-						.open();
+						/*},ButtonOption.caption("Aceptar"))
+						.open();*/
 					}else {
 						message.warringMessage("El registro ya se encuentra agregado");
 					}

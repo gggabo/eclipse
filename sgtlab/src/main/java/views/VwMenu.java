@@ -52,7 +52,7 @@ public class VwMenu extends CssLayout implements Serializable {
     
     private MenuItem cs;
 	private MenuItem clave; 
-	private MenuItem rol; 
+	//private MenuItem rol; 
     
     public VwMenu(Navigator navigator) {
     	this.navigator = navigator;
@@ -80,7 +80,7 @@ public class VwMenu extends CssLayout implements Serializable {
         
         MenuItem infItem = inf.addItem(nombrePersona, LoginController.getImgUser(idUsuario),null);
       //  rol = infItem.addItem("Cambiar rol",VaadinIcons.REFRESH ,comand);
-      //  clave = infItem.addItem("Editar usuario",VaadinIcons.USER_CHECK ,comand);
+        clave = infItem.addItem("Editar usuario",VaadinIcons.USER_CHECK ,comand);
         infItem.addSeparator();
         cs = infItem.addItem("Cerrar sesión", VaadinIcons.EXIT_O ,comand);
        // nameUser.addStyleName(ValoTheme.MENU_);
@@ -214,10 +214,10 @@ public class VwMenu extends CssLayout implements Serializable {
 				UI.getCurrent().getSession().close();
 				//JPAUtil.shutdown();
 			}
-			/*if(selectedItem == clave) {
+			if(selectedItem == clave) {
 				
 				
-			}*/
+			}
 			
 		}
 	};

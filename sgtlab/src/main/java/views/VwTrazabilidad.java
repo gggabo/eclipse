@@ -5,12 +5,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Stream;
-
 import com.vaadin.data.Binder;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.server.StreamResource;
-import com.vaadin.server.SystemError;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.ContentMode;
@@ -34,9 +30,9 @@ import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.themes.ValoTheme;
 
-import controllers.ComponenteController;
 import controllers.LoginController;
 import controllers.MedioCultivoController;
+import controllers.NotificacionController;
 import controllers.ProyectoController;
 import controllers.ProyectoParticipanteController;
 import controllers.ReactivoController;
@@ -45,9 +41,9 @@ import controllers.UsuarioController;
 import de.steinwedel.messagebox.ButtonOption;
 import de.steinwedel.messagebox.MessageBox;
 import models.Componente;
-import models.Equipo;
 import models.Material;
 import models.MedioCultivo;
+import models.Notificacion;
 import models.Proyecto;
 import models.ProyectoParticipante;
 import models.Reactivo;
@@ -77,6 +73,7 @@ public class VwTrazabilidad extends Panel {
 	private String trazabilidadAction = "guardar";
 	Proyecto proyecto;
 	private long idUsuario = (long) VaadinSession.getCurrent().getAttribute("ID_USUARIO");
+	private String nombreUsuario = VaadinSession.getCurrent().getAttribute("NOMBRE_PERSONA").toString();
 	@SuppressWarnings("unchecked")
 	private List<Rol> roles = (List<Rol>) VaadinSession.getCurrent().getAttribute("TIPO_USUARIO");
 	
@@ -203,14 +200,17 @@ public class VwTrazabilidad extends Panel {
 				pc.getRevisarButton().setVisible(true);
 				pc.getEditButton().setVisible(true);
 				pc.getDelButton().setVisible(true);
+				pc.getCommentButton().setVisible(true);
 			}else {
 				pc.getRevisarButton().setVisible(false);
+				pc.getCommentButton().setVisible(false);
 			}
 						
 			if(isAdmin) {
 				pc.getRevisarButton().setVisible(true);
 				pc.getEditButton().setVisible(true);
 				pc.getDelButton().setVisible(true);
+				pc.getCommentButton().setVisible(true);
 			}
 			
 			//CARGAR REVISORES DE PROCESO
@@ -236,7 +236,7 @@ public class VwTrazabilidad extends Panel {
 				newEditTraza(trazaMod);
 			});
 			
-			//EDITAR
+			//VER
 			Trazabilidad trazaView = traza;
 			pc.getViewButton().addClickListener(e->{
 				trazabilidadAction = "ver";
@@ -272,9 +272,25 @@ public class VwTrazabilidad extends Panel {
 				pc.getEstadoProceso().setValue("Revisado");
 				pc.getEstadoProceso().addStyleName("v-label-revisado");
 				
+				Iterator<ProyectoParticipante> ppIterator = ProyectoController.getProyectoById(proyecto.getIdProyecto()).iterator();
+				ProyectoParticipante pp;
+				while(ppIterator.hasNext()) {
+					pp = ppIterator.next();
+					if(pp.getUsuario().getId() != idUsuario) {
+						Notificacion not = new Notificacion("El usuario "+nombreUsuario+" revisó una traza del proyecto "+pp.getProyecto().getTema(), pp.getUsuario(), 1);
+						NotificacionController.save(not);
+					}
+					
+				}
+				
 				message.normalMessage("Acción realizada con éxito");
 			});
 			
+			//COMENTAR
+			Trazabilidad trazaComment = traza;
+			pc.getCommentButton().addClickListener(e->{				
+				comentar(trazaComment);
+			});
 			//ELIMINAR
 			Trazabilidad trazaDel = traza;
 			pc.getDelButton().addClickListener(e ->{
@@ -286,6 +302,18 @@ public class VwTrazabilidad extends Panel {
 	    			TrazabilidadController.update(trazaDel);
 	    			trazas.removeComponent(pc);		
 	    			message.normalMessage("Registro eliminado");
+	    			
+	    			Iterator<ProyectoParticipante> ppIterator = ProyectoController.getProyectoById(proyecto.getIdProyecto()).iterator();
+					ProyectoParticipante pp;
+					while(ppIterator.hasNext()) {
+						pp = ppIterator.next();
+						if(pp.getUsuario().getId() != idUsuario) {
+							Notificacion not = new Notificacion("El usuario "+nombreUsuario+" eliminó una traza del proyecto "+pp.getProyecto().getTema(), pp.getUsuario(), 1);
+							NotificacionController.save(not);
+						}
+						
+					}
+	    			
 	    		},ButtonOption.caption("Si"))
 	    		.withCancelButton(ButtonOption.caption("No"))
 	    		.open();						
@@ -397,7 +425,9 @@ public class VwTrazabilidad extends Panel {
 	private HorizontalLayout vroot = new HorizontalLayout();
 	private VerticalLayout vlDescripcionProceso = new VerticalLayout();
 	private UploadImageEvidencia evidencia = new UploadImageEvidencia();
-	 
+	private RichTextArea txtComentario = new RichTextArea("Comentario docente"); 
+	private VerticalLayout vlaccordionComment= new VerticalLayout();
+	
 	public void initTraza() {
 		
 		accordion.setCaption("Laboratorios utilizados");
@@ -412,7 +442,11 @@ public class VwTrazabilidad extends Panel {
 		//descripcionProceso.setHeight("400px");
 		vlDescripcionProceso.setMargin(false);
 		vlDescripcionProceso.addComponents(descripcionProceso, evidencia);
-		vroot.addComponents(accordion,vlDescripcionProceso);	 
+		vlaccordionComment.setMargin(false);
+		vlaccordionComment.addComponents(accordion, txtComentario);
+		txtComentario.setSizeFull();
+		txtComentario.setReadOnly(true);
+		vroot.addComponents(vlaccordionComment,vlDescripcionProceso);	 
 		vroot.setMargin(false); 
 		
 		/*LABORATORIO DE PROCESOS QUIMICOS*/
@@ -900,7 +934,7 @@ public class VwTrazabilidad extends Panel {
 			return lb;
 		}).setCaption("NOMBRE").setExpandRatio(0);
 
-		gridEquipoOU.addComponentColumn(Trazabilidad -> {
+		/*gridEquipoOU.addComponentColumn(Trazabilidad -> {
 			Label lb = new Label();
 			lb.setContentMode(ContentMode.HTML);
 			String comp = "";
@@ -913,7 +947,7 @@ public class VwTrazabilidad extends Panel {
 
 			lb.setSizeFull();
 			return lb;
-		}).setCaption("COMPONENTES").setExpandRatio(0);
+		}).setCaption("COMPONENTES").setExpandRatio(0);*/
 
 		gridEquipoOU.addComponentColumn(Trazabilidad -> {
 			Button b2 = new Button("Quitar");
@@ -1177,6 +1211,32 @@ public class VwTrazabilidad extends Panel {
 			
 			descripcionProceso.setValue(trazMod.getDescripcion());
 			
+			toolbarProcesosQuimicos.setVisible(false);			
+			toolbarMicrobiologia.setVisible(false);			
+			toolbarOU.setVisible(false);			
+			toolbarAG.setVisible(false);
+			toolbarEcotoxicologia.setVisible(false);
+			
+			gridReactivoPQ.getColumn("Opciones").setHidden(true);
+			gridEquipoPQ.getColumn("Opciones").setHidden(true);
+			gridMaterialPQ.getColumn("Opciones").setHidden(true);
+			
+			gridReactivoMi.getColumn("Opciones").setHidden(true);
+			gridEquipoMi.getColumn("Opciones").setHidden(true);
+			gridMaterialMi.getColumn("Opciones").setHidden(true);
+			gridMedioCultivoMi.getColumn("Opciones").setHidden(true);
+			
+			gridEquipoOU.getColumn("Opciones").setHidden(true);
+			gridMaterialOU.getColumn("Opciones").setHidden(true);
+			
+			gridReactivoAG.getColumn("Opciones").setHidden(true);
+			gridEquipoAG.getColumn("Opciones").setHidden(true);
+			gridMaterialAG.getColumn("Opciones").setHidden(true);
+			
+			gridReactivoEC.getColumn("Opciones").setHidden(true);
+			gridEquipoEC.getColumn("Opciones").setHidden(true);
+			gridMaterialEC.getColumn("Opciones").setHidden(true);
+			
 		}else if(trazabilidadAction.equals("ver")){
 			listReactivosPQ.addAll(TrazabilidadController.getReactivoTrazaByLab(trazMod.getIdTrazabilidad(), 1));
 			gridReactivoPQ.setItems(listReactivosPQ);
@@ -1233,6 +1293,8 @@ public class VwTrazabilidad extends Panel {
 			
 			descripcionProceso.setReadOnly(true);
 				
+			txtComentario.setValue(trazMod.getComentario());
+			txtComentario.setVisible(true);
 			
 			toolbarProcesosQuimicos.setVisible(false);			
 			toolbarMicrobiologia.setVisible(false);			
@@ -1361,8 +1423,8 @@ public class VwTrazabilidad extends Panel {
 						trazMediosCultivo = iteratorMediosCultivo.next();
 						trazMediosCultivo.setTrazabilidad(traz);
 						gastoMc = trazMediosCultivo.getGasto();
-						mc = MedioCultivoController.getSpecificReactivoById(trazMediosCultivo.getMedioCultivo().getIdMedioCultivo());
-						saldoMcUp = mc.getSaldo() - gastoMcUp;
+						mc = MedioCultivoController.getSpecificMedioCultivoById(trazMediosCultivo.getMedioCultivo().getIdMedioCultivo());
+						saldoMcUp = mc.getSaldo() - gastoMc;
 						gastoMcUp = mc.getGasto() + gastoMc;
 						mc.setGasto(gastoMcUp);
 						mc.setSaldo(saldoMcUp);  
@@ -1372,6 +1434,17 @@ public class VwTrazabilidad extends Panel {
 					traz.setTrazabilidadMediosCultivo(listMediosCultivo);	
 					
 				    TrazabilidadController.save(traz);
+				    
+				    Iterator<ProyectoParticipante> ppIterator = ProyectoController.getProyectoById(proyecto.getIdProyecto()).iterator();
+					ProyectoParticipante pp;
+					while(ppIterator.hasNext()) {
+						pp = ppIterator.next();
+						if(pp.getUsuario().getId() != idUsuario) {
+							Notificacion not = new Notificacion("El usuario "+nombreUsuario+" agregó una nueva traza al proyecto "+pp.getProyecto().getTema(), pp.getUsuario(), 1);
+							NotificacionController.save(not);
+						}
+						
+					}
 				    
 				} else {
 
@@ -1388,24 +1461,10 @@ public class VwTrazabilidad extends Panel {
 				
 					Iterator<TrazabilidadReactivo> iteratorReactivo = listReactivos.iterator();
 					TrazabilidadReactivo trazReactivo;
-					Reactivo rUp; 
-					float gasto = 0, saldoUp = 0, gastoUp = 0; 
 					
 					while(iteratorReactivo.hasNext()) {
-						gasto = 0; 
-						saldoUp = 0; 
-						gastoUp = 0; 
 						trazReactivo = iteratorReactivo.next();
 						trazReactivo.setTrazabilidad(trazMod); 
-						gasto = trazReactivo.getGasto();
-						rUp = ReactivoController.getSpecificReactivoById(trazReactivo.getReactivo().getIdReactivo());
-						saldoUp = rUp.getSaldo() - gasto;
-						gastoUp = rUp.getGasto() + gasto;
-						rUp.setGasto(gastoUp); 
-						rUp.setSaldo(saldoUp);  
-						System.out.println(rUp.getNombre()+" "+saldoUp);
-						
-						//ReactivoController.update(rUp);
 					}
 					trazMod.setTrazabilidadReactivos(listReactivos);
 					
@@ -1441,30 +1500,25 @@ public class VwTrazabilidad extends Panel {
 				
 					Iterator<TrazabilidadMedioCultivo> iteratorMediosCultivo = listMediosCultivo.iterator();
 					TrazabilidadMedioCultivo trazMediosCultivo;
-					MedioCultivo mc;
-					float gastoMc = 0, saldoMcUp = 0, gastoMcUp = 0; 
 					
 					while(iteratorMediosCultivo.hasNext()) {
-						gastoMc = 0; 
-						saldoMcUp = 0; 
-						gastoMcUp = 0; 
 						trazMediosCultivo = iteratorMediosCultivo.next();
 						trazMediosCultivo.setTrazabilidad(trazMod);
-						
-						
-						
-						gastoMc = trazMediosCultivo.getGasto();
-						mc = MedioCultivoController.getSpecificReactivoById(trazMediosCultivo.getMedioCultivo().getIdMedioCultivo());
-						saldoMcUp = mc.getSaldo() - gastoMcUp;
-						gastoMcUp = mc.getGasto() + gastoMc;
-						mc.setGasto(gastoMcUp);
-						mc.setSaldo(saldoMcUp);  
-						System.out.println(mc.getNombre()+" "+saldoMcUp);
-						//MedioCultivoController.update(mc);
 					}
 					trazMod.setTrazabilidadMediosCultivo(listMediosCultivo);	
 					
 				    TrazabilidadController.update(trazMod);
+				    
+				    Iterator<ProyectoParticipante> ppIterator = ProyectoController.getProyectoById(proyecto.getIdProyecto()).iterator();
+					ProyectoParticipante pp;
+					while(ppIterator.hasNext()) {
+						pp = ppIterator.next();
+						if(pp.getUsuario().getId() != idUsuario) {
+							Notificacion not = new Notificacion("El usuario "+nombreUsuario+" modificó una traza del proyecto "+pp.getProyecto().getTema(), pp.getUsuario(), 1);
+							NotificacionController.save(not);
+						}
+						
+					}
 
 				}
 
@@ -1496,6 +1550,49 @@ public class VwTrazabilidad extends Panel {
 			dialogReactivoWindow.close();
 		});
 		dialogReactivoWindow.getFooterText().setValue("Opciones");
+		UI.getCurrent().addWindow(dialogReactivoWindow);
+	}
+	
+	public RichTextArea comentario = new RichTextArea();
+	
+	public void comentar(Trazabilidad traza) {
+		comentario.setSizeFull();
+		dialogWindow dialogReactivoWindow = new dialogWindow("Comentario", VaadinIcons.COMMENT);
+		dialogReactivoWindow.setResponsive(true);
+		dialogReactivoWindow.setWidth("60%");
+		dialogReactivoWindow.addComponentBody(comentario);
+		
+		comentario.setValue(traza.getComentario()+"<br>");
+		
+		dialogReactivoWindow.getOkButton().addClickListener(e->{
+			traza.setComentario(comentario.getValue()+"<br>"+nombreUsuario+"<br>Docente");
+			
+			if(comentario.isEmpty()) {
+				message.warringMessage("No se puede guardar un comentario vacio");
+				return;
+			}
+			
+			TrazabilidadController.update(traza);
+			
+			Iterator<ProyectoParticipante> ppIterator = ProyectoController.getProyectoById(proyecto.getIdProyecto()).iterator();
+			ProyectoParticipante pp;
+			while(ppIterator.hasNext()) {
+				pp = ppIterator.next();
+				if(pp.getUsuario().getId() != idUsuario) {
+					Notificacion not = new Notificacion("El usuario "+nombreUsuario+" comentó una traza del proyecto "+pp.getProyecto().getTema(), pp.getUsuario(), 1);
+					NotificacionController.save(not);
+				}
+				
+			}
+			
+			message.normalMessage("Acción realizada con éxito");
+			dialogReactivoWindow.close();
+		});
+		
+		dialogReactivoWindow.getCancelButton().addClickListener(e ->{
+			dialogReactivoWindow.close();
+		});
+		
 		UI.getCurrent().addWindow(dialogReactivoWindow);
 	}
 	
@@ -1538,7 +1635,12 @@ public class VwTrazabilidad extends Panel {
 		descripcionProceso.clear();
 		descripcionProceso.setReadOnly(false);
 		
+		txtComentario.clear();
+		txtComentario.setVisible(false);
+		
 		evidencia.clear();
+		
+		accordion.setSelectedTab(0);
 		
 		toolbarProcesosQuimicos.setVisible(true);
 		gridReactivoPQ.getColumn("Opciones").setHidden(false);

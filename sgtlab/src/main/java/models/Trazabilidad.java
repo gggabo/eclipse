@@ -43,6 +43,9 @@ public class Trazabilidad implements Serializable {
 	@Column(name = "DESCRIPCION", columnDefinition = "TEXT")
 	private String descripcion;
 	
+	@Column(name = "COMENTARIO", columnDefinition = "TEXT")
+	private String comentario;
+	
 	@Lob
 	@Column(name="EVIDENCIA", columnDefinition="mediumblob")
 	private byte[] evidencia;
@@ -207,6 +210,14 @@ public class Trazabilidad implements Serializable {
 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+	
+	public String getComentario() {
+		return comentario;
+	}
+
+	public void setComentario(String comentario) {
+		this.comentario = comentario;
 	}
 
 	@Override

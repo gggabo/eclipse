@@ -23,6 +23,7 @@ public class ProcesoComponent extends HorizontalLayout implements Serializable {
 	private Button delButton = new Button("Eliminar", VaadinIcons.CLOSE_CIRCLE_O);
 	private Button viewButton = new Button("Ver", VaadinIcons.EYE);
 	private Button editButton = new Button("Editar", VaadinIcons.EDIT);
+	private Button commentButton = new Button("Comentario", VaadinIcons.COMMENT);
 	private VerticalLayout layout = new VerticalLayout();
 	private HorizontalLayout footer = new HorizontalLayout();
 	private Label revisores = new Label("", ContentMode.HTML);
@@ -51,6 +52,7 @@ public class ProcesoComponent extends HorizontalLayout implements Serializable {
 		form.setSpacing(true);
 		
 		revisarButton.addStyleName(ValoTheme.BUTTON_PRIMARY);
+		commentButton.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		delButton.addStyleName(ValoTheme.BUTTON_DANGER);
 		editButton.addStyleName(ValoTheme.BUTTON_FRIENDLY);
 		viewButton.addStyleName(ValoTheme.BUTTON_FRIENDLY);
@@ -58,9 +60,10 @@ public class ProcesoComponent extends HorizontalLayout implements Serializable {
 		delButton.addStyleName(ValoTheme.BUTTON_SMALL);
 		editButton.addStyleName(ValoTheme.BUTTON_SMALL);
 		viewButton.addStyleName(ValoTheme.BUTTON_SMALL);
-        
+		commentButton.addStyleName(ValoTheme.BUTTON_SMALL);
+		
 		footer.setSpacing(true);
-		footer.addComponents(revisores, viewButton, editButton,revisarButton,delButton);
+		footer.addComponents(revisores, viewButton, editButton,revisarButton, commentButton,delButton);
 		footer.setWidth("100%");
 		footer.setExpandRatio(revisores, 1); 
 		
@@ -265,6 +268,16 @@ public class ProcesoComponent extends HorizontalLayout implements Serializable {
 
 	public void setEstadoProyecto(Label estadoProyecto) {
 		this.estadoProceso = estadoProyecto;
+	}
+
+
+	public Button getCommentButton() {
+		return commentButton;
+	}
+
+
+	public void setCommentButton(Button commentButton) {
+		this.commentButton = commentButton;
 	}
 	
 	

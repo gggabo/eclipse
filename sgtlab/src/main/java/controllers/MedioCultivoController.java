@@ -34,7 +34,7 @@ public class MedioCultivoController implements Serializable {
 	}
 	
 	static MedioCultivo mc;
-	public static  MedioCultivo getSpecificReactivoById(long idMedioCultivo) {		
+	public static  MedioCultivo getSpecificMedioCultivoById(long idMedioCultivo) {		
 		JPAService.runInTransaction(em ->{
 			Query query = em.createQuery("select mc from MedioCultivo mc where mc.idMedioCultivo = ?1");
 			query.setParameter(1, idMedioCultivo);
@@ -62,6 +62,7 @@ public class MedioCultivoController implements Serializable {
 		else 
 			return false;
 	}
+	
 	
 	static Laboratorio lab;
 	public static List<MedioCultivo> getAllReactiveByLaboratory(long idLab) {		

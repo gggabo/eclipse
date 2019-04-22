@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.Query;
 
 import models.Laboratorio;
+import models.MedioCultivo;
 import models.Reactivo;
 import services.JPAService;
 

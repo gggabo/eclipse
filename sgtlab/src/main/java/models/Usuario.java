@@ -73,6 +73,9 @@ public class Usuario implements Serializable {
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Trazabilidad>  trazabilidades = new ArrayList<>();
 	
+	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Notificacion>  notificaciones = new ArrayList<>();
+	
 	@Column(name = "ESTADO") 
 	private int estado; 
 
@@ -233,76 +236,31 @@ public class Usuario implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((apellido_materno == null) ? 0 : apellido_materno.hashCode());
-		result = prime * result + ((apellido_paterno == null) ? 0 : apellido_paterno.hashCode());
-		result = prime * result + ((clave == null) ? 0 : clave.hashCode());
-		result = prime * result + ((correo == null) ? 0 : correo.hashCode());
+		result = prime * result + ((Cedula == null) ? 0 : Cedula.hashCode());
 		result = prime * result + (int) (id ^ (id >>> 32));
-		result = prime * result + Arrays.hashCode(imagen);
-		result = prime * result + ((nombre_dos == null) ? 0 : nombre_dos.hashCode());
-		result = prime * result + ((nombre_uno == null) ? 0 : nombre_uno.hashCode());
-		result = prime * result + ((nombre_usuario == null) ? 0 : nombre_usuario.hashCode());
-		result = prime * result + ((telefono == null) ? 0 : telefono.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) 
 			return true;
 		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		Usuario other = (Usuario) obj;
-		if (apellido_materno == null) {
-			if (other.apellido_materno != null)
+		if (Cedula == null) {
+			if (other.Cedula != null)
 				return false;
-		} else if (!apellido_materno.equals(other.apellido_materno))
-			return false;
-		if (apellido_paterno == null) {
-			if (other.apellido_paterno != null)
-				return false;
-		} else if (!apellido_paterno.equals(other.apellido_paterno))
-			return false;
-		if (clave == null) {
-			if (other.clave != null)
-				return false;
-		} else if (!clave.equals(other.clave))
-			return false;
-		if (correo == null) {
-			if (other.correo != null)
-				return false;
-		} else if (!correo.equals(other.correo))
+		} else if (!Cedula.equals(other.Cedula))
 			return false;
 		if (id != other.id)
-			return false;
-		if (!Arrays.equals(imagen, other.imagen))
-			return false;
-		if (nombre_dos == null) {
-			if (other.nombre_dos != null)
-				return false;
-		} else if (!nombre_dos.equals(other.nombre_dos))
-			return false;
-		if (nombre_uno == null) {
-			if (other.nombre_uno != null)
-				return false;
-		} else if (!nombre_uno.equals(other.nombre_uno))
-			return false;
-		if (nombre_usuario == null) {
-			if (other.nombre_usuario != null)
-				return false;
-		} else if (!nombre_usuario.equals(other.nombre_usuario))
-			return false;
-		if (telefono == null) {
-			if (other.telefono != null)
-				return false;
-		} else if (!telefono.equals(other.telefono))
 			return false;
 		return true;
 	}
 
-	
+		
 	
 	
 	

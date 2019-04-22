@@ -85,7 +85,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 	public HorizontalLayout toolbar = new HorizontalLayout();
 	public ComboBox<Laboratorio> cmbLaboratorio = new ComboBox<>();
 	public List<Laboratorio> listLab = new ArrayList<>();
-	public Button btnAddLaboratorio = new Button(VaadinIcons.PLUS_CIRCLE);
+	//public Button btnAddLaboratorio = new Button(VaadinIcons.PLUS_CIRCLE);
 
 	public TabSheet tabSheet = new TabSheet();
 
@@ -108,7 +108,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 	public TextField saldoRectivo = new TextField("Saldo");
 	public ComboBox<Unidad> cmbUnidad = new ComboBox<>();
 	public List<Unidad> listUnidad = new ArrayList<>();
-	public Button btnAddUnidad = new Button(VaadinIcons.PLUS_CIRCLE);
+	//public Button btnAddUnidad = new Button(VaadinIcons.PLUS_CIRCLE);
 	public DateField fechaCaducidadRectivo = new DateField("Fecha caducidad");
 	/*FIN REACTIVO*/
 
@@ -290,7 +290,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		toolbar.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
 		toolbar.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
 		toolbar.setResponsive(true);
-		toolbar.addComponents(cmbLaboratorio, btnAddLaboratorio);
+		toolbar.addComponents(cmbLaboratorio);
 
 		tabSheet.addTab(pnlReactivos, "Reactivos", new ThemeResource("images/quimica.png"));
 		tabSheet.addTab(pnlEquipos, "Equipos", new ThemeResource("images/microscopio.png"));
@@ -862,7 +862,7 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		hl.setCaption("Unidad");
 		hl.setSpacing(false);
 		hl.setMargin(false);
-		hl.addComponents(cmbUnidad, btnAddUnidad);
+		hl.addComponents(cmbUnidad);
 		 
 		formLayoutReactivo.setSpacing(false);
 		formLayoutReactivo.setMargin(false);
@@ -1323,8 +1323,8 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		// LABORATORIO
 
 		cmbLaboratorio.addStyleName(ValoTheme.COMBOBOX_SMALL);
-		btnAddLaboratorio.addStyleName(ValoTheme.BUTTON_SMALL);
-		btnAddLaboratorio.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
+		//btnAddLaboratorio.addStyleName(ValoTheme.BUTTON_SMALL);
+		//btnAddLaboratorio.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
 
 		// REACTIVO
 		codigoReactivo.setStyleName(ValoTheme.TEXTFIELD_SMALL);
@@ -1346,8 +1346,8 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		saldoRectivo.setReadOnly(true);
 		saldoRectivo.addStyleName(ValoTheme.TEXTFIELD_ALIGN_RIGHT);
 		cmbUnidad.addStyleName(ValoTheme.COMBOBOX_TINY);
-		btnAddUnidad.addStyleName(ValoTheme.BUTTON_SMALL);
-		btnAddUnidad.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
+		//btnAddUnidad.addStyleName(ValoTheme.BUTTON_SMALL);
+		//btnAddUnidad.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
 		fechaCaducidadRectivo.setStyleName(ValoTheme.DATEFIELD_TINY);
 		filterReactivotxt.addStyleName(ValoTheme.TEXTFIELD_SMALL);
 		filterReactivotxt.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
@@ -1415,8 +1415,8 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		saldoMedioCultivo.setReadOnly(true);
 		saldoMedioCultivo.addStyleName(ValoTheme.TEXTFIELD_ALIGN_RIGHT);
 		cmbUnidadMedioCultivo.addStyleName(ValoTheme.COMBOBOX_TINY);
-		btnAddUnidadMedioCultivo.addStyleName(ValoTheme.BUTTON_SMALL);
-		btnAddUnidadMedioCultivo.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
+		//btnAddUnidadMedioCultivo.addStyleName(ValoTheme.BUTTON_SMALL);
+		//btnAddUnidadMedioCultivo.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
 		fechaCaducidadMedioCultivo.setStyleName(ValoTheme.DATEFIELD_TINY);
 		filterMedioCultivotxt.addStyleName(ValoTheme.TEXTFIELD_SMALL);
 		filterMedioCultivotxt.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);

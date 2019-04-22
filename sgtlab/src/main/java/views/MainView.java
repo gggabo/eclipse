@@ -18,6 +18,7 @@ public class MainView extends HorizontalLayout implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private VwMenu menu;
 	private VwUsuarios usuario = new VwUsuarios();
+	public VwProyectos proyectos = new VwProyectos();
 	@SuppressWarnings("unchecked")
 	private List<Rol> roles = (List<Rol>) VaadinSession.getCurrent().getAttribute("TIPO_USUARIO");
 	public MainView(MainUI ui) {
@@ -26,7 +27,7 @@ public class MainView extends HorizontalLayout implements Serializable {
 		 
 		CssLayout viewContainer = new CssLayout();
 		viewContainer.setSizeFull();
-		//viewContainer.addStyleName("v-scrollable");
+		viewContainer.addStyleName("v-scrollable");
 		viewContainer.addStyleName("custom-margin-layout");
 		viewContainer.addStyleName("login-screen");
 		
@@ -43,11 +44,11 @@ public class MainView extends HorizontalLayout implements Serializable {
 			
 			if(rol.getIdRol()==1) {//ADMINISTRADOR
 				if(!menuAdd.contains("inicio")) {
-					menu.addView(new VwInicio(), "inicio", "Inicio", VaadinIcons.HOME);
+					menu.addView(new VwInicio(proyectos), "inicio", "Inicio", VaadinIcons.HOME);
 					menuAdd.add("inicio");
 				}
 				if(!menuAdd.contains("proyectos")) {
-					menu.addView(new VwProyectos(), "proyectos", "Proyectos", VaadinIcons.NOTEBOOK);
+					menu.addView(proyectos, "proyectos", "Proyectos", VaadinIcons.NOTEBOOK);
 					menuAdd.add("proyectos");
 				}
 				
@@ -63,11 +64,11 @@ public class MainView extends HorizontalLayout implements Serializable {
 
 			}else if(rol.getIdRol()==2) {//DOCENTE
 				if(!menuAdd.contains("inicio")) {
-					menu.addView(new VwInicio(), "inicio", "Inicio", VaadinIcons.HOME);
+					menu.addView(new VwInicio(proyectos), "inicio", "Inicio", VaadinIcons.HOME);
 					menuAdd.add("inicio");
 				}
 				if(!menuAdd.contains("proyectos")) {
-					menu.addView(new VwProyectos(), "proyectos", "Proyectos", VaadinIcons.NOTEBOOK);
+					menu.addView(proyectos, "proyectos", "Proyectos", VaadinIcons.NOTEBOOK);
 					menuAdd.add("proyectos");
 				}
 				
@@ -78,11 +79,11 @@ public class MainView extends HorizontalLayout implements Serializable {
 				
 			}else if(rol.getIdRol()==3) {//ESTUDIANTE
 				if(!menuAdd.contains("inicio")) {
-					menu.addView(new VwInicio(), "inicio", "Inicio", VaadinIcons.HOME);
+					menu.addView(new VwInicio(proyectos), "inicio", "Inicio", VaadinIcons.HOME);
 					menuAdd.add("inicio");
 				}
 				if(!menuAdd.contains("proyectos")) {
-					menu.addView(new VwProyectos(), "proyectos", "Proyectos", VaadinIcons.NOTEBOOK);
+					menu.addView(proyectos, "proyectos", "Proyectos", VaadinIcons.NOTEBOOK);
 					menuAdd.add("proyectos");
 				}
 			}
