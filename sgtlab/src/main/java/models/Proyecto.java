@@ -32,8 +32,11 @@ public class Proyecto implements Serializable {
 	@Column(name = "CODIGO")
 	private String codigo;
 	
-	@Column(name = "FECHA")
-	private LocalDate fecha;
+	@Column(name = "FECHA_INICIO")
+	private LocalDate fechaInicio;
+	
+	@Column(name = "FECHA_FIN")
+	private LocalDate fechaFin;
 	
 	@Column(name = "HORA")
 	private LocalTime hora;
@@ -69,11 +72,11 @@ public class Proyecto implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Proyecto(String codigo, LocalDate fecha,LocalTime hora , TipoProyecto tipoProyecto, String tema, String descripcion,String estadoProyecto,
+	public Proyecto(String codigo, LocalDate fechaInicio,LocalTime hora , TipoProyecto tipoProyecto, String tema, String descripcion,String estadoProyecto,
 			int estado) {
 		super();
 		this.codigo = codigo;
-		this.fecha = fecha;
+		this.fechaInicio = fechaInicio;
 		this.hora = hora;
 		this.tipoProyecto = tipoProyecto;
 		this.tema = tema;
@@ -122,12 +125,20 @@ public class Proyecto implements Serializable {
 		this.codigo = codigo;
 	}
 
-	public LocalDate getFecha() {
-		return fecha;
+	public LocalDate getFechaInicio() {
+		return fechaInicio;
 	}
 
-	public void setFecha(LocalDate fecha) {
-		this.fecha = fecha;
+	public void setFechaInicio(LocalDate fechaInicio) {
+		this.fechaInicio = fechaInicio;
+	}
+
+	public LocalDate getFechaFin() {
+		return fechaFin;
+	}
+
+	public void setFechaFin(LocalDate fechaFin) {
+		this.fechaFin = fechaFin;
 	}
 
 	public TipoProyecto getTipoProyecto() {
@@ -185,7 +196,7 @@ public class Proyecto implements Serializable {
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
 		result = prime * result + ((descripcion == null) ? 0 : descripcion.hashCode());
 		result = prime * result + estado;
-		result = prime * result + ((fecha == null) ? 0 : fecha.hashCode());
+		result = prime * result + ((fechaInicio == null) ? 0 : fechaInicio.hashCode());
 		result = prime * result + (int) (idProyecto ^ (idProyecto >>> 32));
 		result = prime * result + ((tema == null) ? 0 : tema.hashCode());
 		return result;
@@ -212,10 +223,10 @@ public class Proyecto implements Serializable {
 			return false;
 		if (estado != other.estado)
 			return false;
-		if (fecha == null) {
-			if (other.fecha != null)
+		if (fechaInicio == null) {
+			if (other.fechaInicio != null)
 				return false;
-		} else if (!fecha.equals(other.fecha))
+		} else if (!fechaInicio.equals(other.fechaInicio))
 			return false;
 		if (idProyecto != other.idProyecto)
 			return false;
@@ -229,7 +240,7 @@ public class Proyecto implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Proyecto [idProyecto=" + idProyecto + ", codigo=" + codigo + ", fecha=" + fecha + ", tipoProyecto="
+		return "Proyecto [idProyecto=" + idProyecto + ", codigo=" + codigo + ", fecha=" + fechaInicio + ", tipoProyecto="
 				+ tipoProyecto + ", tema=" + tema + ", descripcion=" + descripcion + ", estado=" + estado + "]";
 	}
 	

@@ -18,9 +18,10 @@ import fi.jasoft.qrcode.QRCode;
 public class panelProyecto extends Panel implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Button trazButton = new Button("", VaadinIcons.FILE_TREE_SMALL);
-	private Button delButton = new Button("", VaadinIcons.CLOSE_CIRCLE_O);
+	private Button delButton = new Button("", VaadinIcons.TRASH);
 	private Button editButton = new Button("", VaadinIcons.EDIT);
 	private Button printButton = new Button("", VaadinIcons.PRINT);
+	private Button endButton = new Button("", VaadinIcons.FLAG_O);
 	private VerticalLayout layout = new VerticalLayout();
 	private HorizontalLayout footer = new HorizontalLayout();
 	private Label footerText = new Label("Opciones");
@@ -30,6 +31,7 @@ public class panelProyecto extends Panel implements Serializable {
 	private Label nombreProyecto = new Label();
 	private Label usuariosProyecto = new Label();
 	private QRCode qr = new QRCode("Código");
+	private Label estadoProyecto = new Label();
 
 	public panelProyecto() {
 		setIcon(VaadinIcons.CLUSTER);
@@ -38,12 +40,20 @@ public class panelProyecto extends Panel implements Serializable {
 		
 		trazButton.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		printButton.addStyleName(ValoTheme.BUTTON_PRIMARY);
+		endButton.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		delButton.addStyleName(ValoTheme.BUTTON_DANGER);
 		editButton.addStyleName(ValoTheme.BUTTON_FRIENDLY);
 		trazButton.addStyleName(ValoTheme.BUTTON_SMALL);
 		delButton.addStyleName(ValoTheme.BUTTON_SMALL);
 		editButton.addStyleName(ValoTheme.BUTTON_SMALL);
 		printButton.addStyleName(ValoTheme.BUTTON_SMALL);
+		endButton.addStyleName(ValoTheme.BUTTON_SMALL);
+		
+		trazButton.setDescription("Trazas del proyecto");
+		printButton.setDescription("Imprimir proyecto");
+		endButton.setDescription("Finalizar proyecto");
+		delButton.setDescription("Eliminar proyecto");
+		editButton.setDescription("Editar proyecto");
 		
         footerText.setSizeUndefined(); 
         footerText.setStyleName(ValoTheme.LABEL_H3);
@@ -51,7 +61,7 @@ public class panelProyecto extends Panel implements Serializable {
         
 		footer.setSpacing(true);
 		footer.addStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
-		footer.addComponents(footerText, editButton,trazButton,printButton,delButton);
+		footer.addComponents(footerText, editButton,trazButton,printButton,endButton,delButton);
 		footer.setWidth("445px");
 		footer.setExpandRatio(footerText, 1);
 		
@@ -78,10 +88,13 @@ public class panelProyecto extends Panel implements Serializable {
         qr.setWidth("120px");
         qr.setHeight("120px");
         
+        estadoProyecto.addStyleName("v-label-esperando-revision");
+		estadoProyecto.setCaption("Estado");
+		estadoProyecto.addStyleName(ValoTheme.LABEL_SMALL);
+        
         HorizontalLayout hl = new HorizontalLayout();
         
-        
-		form.addComponents(nombreProyecto,usuariosProyecto);
+		form.addComponents(nombreProyecto,usuariosProyecto, estadoProyecto);
 		form.setSpacing(true);
 		
 		form2.addComponent(qr);
@@ -171,6 +184,27 @@ public class panelProyecto extends Panel implements Serializable {
 	public void setEditButton(Button editButton) {
 		this.editButton = editButton;
 	}
+
+
+	public Label getEstadoProyecto() {
+		return estadoProyecto;
+	}
+
+
+	public void setEstadoProyecto(Label estadoProyecto) {
+		this.estadoProyecto = estadoProyecto;
+	}
+
+
+	public Button getEndButton() {
+		return endButton;
+	}
+
+
+	public void setEndButton(Button endButton) {
+		this.endButton = endButton;
+	}
+	
 	
 	
 	

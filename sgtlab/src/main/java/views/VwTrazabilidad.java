@@ -1292,9 +1292,14 @@ public class VwTrazabilidad extends Panel {
 			descripcionProceso.setValue(trazMod.getDescripcion());
 			
 			descripcionProceso.setReadOnly(true);
-				
-			txtComentario.setValue(trazMod.getComentario());
-			txtComentario.setVisible(true);
+			
+			if(trazMod.getComentario()==null) {
+				txtComentario.setValue("");
+				txtComentario.setVisible(false);
+			}else {
+				txtComentario.setValue(trazMod.getComentario());
+				txtComentario.setVisible(true);
+			}		
 			
 			toolbarProcesosQuimicos.setVisible(false);			
 			toolbarMicrobiologia.setVisible(false);			

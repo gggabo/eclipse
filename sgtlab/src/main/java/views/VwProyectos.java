@@ -107,6 +107,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
+				estadoProyecto = "ejecucion";
 				buildNewEditProject(null);
 				proyectoAction = "guardar";
 			}
@@ -175,6 +176,14 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 			panelProyecto p = new panelProyecto();	
 			p.setCaption(prop.getProyecto().getTipoProyecto().getNombre());
 			p.getNombreProyecto().setValue(prop.getProyecto().getTema());
+			p.getEstadoProyecto().setValue(prop.getProyecto().getEstadoProyecto());
+			if(prop.getProyecto().getEstadoProyecto().equals("EJECUCIÓN")) {
+				p.getEstadoProyecto().addStyleName("v-label-esperando-revision");
+			}else {
+				p.getEstadoProyecto().addStyleName("v-label-revisado");
+				p.getEditButton().setIcon(VaadinIcons.EYE);
+				p.getEditButton().setDescription("Ver");			
+			}
 			
 			ppU = ProyectoController.getProyectoById(prop.getProyecto().getIdProyecto());
 			iteratorPpU = ppU.iterator();
@@ -192,23 +201,56 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 			p.getOkButton().addClickListener(e ->{
 				mainLayout.removeComponent(pnlPrincipal);
 				VwTrazabilidad tr = new VwTrazabilidad(this, prop.getProyecto());
+				if(prop.getProyecto().getEstadoProyecto().equals("EJECUCIÓN")) {
+					tr.mainMenu.getItems().get(1).setVisible(true);
+				}else {
+					tr.mainMenu.getItems().get(1).setVisible(false);
+				}
 				mainLayout.addComponent(tr);
 			});
 			
 			p.getPrintButton().addClickListener(e->{
-				 
+				
 			});
 			
+			if(prop.getProyecto().getEstadoProyecto().equals("EJECUCIÓN")) {
+				p.getEndButton().setVisible(true);
+				p.getEndButton().addClickListener(e->{
+					MessageBox.createQuestion()
+					.withCaption("Confirmación de finalización")
+		    		.withMessage("Está seguro de dar por finalizado el proyecto? \n Una vez finalizado no podrá agregar mas trazas \n o editar(resumen, usuarios, otros) del proyecto")
+		    		.withOkButton(() -> {
+		    			Proyecto prjUp = prop.getProyecto();
+						prjUp.setEstadoProyecto("FINALIZADO");
+						prjUp.setFechaFin(LocalDate.now());
+						ProyectoController.update(prjUp);
+						p.getEstadoProyecto().addStyleName("v-label-revisado");	
+						p.getEstadoProyecto().setValue("FINALIZADO");
+		    			message.normalMessage("Proyecto finalizado");
+		    		},ButtonOption.caption("Si"))
+		    		.withCancelButton(ButtonOption.caption("No"))
+		    		.open();
+				});
+			}else {
+				p.getEndButton().setVisible(false);
+			}
+			
+						
 			p.getEditButton().addClickListener(e ->{
+				if(prop.getProyecto().getEstadoProyecto().equals("EJECUCIÓN")) {
+					estadoProyecto = "ejecucion";
+				}else {
+					estadoProyecto = "finalizado";
+				}
 				proyectoAction = "modificar";
 				buildNewEditProject(prop);
 				codigoProject.setValue(prop.getProyecto().getCodigo());
 				this.qr.setValue(prop.getProyecto().getCodigo());
-				fechaProyecto.setValue(prop.getProyecto().getFecha());
+				fechaProyecto.setValue(prop.getProyecto().getFechaInicio());
 				cmbTipo.setValue(prop.getProyecto().getTipoProyecto());
 				temaProject.setValue(prop.getProyecto().getTema());
 				descripcionProject.setValue(prop.getProyecto().getDescripcion());
-
+				
 				List<ProyectoParticipante> ppUEdit = ProyectoController.getProyectoById(prop.getProyecto().getIdProyecto());
 				Iterator<ProyectoParticipante> iteratorPpUEdit;
 				iteratorPpUEdit = ppUEdit.iterator();
@@ -253,6 +295,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		return layoutProyectos;
 	} 
 	
+	HorizontalLayout infProyecto = new HorizontalLayout();
 	//PARTICIPANTE
 	public Panel pnlProyectoParticipante = new Panel();
 	public HorizontalLayout toolbarParticipante = new HorizontalLayout();
@@ -260,6 +303,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	public MenuBar mainMenuParticipante = new MenuBar();
 	public Grid<ProyectoParticipante> gridParticipante = new Grid<>();
 	String proyectoAction = "guardar";
+	String estadoProyecto = "ejecución";
 	//public List<ProyectoParticipante> listParticipante = new ArrayList<>();
 	
 	//MATERIAS
@@ -428,7 +472,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	private ComboBox<TipoProyecto> cmbTipo = new ComboBox<>("Tipo");
 	private DateField fechaProyecto = new DateField("Fecha");
 	private TextArea temaProject = new TextArea("Tema");
-	private TextArea descripcionProject = new TextArea("Descripción");
+	private TextArea descripcionProject = new TextArea("Resumen");
 	private Label lb1 = new Label("Información del proyecto");
 	private QRCode qr = new QRCode();
 	private TabSheet tabProyecto = new  TabSheet();	
@@ -483,11 +527,11 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 				}else {
 					
 					Proyecto p = prop.getProyecto();
-					
-					p.setFecha(fechaProyecto.getValue());
+					 
+					p.setFechaInicio(fechaProyecto.getValue());
 					p.setTipoProyecto(cmbTipo.getValue());
 					p.setTema(temaProject.getValue().toUpperCase().trim());
-					p.setDescripcion(descripcionProject.getValue().toUpperCase().trim());
+					p.setDescripcion(descripcionProject.getValue().toUpperCase().trim()); 
 					
 					p.setMaterias(listMateria); 
 					
@@ -520,25 +564,30 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 			dialogReactivoWindow.close();
 		});
 
-
-		HorizontalLayout infProyecto = new HorizontalLayout();
 		infProyecto.setMargin(false);
 		infProyecto.setSpacing(false);
 		infProyecto.addComponents(formProject,qr);
 		infProyecto.setExpandRatio(formProject, 1);
 		infProyecto.setSizeFull();
 		
+		tabProyecto.addTab(infProyecto, "Información general", new ThemeResource("images/info.png"));
 		tabProyecto.addTab(pnlProyectoParticipante,"Participantes",new ThemeResource("images/team.png"));
 		tabProyecto.addTab(pnlProyectoMateria,"Materias",new ThemeResource("images/books.png"));
+		tabProyecto.setSelectedTab(0);
 		
 		VerticalLayout vroot = new VerticalLayout();
-		vroot.addComponents(infProyecto,tabProyecto);
+		vroot.addComponents(tabProyecto);
 		vroot.setMargin(false);
 		vroot.setSpacing(false);
 		
 		dialogReactivoWindow.setResponsive(true);
 		dialogReactivoWindow.setWidth("45%");
 		dialogReactivoWindow.addComponentBody(vroot);
+		if(estadoProyecto.equals("ejecucion")) {
+			dialogReactivoWindow.getFooter().setVisible(true);
+		}else {
+			dialogReactivoWindow.getFooter().setVisible(false);
+		}
 		dialogReactivoWindow.getCancelButton().setCaption("Cerrar");
 		dialogReactivoWindow.getLayoutComponent().setMargin(false);
 		UI.getCurrent().addWindow(dialogReactivoWindow);
