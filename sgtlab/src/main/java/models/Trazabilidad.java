@@ -46,6 +46,9 @@ public class Trazabilidad implements Serializable {
 	@Column(name = "COMENTARIO", columnDefinition = "TEXT")
 	private String comentario;
 	
+	@Column(name = "OBSERVACION", columnDefinition = "TEXT")
+	private String observacion;
+	
 	@Lob
 	@Column(name="EVIDENCIA", columnDefinition="mediumblob")
 	private byte[] evidencia;
@@ -70,7 +73,7 @@ public class Trazabilidad implements Serializable {
 	
 	@Column(name = "ESTADO_REVISION") 
 	private String estadoRevision; 
-	
+		
 	@Column(name = "ESTADO") 
 	private int estado; 
 	
@@ -90,12 +93,14 @@ public class Trazabilidad implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Trazabilidad(LocalDate fecha, LocalTime hora, String descripcion, byte[] evidencia, int estado) {
+	public Trazabilidad(LocalDate fecha, LocalTime hora, String descripcion, String observacion, String comentario,byte[] evidencia, int estado) {
 		super();
 		this.fecha = fecha;
 		this.hora = hora;
 		this.descripcion = descripcion;
+		this.observacion = observacion;
 		this.evidencia = evidencia;
+		this.comentario = comentario;
 		this.estado = estado;
 	}
 
@@ -218,6 +223,14 @@ public class Trazabilidad implements Serializable {
 
 	public void setComentario(String comentario) {
 		this.comentario = comentario;
+	}
+	
+	public String getObservacion() {
+		return observacion;
+	}
+
+	public void setObservacion(String observacion) {
+		this.observacion = observacion;
 	}
 
 	@Override

@@ -9,7 +9,6 @@ import com.vaadin.data.Binder;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinSession;
-import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -34,7 +33,6 @@ import controllers.LoginController;
 import controllers.MedioCultivoController;
 import controllers.NotificacionController;
 import controllers.ProyectoController;
-import controllers.ProyectoParticipanteController;
 import controllers.ReactivoController;
 import controllers.TrazabilidadController;
 import controllers.UsuarioController;
@@ -324,6 +322,7 @@ public class VwTrazabilidad extends Panel {
 				
 	}
 	
+	private TabSheet tabTrazabilidad = new  TabSheet();	
 	private Accordion accordion = new Accordion();
 	/*LABORATORIO DE PROCESOS QUIMICOS*/
 	public VerticalLayout layoutProcesosQuimicos = new VerticalLayout();
@@ -421,14 +420,21 @@ public class VwTrazabilidad extends Panel {
 	public List<Material> listMaterialesEC = new ArrayList<>();
 	/*FIN LABORATORIO DE ECOTOXICOLOGIA*/
 	
-	private RichTextArea descripcionProceso = new RichTextArea("Descripción de proceso");
+	private RichTextArea descripcionProceso = new RichTextArea("Descripción del proceso");
+	private RichTextArea observacionProceso = new RichTextArea("Observación del proceso");
 	private HorizontalLayout vroot = new HorizontalLayout();
 	private VerticalLayout vlDescripcionProceso = new VerticalLayout();
 	private UploadImageEvidencia evidencia = new UploadImageEvidencia();
-	private RichTextArea txtComentario = new RichTextArea("Comentario docente"); 
-	private VerticalLayout vlaccordionComment= new VerticalLayout();
+	private RichTextArea txtComentario = new RichTextArea("Comentario docente");  
 	
 	public void initTraza() {
+		
+		tabTrazabilidad.addTab(accordion, "Lab. Usados", new ThemeResource("images/chemistry.png"));
+		tabTrazabilidad.addTab(vlDescripcionProceso,"Descripción",new ThemeResource("images/resume.png"));
+		tabTrazabilidad.addTab(observacionProceso,"Observación",new ThemeResource("images/completed-task.png"));
+		tabTrazabilidad.addTab(txtComentario,"Comentario revisor",new ThemeResource("images/chat.png"));
+		
+		tabTrazabilidad.setSelectedTab(0); 
 		
 		accordion.setCaption("Laboratorios utilizados");
 		accordion.addTab(layoutProcesosQuimicos,"Laboratorio Procesos químicos",VaadinIcons.FLASK);
@@ -436,17 +442,21 @@ public class VwTrazabilidad extends Panel {
 		accordion.addTab(layoutAG,"Laboratorio Análisis de aguas",VaadinIcons.DROP);
 		accordion.addTab(layoutOU,"Laboratorio Operaciones Unitarias",VaadinIcons.BULLSEYE);
 		accordion.addTab(layoutEcotoxicologia,"Laboratorio Ecotoxicología",VaadinIcons.FILTER);
-		accordion.setWidth("500px");
+		accordion.setWidth("595px");
 		accordion.setHeight("410px");
 		
 		//descripcionProceso.setHeight("400px");
 		vlDescripcionProceso.setMargin(false);
 		vlDescripcionProceso.addComponents(descripcionProceso, evidencia);
-		vlaccordionComment.setMargin(false);
-		vlaccordionComment.addComponents(accordion, txtComentario);
-		txtComentario.setSizeFull();
+		/*vlaccordionComment.setMargin(false);
+		vlaccordionComment.addComponents(accordion);*/
+		
+		observacionProceso.setWidth("590px");
+		descripcionProceso.setWidth("590px");
+		
+		txtComentario.setWidth("590px");
 		txtComentario.setReadOnly(true);
-		vroot.addComponents(vlaccordionComment,vlDescripcionProceso);	 
+		vroot.addComponents(tabTrazabilidad);	 
 		vroot.setMargin(false); 
 		
 		/*LABORATORIO DE PROCESOS QUIMICOS*/
@@ -1211,6 +1221,8 @@ public class VwTrazabilidad extends Panel {
 			
 			descripcionProceso.setValue(trazMod.getDescripcion());
 			
+			observacionProceso.setValue(trazMod.getObservacion());
+			
 			toolbarProcesosQuimicos.setVisible(false);			
 			toolbarMicrobiologia.setVisible(false);			
 			toolbarOU.setVisible(false);			
@@ -1291,6 +1303,9 @@ public class VwTrazabilidad extends Panel {
 			
 			descripcionProceso.setValue(trazMod.getDescripcion());
 			
+			observacionProceso.setValue(trazMod.getObservacion());
+			
+			observacionProceso.setReadOnly(true);
 			descripcionProceso.setReadOnly(true);
 			
 			if(trazMod.getComentario()==null) {
@@ -1347,8 +1362,8 @@ public class VwTrazabilidad extends Panel {
 				if (trazabilidadAction.equals("guardar")) {
 					
 					Trazabilidad traz = new Trazabilidad(LocalDate.now(), LocalTime.now(), 
-							descripcionProceso.getValue().trim(), evidencia.getValue(), 1);
-				
+							descripcionProceso.getValue().trim(), observacionProceso.getValue().trim(), comentario.getValue().trim(),evidencia.getValue(), 1);
+					
 					traz.setProyecto(proyecto);
 					traz.setEstadoRevision("Esperando revisión");
 					
@@ -1454,7 +1469,8 @@ public class VwTrazabilidad extends Panel {
 				} else {
 
 					trazMod.setProyecto(proyecto);
-					trazMod.setDescripcion(descripcionProceso.getValue());
+					trazMod.setDescripcion(descripcionProceso.getValue().trim());
+					trazMod.setObservacion(observacionProceso.getValue().trim()); 
 					trazMod.setEvidencia(evidencia.getValue());
 					
 					//REACTIVOS
@@ -1539,7 +1555,7 @@ public class VwTrazabilidad extends Panel {
 		});
 
 		dialogReactivoWindow.setResponsive(true);
-		dialogReactivoWindow.setWidth("85%");
+		dialogReactivoWindow.setWidth("655px");
 		dialogReactivoWindow.addComponentBody(vroot);
 		UI.getCurrent().addWindow(dialogReactivoWindow);
 	}
@@ -1640,8 +1656,13 @@ public class VwTrazabilidad extends Panel {
 		descripcionProceso.clear();
 		descripcionProceso.setReadOnly(false);
 		
+		observacionProceso.clear();
+		observacionProceso.setReadOnly(false);
+		
 		txtComentario.clear();
 		txtComentario.setVisible(false);
+		
+		tabTrazabilidad.setSelectedTab(0); 
 		
 		evidencia.clear();
 		
