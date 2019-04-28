@@ -48,6 +48,7 @@ import de.steinwedel.messagebox.MessageBox;
 import fi.jasoft.qrcode.QRCode;
 import models.Materia;
 import models.Notificacion;
+import models.Objetivo;
 import models.Proyecto;
 import models.ProyectoParticipante;
 import models.Rol;
@@ -249,7 +250,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 				fechaProyecto.setValue(prop.getProyecto().getFechaInicio());
 				cmbTipo.setValue(prop.getProyecto().getTipoProyecto());
 				temaProject.setValue(prop.getProyecto().getTema());
-				descripcionProject.setValue(prop.getProyecto().getDescripcion());
+				descripcionProject.setValue(prop.getProyecto().getResumen());
 				
 				List<ProyectoParticipante> ppUEdit = ProyectoController.getProyectoById(prop.getProyecto().getIdProyecto());
 				Iterator<ProyectoParticipante> iteratorPpUEdit;
@@ -263,6 +264,9 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 				
 				listMateria.addAll(ProyectoController.getAllMateriaByProject(prop.getProyecto().getIdProyecto()));
 				gridMateria.setItems(listMateria);
+				
+				listObjetivo.addAll(ProyectoController.getAllObjByProject(prop.getProyecto().getIdProyecto()));
+				gridObjetivo.setItems(listObjetivo);
 				
 			});
 			
@@ -296,6 +300,16 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	} 
 	
 	HorizontalLayout infProyecto = new HorizontalLayout();
+	VerticalLayout layoutInfProyecto = new VerticalLayout();
+	
+	//OBJETIVOS
+	public Panel pnlProyectoObjetivo = new Panel();
+	public HorizontalLayout toolbarObjetivo = new HorizontalLayout();
+	public VerticalLayout proyectoObjetivoLayout = new VerticalLayout();
+	public MenuBar mainMenuObjetivo = new MenuBar();
+	public Grid<Objetivo> gridObjetivo = new Grid<>();
+	public List<Objetivo> listObjetivo = new ArrayList<>();
+	
 	//PARTICIPANTE
 	public Panel pnlProyectoParticipante = new Panel();
 	public HorizontalLayout toolbarParticipante = new HorizontalLayout();
@@ -315,6 +329,65 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	public List<Materia> listMateria = new ArrayList<>();
 
 	private void initUI() {
+		
+		/*OBJETIVOS*/
+		toolbarObjetivo.setWidth("100%");
+		toolbarObjetivo.setSpacing(true);
+		toolbarObjetivo.setStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
+		toolbarObjetivo.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
+		toolbarObjetivo.setResponsive(true);
+		toolbarObjetivo.addComponents(mainMenuObjetivo);
+
+		mainMenuObjetivo.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
+		mainMenuObjetivo.addStyleName(ValoTheme.MENUBAR_SMALL);
+		mainMenuObjetivo.setResponsive(true);
+
+		mainMenuObjetivo.addItem("Agregar Objetivo", VaadinIcons.PLUS_CIRCLE, new Command() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void menuSelected(MenuItem selectedItem) {
+				addObjetivo();
+			}
+		});
+		
+		gridObjetivo.setBodyRowHeight(70.00); 
+		gridObjetivo.setHeight("150px");
+		gridObjetivo.addComponentColumn(Objetivo -> {
+			Label lb = new Label("");
+			lb.addStyleName(ValoTheme.LABEL_SMALL);
+			lb.setValue(Objetivo.getObjetivo());
+			lb.setSizeFull();
+			return lb;
+		}).setCaption("OBJETIVOS").setExpandRatio(1);
+		gridObjetivo.setWidth("100%");
+		gridObjetivo.setSelectionMode(SelectionMode.NONE);
+		
+		gridObjetivo.addComponentColumn(Objetivo -> {
+			Button b2 = new Button("Eliminar");
+			b2.addClickListener(clickb2 -> {
+				listObjetivo.remove(Objetivo);
+				gridObjetivo.setItems(listObjetivo);
+			});
+			b2.setStyleName(ValoTheme.BUTTON_DANGER);
+			b2.addStyleName(ValoTheme.BUTTON_SMALL);
+			b2.setIcon(VaadinIcons.TRASH);
+
+			HorizontalLayout hl = new HorizontalLayout();
+			hl.setSpacing(false);
+			hl.setSizeFull();
+			hl.addComponents(b2);
+			return hl;
+		}).setCaption("Opciones"); 
+		
+		proyectoObjetivoLayout.addComponents(toolbarObjetivo, gridObjetivo);
+		proyectoObjetivoLayout.setMargin(false);
+		
+		pnlProyectoObjetivo.setCaption("Objetivos del proyecto");
+		pnlProyectoObjetivo.setIcon(VaadinIcons.ARROW_RIGHT);
+		pnlProyectoObjetivo.setContent(proyectoObjetivoLayout);
+		/*FIN OBJETIVOS*/
+		
 		/*PARTICIPANTES*/
 		toolbarParticipante.setWidth("100%");
 		toolbarParticipante.setSpacing(true);
@@ -337,7 +410,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		});
 		
 		gridParticipante.setRowHeight(35.00); 
-		gridParticipante.setHeight("150px");
+		gridParticipante.setHeight("200px");
 		gridParticipante.addColumn(Estudiante -> Estudiante.getUsuario().getApellido_paterno()+" "+Estudiante.getUsuario().getApellido_materno()
 		+" "+Estudiante.getUsuario().getNombre_uno()+" "+Estudiante.getUsuario().getNombre_dos()).setCaption("NOMBRE").setExpandRatio(0);
 		gridParticipante.setWidth("100%");
@@ -434,7 +507,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		});
 		
 		gridMateria.setRowHeight(35.00); 
-		gridMateria.setHeight("150px");
+		gridMateria.setHeight("200px");
 		gridMateria.addColumn(Materia -> Materia.getNombre()).setCaption("NOMBRE").setExpandRatio(0);
 		gridMateria.setWidth("100%");
 		gridMateria.setSelectionMode(SelectionMode.NONE);
@@ -509,6 +582,17 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 							temaProject.getValue().toUpperCase().trim(), descripcionProject.getValue().toUpperCase().trim(), "EJECUCIÓN",1);
 					
 					p.setMaterias(listMateria);
+					
+					Iterator<Objetivo> iteratorObj = listObjetivo.iterator();
+					Objetivo obj;
+					
+					while(iteratorObj.hasNext()) {
+						obj = iteratorObj.next();
+						obj.setProyecto(p);
+					}
+					
+					p.setObjetivos(listObjetivo);
+					
 					ProyectoController.save(p); 
 					
 					Iterator<ProyectoParticipante> ppIterator = listProyectoParticipante.iterator();
@@ -531,9 +615,19 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 					p.setFechaInicio(fechaProyecto.getValue());
 					p.setTipoProyecto(cmbTipo.getValue());
 					p.setTema(temaProject.getValue().toUpperCase().trim());
-					p.setDescripcion(descripcionProject.getValue().toUpperCase().trim()); 
+					p.setResumen(descripcionProject.getValue().toUpperCase().trim()); 
 					
-					p.setMaterias(listMateria); 
+					p.setMaterias(listMateria);
+					
+					Iterator<Objetivo> iteratorObj = listObjetivo.iterator();
+					Objetivo obj;
+					
+					while(iteratorObj.hasNext()) {
+						obj = iteratorObj.next();
+						obj.setProyecto(p);
+					}
+					
+					p.setObjetivos(listObjetivo);
 					
 					ProyectoParticipanteController.deleteUserProyecto(p.getIdProyecto());
 					
@@ -570,7 +664,10 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		infProyecto.setExpandRatio(formProject, 1);
 		infProyecto.setSizeFull();
 		
-		tabProyecto.addTab(infProyecto, "Información general", new ThemeResource("images/info.png"));
+		layoutInfProyecto.setMargin(false);
+		layoutInfProyecto.addComponents(infProyecto, pnlProyectoObjetivo);
+		
+		tabProyecto.addTab(layoutInfProyecto, "Información general", new ThemeResource("images/info.png"));
 		tabProyecto.addTab(pnlProyectoParticipante,"Participantes",new ThemeResource("images/team.png"));
 		tabProyecto.addTab(pnlProyectoMateria,"Materias",new ThemeResource("images/books.png"));
 		tabProyecto.setSelectedTab(0);
@@ -613,11 +710,13 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		gridParticipante.setItems(listProyectoParticipante);
 		listMateria.clear();
 		gridMateria.setItems(listMateria);
+		listObjetivo.clear();
+		gridObjetivo.setItems(listObjetivo);
 	}
 	
 	private void setCss() {
 		temaProject.setRows(2);
-		descripcionProject.setRows(2);
+		descripcionProject.setRows(3);
 		cmbTipo.setTextInputAllowed(false);
 		cmbTipo.setEmptySelectionCaption("Seleccionar el tipo de proyecto");
 		
@@ -801,25 +900,51 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		UI.getCurrent().addWindow(dialogReactivoWindow);
 	}
 	
+	private void addObjetivo() {
+		dialogWindow dialogReactivoWindow = new dialogWindow("Agregar objetivo", VaadinIcons.FLASK);
+		
+		dialogReactivoWindow.getCancelButton().addClickListener(e -> {
+			dialogReactivoWindow.close(); 
+		});
+		
+		TextArea txtObjetivo = new TextArea();
+		txtObjetivo.addStyleName(ValoTheme.TEXTFIELD_SMALL);
+		txtObjetivo.setRows(5);
+		txtObjetivo.setSizeFull();
+		
+		VerticalLayout vroot = new VerticalLayout();
+		vroot.addComponents(txtObjetivo);
+		vroot.setMargin(true);
+		vroot.setSpacing(false);
+		
+		dialogReactivoWindow.setResponsive(true);
+		dialogReactivoWindow.setWidth("40%");
+		dialogReactivoWindow.addComponentBody(vroot);
+		dialogReactivoWindow.getOkButton().addClickListener(e->{
+			Objetivo objetivo = new Objetivo(txtObjetivo.getValue().trim());
+			
+			if(!listObjetivo.contains(objetivo)) {
+				listObjetivo.add(objetivo);
+				gridObjetivo.setItems(listObjetivo);
+			}else {
+				message.warringMessage("El objetivo es igual a uno ya registrado");
+				return;
+			}
+			
+			
+			dialogReactivoWindow.close();
+		});
+		dialogReactivoWindow.getCancelButton().addClickListener(e->{
+			dialogReactivoWindow.close();
+		}); 
+		dialogReactivoWindow.getLayoutComponent().setMargin(false);
+		UI.getCurrent().addWindow(dialogReactivoWindow);
+	}
+	
 	private void cargarDatosMateria() {
 		listMateriabus = MateriaController.findAll();
 		gridMateriabus.setItems(listMateriabus);
 	}
-	
-	 Component panelContent() {
-	        VerticalLayout layout = new VerticalLayout();
-	        layout.setSizeFull();
-	        Label content = new Label(
-	                "Suspendisse dictum feugiat nisl ut dapibus. Mauris iaculis porttitor posuere. Praesent id metus massa, ut blandit odio.");
-	        content.setWidth("10em");
-	       // content.setSizeFull();
-	      //  content.setSizeUndefined();
-	        layout.addComponent(content);
-	        Button button = new Button("Button");
-	        button.setSizeFull();
-	        layout.addComponent(button);
-	        return layout;
-	    }
 	
 	 Binder<Proyecto> validatorPrj = new Binder<>();
 	 private void addValidation() {

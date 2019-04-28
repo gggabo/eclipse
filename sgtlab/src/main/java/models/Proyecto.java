@@ -48,14 +48,17 @@ public class Proyecto implements Serializable {
 	@Column(name = "TEMA")
 	private String tema;
 	
-	@Column(name = "DESCRIPCION") 
-	private String descripcion;
+	@Column(name = "RESUMEN", columnDefinition = "TEXT") 
+	private String resumen;
 	
 	@Column(name = "ESTADO")
 	private int estado;
 	
 	@OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ProyectoParticipante>  proyectoParticipantes = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Objetivo> objetivos = new ArrayList<>();
 	
 	@ManyToMany
 	@JoinTable(name = "TBL_PROYECTO_MATERIA", joinColumns= @JoinColumn(name = "ID_PROYECTO"), 
@@ -72,7 +75,7 @@ public class Proyecto implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Proyecto(String codigo, LocalDate fechaInicio,LocalTime hora , TipoProyecto tipoProyecto, String tema, String descripcion,String estadoProyecto,
+	public Proyecto(String codigo, LocalDate fechaInicio,LocalTime hora , TipoProyecto tipoProyecto, String tema, String resumen,String estadoProyecto,
 			int estado) {
 		super();
 		this.codigo = codigo;
@@ -80,7 +83,7 @@ public class Proyecto implements Serializable {
 		this.hora = hora;
 		this.tipoProyecto = tipoProyecto;
 		this.tema = tema;
-		this.descripcion = descripcion;
+		this.resumen = resumen;
 		this.estadoProyecto = estadoProyecto;
 		this.estado = estado;
 	}
@@ -157,12 +160,12 @@ public class Proyecto implements Serializable {
 		this.tema = tema;
 	}
 
-	public String getDescripcion() {
-		return descripcion;
+	public String getResumen() {
+		return resumen;
 	}
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
+	public void setResumen(String resumen) {
+		this.resumen = resumen;
 	}
 
 	public int getEstado() {
@@ -189,12 +192,20 @@ public class Proyecto implements Serializable {
 		this.materias = materias;
 	}
 
+	public List<Objetivo> getObjetivos() {
+		return objetivos;
+	}
+
+	public void setObjetivos(List<Objetivo> objetivos) {
+		this.objetivos = objetivos;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
-		result = prime * result + ((descripcion == null) ? 0 : descripcion.hashCode());
+		result = prime * result + ((resumen == null) ? 0 : resumen.hashCode());
 		result = prime * result + estado;
 		result = prime * result + ((fechaInicio == null) ? 0 : fechaInicio.hashCode());
 		result = prime * result + (int) (idProyecto ^ (idProyecto >>> 32));
@@ -216,10 +227,10 @@ public class Proyecto implements Serializable {
 				return false;
 		} else if (!codigo.equals(other.codigo))
 			return false;
-		if (descripcion == null) {
-			if (other.descripcion != null)
+		if (resumen == null) {
+			if (other.resumen != null)
 				return false;
-		} else if (!descripcion.equals(other.descripcion))
+		} else if (!resumen.equals(other.resumen))
 			return false;
 		if (estado != other.estado)
 			return false;
@@ -241,7 +252,7 @@ public class Proyecto implements Serializable {
 	@Override
 	public String toString() {
 		return "Proyecto [idProyecto=" + idProyecto + ", codigo=" + codigo + ", fecha=" + fechaInicio + ", tipoProyecto="
-				+ tipoProyecto + ", tema=" + tema + ", descripcion=" + descripcion + ", estado=" + estado + "]";
+				+ tipoProyecto + ", tema=" + tema + ", descripcion=" + resumen + ", estado=" + estado + "]";
 	}
 	
 	

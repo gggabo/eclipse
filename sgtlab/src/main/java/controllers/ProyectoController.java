@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.Query;
 
 import models.Materia;
+import models.Objetivo;
 import models.Proyecto;
 import models.ProyectoParticipante;
 import services.JPAService;
@@ -119,6 +120,18 @@ public class ProyectoController implements Serializable {
 		}); 
 		
 		return p.getMaterias();
+	}
+	
+	public static List<Objetivo> getAllObjByProject(long idProyecto) {		
+		JPAService.runInTransaction(em ->{
+			p = em.find(Proyecto.class, idProyecto);
+			p.getObjetivos().size();
+			
+			return null;
+			
+		}); 
+		
+		return p.getObjetivos();
 	}
 	
 	@SuppressWarnings("unchecked")
