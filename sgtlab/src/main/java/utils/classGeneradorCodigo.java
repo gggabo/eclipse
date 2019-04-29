@@ -31,6 +31,15 @@ public class classGeneradorCodigo implements Serializable {
 		return codPdf;
 	} 
 	
+	public static String generarCodigoDocs(){
+		String codDoc;
+		Calendar fecha_sistema = Calendar.getInstance();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmssSSS");
+		String date = dateFormat.format(fecha_sistema.getTime());
+		codDoc=date; 
+		return codDoc;
+	} 
+	
 	public static String genCode() {
 		SecureRandom random = new SecureRandom();
 		String code = null;

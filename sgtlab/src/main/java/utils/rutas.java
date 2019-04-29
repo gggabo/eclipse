@@ -2,6 +2,7 @@ package utils;
 
 public class rutas {
 
-	public static String RUTA_UPLOAD = "C:/IMG_TESIS_UNIR/";
+	public static String RUTA_UPLOAD = "C:/SGTLAB/UPLOADS/";
+	public static String RUTA_DOWNLOAD = "C:/SGTLAB/DOWNLOADS/";
 	
 }

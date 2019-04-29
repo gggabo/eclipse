@@ -6,8 +6,6 @@ import java.util.List;
 import javax.persistence.Query;
 
 import models.Materia;
-import models.Rol;
-import models.Usuario;
 import services.JPAService;
 
 public class MateriaController implements Serializable {

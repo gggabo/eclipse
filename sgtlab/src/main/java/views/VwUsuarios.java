@@ -225,7 +225,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 	} 
 	
 	private void initComponents() {
-		uploadField.setFileSizeLimit(2.0F);
+		uploadField.setFileSizeLimit(1.0F);
 		
 		gridRol.addColumn(Rol::getNombre).setCaption("ROL ASIGNADO");
 		gridRol.addComponentColumn(Rol -> {
@@ -499,7 +499,6 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		uploadField.clear();
 		cmbRol.setValue(null);
 		listGridRol.clear();
-		//System.out.println(listGridRol);
 		gridRol.setItems(listGridRol);
 		
 	}
@@ -519,10 +518,6 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		validator.forField(nombre_uno)
 		.asRequired("Dato requerido")
 		.bind(Usuario::getNombre_uno, Usuario::setNombre_uno);
-		
-		/*validator.forField(correo).asRequired("Dato requerido")
-		.withValidator(new EmailValidator("Error en formato de correo"))
-		.bind(Usuario::getCorreo, Usuario::setCorreo);*/
 				
 	}
 	

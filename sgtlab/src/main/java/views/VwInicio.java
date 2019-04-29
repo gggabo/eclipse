@@ -14,7 +14,6 @@ import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
@@ -29,7 +28,6 @@ import com.vaadin.ui.themes.ValoTheme;
 import controllers.NotificacionController;
 import controllers.ProyectoController;
 import models.Notificacion;
-import models.Proyecto;
 import models.ProyectoParticipante;
 import models.Rol;
 
@@ -47,7 +45,7 @@ public class VwInicio extends VerticalLayout implements View, Serializable {
 		// TODO Auto-generated constructor stub
 		this.proyectos = proyectos;
 		Iterator<Rol> iteratorRol = roles.iterator();
-		Rol rol;
+		Rol rol; 
 		String strRol = "";
 		while(iteratorRol.hasNext()) {
 			rol = iteratorRol.next();
@@ -82,13 +80,6 @@ public class VwInicio extends VerticalLayout implements View, Serializable {
 	public TextField filtertxtProject = new TextField();
 	
 	public Panel pnlNotificacion = new Panel();
-	//public HorizontalLayout toolbar = new HorizontalLayout();
-	//public HorizontalLayout layoutProyectos = new HorizontalLayout();
-	//public VerticalLayout proyectoLayout = new VerticalLayout();
-	//public MenuBar mainMenu = new MenuBar();
-	//public CssLayout filteringProject = new CssLayout();
-	//public Button clearFilterProject = new Button(VaadinIcons.CLOSE_CIRCLE);
-	//public TextField filtertxtProject = new TextField();
 	
 	public Grid<ProyectoParticipante> gridProyecto = new Grid<>();
 	public List<ProyectoParticipante> listProyectos = new ArrayList<>();

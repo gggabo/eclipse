@@ -67,6 +67,30 @@ public class uploadUtils implements Serializable{
 		return f;
 	}
 	
+	//OBTENER DOCUMENTOS DESDE LA BASE DE DATOS
+	public static File bytesToFileDoc(byte[] data, String tipo) {
+		String extension="";
+		if(tipo.equals("WORD DOC")) {
+			extension = ".doc";
+		}else if(tipo.equals("WORD DOCX")) {
+			extension = ".docx";
+		}else if(tipo.equals("EXCEL XLS")) {
+			extension = ".xls";
+		}else if(tipo.equals("EXCEL XLSX")) {
+			extension = ".xlsx";
+		}else if(tipo.equals("PDF")) {
+			extension = ".pdf";
+		}
+			
+		File f = new File(rutas.RUTA_DOWNLOAD+classGeneradorCodigo.generarCodigoDocs()+extension);
+		try {
+			FileUtils.writeByteArrayToFile(f, data);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		return f;
+	}
+	
 	// FUNCION PARA OBTENER IMAGENES DESDE LA BASE DE DATOS
 	
 	static byte[] imagenResult= null;
@@ -99,8 +123,6 @@ public class uploadUtils implements Serializable{
 	public static StreamResource byteToImgEvidencia(byte[] imagen) {
 		
 		if(imagen == null) {
-			 /*File directory = new File("./");
-			    System.out.println(directory.getAbsolutePath());*/
 			imagenResultEvidencia = imgToByte(new File(path+"/images/NO_IMAGE.png"));
 		}else {
 			imagenResultEvidencia = imagen;
@@ -122,12 +144,6 @@ public class uploadUtils implements Serializable{
 	
 	
 	public static StreamResource byteToImgUser(byte[] imagen) {
-		
-		/*if(imagen == null) {
-			
-			imagen = imgToByte(new File(path+"/images/NO_USER.png"));
-		}*/
-		
 		StreamResource.StreamSource imageSource = null;
 		imageSource = new StreamResource.StreamSource() {
 			private static final long serialVersionUID = 1L;

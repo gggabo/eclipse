@@ -3,7 +3,6 @@ package views;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,12 +29,10 @@ import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.TwinColSelect;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.LocalDateRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
-import controllers.ComponenteController;
 import controllers.EquipoController;
 import controllers.LabotatorioController;
 import controllers.MaterialController;

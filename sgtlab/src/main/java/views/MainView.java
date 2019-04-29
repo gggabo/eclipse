@@ -61,6 +61,11 @@ public class MainView extends HorizontalLayout implements Serializable {
 					menu.addView(new VwLaboratorios(), "laboratorios", "Laboratorios", VaadinIcons.FLASK);
 					menuAdd.add("laboratorios");
 				}
+				
+				if(!menuAdd.contains("documentos")) {
+					menu.addView(new VwDocumentos(), "documentos", "Documentos", VaadinIcons.COPY_O);
+					menuAdd.add("documentos");
+				}
 
 			}else if(rol.getIdRol()==2) {//DOCENTE
 				if(!menuAdd.contains("inicio")) {
@@ -77,6 +82,11 @@ public class MainView extends HorizontalLayout implements Serializable {
 					menuAdd.add("laboratorios");
 				}
 				
+				if(!menuAdd.contains("documentos")) {
+					menu.addView(new VwDocumentos(), "documentos", "Documentos", VaadinIcons.COPY_O);
+					menuAdd.add("documentos");
+				}
+				
 			}else if(rol.getIdRol()==3) {//ESTUDIANTE
 				if(!menuAdd.contains("inicio")) {
 					menu.addView(new VwInicio(proyectos), "inicio", "Inicio", VaadinIcons.HOME);
@@ -85,6 +95,11 @@ public class MainView extends HorizontalLayout implements Serializable {
 				if(!menuAdd.contains("proyectos")) {
 					menu.addView(proyectos, "proyectos", "Proyectos", VaadinIcons.NOTEBOOK);
 					menuAdd.add("proyectos");
+				}
+				
+				if(!menuAdd.contains("documentos")) {
+					menu.addView(new VwDocumentos(), "documentos", "Documentos", VaadinIcons.COPY_O);
+					menuAdd.add("documentos");
 				}
 			}
 		} 

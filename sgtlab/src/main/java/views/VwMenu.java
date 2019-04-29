@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
@@ -24,13 +26,19 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 import controllers.LoginController;
+import controllers.UsuarioController;
+import models.Usuario;
+import utils.dialogWindow;
+import utils.message;
+import viewComponents.editProfile;
 
 public class VwMenu extends CssLayout implements Serializable {
 	private static final long serialVersionUID = 4798824184709302432L;
 	private static final String VALO_MENUITEMS = "valo-menuitems";
     private static final String VALO_MENU_TOGGLE = "valo-menu-toggle";
     private static final String VALO_MENU_VISIBLE = "valo-menu-visible";;
-	
+    MenuItem infItem;
+    
     private Navigator navigator;
     private Map<String, Button> viewButtons = new HashMap<String, Button>();
 
@@ -78,7 +86,7 @@ public class VwMenu extends CssLayout implements Serializable {
         MenuBar inf = new MenuBar();
         inf.addStyleName("user-menu");
         
-        MenuItem infItem = inf.addItem(nombrePersona, LoginController.getImgUser(idUsuario),null);
+        infItem = inf.addItem(nombrePersona, LoginController.getImgUser(idUsuario),null);
       //  rol = infItem.addItem("Cambiar rol",VaadinIcons.REFRESH ,comand);
         clave = infItem.addItem("Editar usuario",VaadinIcons.USER_CHECK ,comand);
         infItem.addSeparator();
@@ -215,11 +223,56 @@ public class VwMenu extends CssLayout implements Serializable {
 				//JPAUtil.shutdown();
 			}
 			if(selectedItem == clave) {
-				
-				
+				editProfile();
 			}
 			
 		}
 	};
+	
+	public void editProfile() {
+		
+		editProfile perfil = new editProfile();
+		Usuario user;
+		user = UsuarioController.getSpecificUserById(idUsuario);
+		
+		perfil.cedula.setReadOnly(true);
+		perfil.apellido_paterno.setReadOnly(true);
+		perfil.apellido_materno.setReadOnly(true);
+		perfil.nombre_uno.setReadOnly(true);
+		perfil.nombre_dos.setReadOnly(true);
+		perfil.nombre_usuario.setReadOnly(true);
+		
+		perfil.cedula.setValue(user.getCedula());
+		perfil.apellido_paterno.setValue(user.getApellido_paterno());
+		perfil.apellido_materno.setValue(user.getApellido_materno());
+		perfil.nombre_uno.setValue(user.getNombre_uno());
+		perfil.nombre_dos.setValue(user.getNombre_dos());
+		perfil.correo.setValue(user.getCorreo());
+		perfil.telefono.setValue(user.getTelefono());
+		perfil.nombre_usuario.setValue(user.getNombre_usuario());
+		perfil.uploadField.setValue(user.getImagen());
+		
+		dialogWindow dialogReactivoWindow = new dialogWindow("Editar perfil de usuario", VaadinIcons.USER);
+		dialogReactivoWindow.setResponsive(true);
+		dialogReactivoWindow.addComponentBody(perfil);
+		
+		dialogReactivoWindow.getOkButton().addClickListener(e ->{
+			user.setCorreo(perfil.correo.getValue().trim());
+			user.setTelefono(perfil.telefono.getValue().trim());
+			user.setImagen(perfil.uploadField.getValue());
+			if(!perfil.claveUsuario.getValue().isEmpty()) {
+				user.setClave(DigestUtils.sha1Hex(perfil.claveUsuario.getValue().trim()));
+			}
+			
+			UsuarioController.update(user);
+			infItem.setIcon(LoginController.getImgUser(idUsuario));
+			dialogReactivoWindow.close();
+			message.normalMessage("Acción realizada con éxito");
+		});
+		dialogReactivoWindow.getCancelButton().addClickListener(e ->{
+			dialogReactivoWindow.close();
+		});
+		UI.getCurrent().addWindow(dialogReactivoWindow);
+	}
     
 }

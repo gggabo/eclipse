@@ -7,10 +7,8 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import models.Laboratorio;
 import models.Material;
 import models.Proyecto;
-import models.Reactivo;
 import models.Trazabilidad;
 import models.TrazabilidadEquipo;
 import models.TrazabilidadMedioCultivo;

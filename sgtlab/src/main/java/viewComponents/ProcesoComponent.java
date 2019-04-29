@@ -15,8 +15,6 @@ import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
-import controllers.LoginController;
-
 public class ProcesoComponent extends HorizontalLayout implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Button revisarButton = new Button("Revisar", VaadinIcons.CHECK);

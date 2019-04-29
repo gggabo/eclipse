@@ -5,10 +5,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import models.Materia;
-import models.Rol;
 import models.TipoProyecto;
-import models.Usuario;
 import services.JPAService;
 
 public class TipoProyectoController implements Serializable {
