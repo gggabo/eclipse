@@ -45,6 +45,7 @@ public class VwDocumentos extends VerticalLayout implements View, Serializable {
 	@SuppressWarnings("unchecked")
 	private List<Rol> roles = (List<Rol>) VaadinSession.getCurrent().getAttribute("TIPO_USUARIO");
 	public VwProyectos proyectos;
+	boolean isAdmin=false;
 	
 	public VwDocumentos(){
 		// TODO Auto-generated constructor stub
@@ -54,6 +55,7 @@ public class VwDocumentos extends VerticalLayout implements View, Serializable {
 			rol = iteratorRol.next();
 			if(rol.getIdRol()==1) {
 				toolbar.setVisible(true);
+				isAdmin= true;
 			}else {
 				toolbar.setVisible(true);
 			}
@@ -160,6 +162,11 @@ public class VwDocumentos extends VerticalLayout implements View, Serializable {
 			
 			HorizontalLayout hl = new HorizontalLayout();
 			hl.addComponents(b,b2);
+			
+			if(!isAdmin) {
+				b2.setVisible(false);
+			}
+			
 			return hl;			
 		}).setCaption("Opciones");
 		
