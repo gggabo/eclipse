@@ -1177,7 +1177,6 @@ public class VwTrazabilidad extends Panel {
 			listMaterialesPQ.addAll(TrazabilidadController.getMaterialTrazaByLab(trazMod.getIdTrazabilidad(), 1));
 			gridMaterialPQ.setItems(listMaterialesPQ);
 			
-			
 			listReactivosMi.addAll(TrazabilidadController.getReactivoTrazaByLab(trazMod.getIdTrazabilidad(), 2));
 			gridReactivoMi.setItems(listReactivosMi);
 			
@@ -1189,7 +1188,6 @@ public class VwTrazabilidad extends Panel {
 						
 			listMediosCultivosMi.addAll(TrazabilidadController.getMedioCultivoTrazaByLab(trazMod.getIdTrazabilidad(), 2));
 			gridMedioCultivoMi.setItems(listMediosCultivosMi);
-			
 			
 			listEquiposOU.addAll(TrazabilidadController.getEquipoTrazaByLab(trazMod.getIdTrazabilidad(), 3));
 			gridEquipoOU.setItems(listEquiposOU); 

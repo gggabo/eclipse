@@ -45,7 +45,7 @@ public class Proyecto implements Serializable {
 	@JoinColumn(name = "ID_TIPOPROYECTO")
 	private TipoProyecto tipoProyecto;
 	
-	@Column(name = "TEMA")
+	@Column(name = "TEMA", columnDefinition = "TEXT")
 	private String tema;
 	
 	@Column(name = "RESUMEN", columnDefinition = "TEXT") 

@@ -20,7 +20,7 @@ public class Notificacion implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long idNotificacion;
 	
-	@Column(name = "DETALLE")
+	@Column(name = "DETALLE" , columnDefinition = "TEXT")
 	private String detalle;	
 	
 	@Column(name = "ESTADO")

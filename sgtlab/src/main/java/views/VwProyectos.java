@@ -54,6 +54,7 @@ import models.ProyectoParticipante;
 import models.Rol;
 import models.TipoProyecto;
 import models.Usuario;
+import reports.Reportes;
 import utils.classGeneradorCodigo;
 import utils.dialogWindow;
 import utils.message;
@@ -77,6 +78,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	public Button clearFilterProject = new Button(VaadinIcons.CLOSE_CIRCLE);
 	public TextField filtertxtProject = new TextField();
 	
+	private Reportes reportes = new Reportes();
 	
 	 public VwProyectos() {
 		 addComponent(buildUI());
@@ -201,19 +203,19 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 			//TRAZABILIDAD
 			p.getOkButton().addClickListener(e ->{
 				mainLayout.removeComponent(pnlPrincipal);
-				VwTrazabilidad tr = new VwTrazabilidad(this, prop.getProyecto());
+				VwTrazabilidad tr = new VwTrazabilidad(this, prop.getProyecto()); 
 				if(prop.getProyecto().getEstadoProyecto().equals("EJECUCIÓN")) {
-					tr.mainMenu.getItems().get(1).setVisible(true);
-				}else {
-					tr.mainMenu.getItems().get(1).setVisible(false);
-				}
+					tr.mainMenu.getItems().get(1).setVisible(true);   
+				}else { 
+					tr.mainMenu.getItems().get(1).setVisible(false); 
+				} 
 				mainLayout.addComponent(tr);
 			});
-			
-			p.getPrintButton().addClickListener(e->{
-				
+			   
+			p.getPrintButton().addClickListener(e->{ 
+				reportes.generarInformeProyecto(prop.getProyecto().getIdProyecto());
 			});
-			
+			 
 			if(prop.getProyecto().getEstadoProyecto().equals("EJECUCIÓN")) {
 				p.getEndButton().setVisible(true);
 				p.getEndButton().addClickListener(e->{
@@ -579,7 +581,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 				
 				if(proyectoAction.equals("guardar")) {
 					Proyecto p = new Proyecto(codigoProject.getValue(), fechaProyecto.getValue(), LocalTime.now(),cmbTipo.getValue(), 
-							temaProject.getValue().toUpperCase().trim(), descripcionProject.getValue().toUpperCase().trim(), "EJECUCIÓN",1);
+							temaProject.getValue().trim(), descripcionProject.getValue().trim(), "EJECUCIÓN",1);
 					
 					p.setMaterias(listMateria);
 					
@@ -614,8 +616,8 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 					 
 					p.setFechaInicio(fechaProyecto.getValue());
 					p.setTipoProyecto(cmbTipo.getValue());
-					p.setTema(temaProject.getValue().toUpperCase().trim());
-					p.setResumen(descripcionProject.getValue().toUpperCase().trim()); 
+					p.setTema(temaProject.getValue().trim());
+					p.setResumen(descripcionProject.getValue().trim()); 
 					
 					p.setMaterias(listMateria);
 					
