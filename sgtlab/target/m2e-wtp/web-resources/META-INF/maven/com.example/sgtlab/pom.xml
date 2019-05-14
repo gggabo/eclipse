@@ -109,10 +109,24 @@
     <version>3.3.3</version>
 </dependency>
 
-<dependency>
+<dependency> 
     <groupId>org.apache.xmlgraphics</groupId>
-    <artifactId>batik-bridge</artifactId>
+    <artifactId>batik-bridge</artifactId> 
     <version>1.11</version>
+</dependency>
+
+<dependency>
+    <groupId>net.sf.jasperreports</groupId>
+    <artifactId>jasperreports-fonts</artifactId>
+    <version>6.8.0</version>
+</dependency>
+
+<dependency>
+    <groupId>com.fuentes.jasper</groupId>
+    <artifactId>fuentes-jasperPDF</artifactId>
+    <version>1.0</version>
+    <scope>system</scope>
+    <systemPath>${project.basedir}/src/main/resources/fuentes.jar</systemPath>
 </dependency>
 	
 	<dependency>

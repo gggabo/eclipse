@@ -28,12 +28,13 @@ public class Reportes {
 		private classGeneradorCodigo generador=new classGeneradorCodigo();
 		private String basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
 	    private String rutaReporte = basepath + "/REPORTES/";
-	    //private CallableStatement st;
+	    //private CallableStatement st; 
 		//private ResultSet rs ;
-	     @SuppressWarnings("deprecation")
-		public void generarInformeProyecto(long idProyecto){
+	     @SuppressWarnings("deprecation") 
+		public void generarInformeProyecto(long idProyecto, String cod){
 		    	final Map<String, Object> map = new HashMap<String, Object>();                
 		    	map.put("IN_IDPROYECTO",idProyecto);
+		    	map.put("IN_CODIGO",cod);
 			try {   JasperPrint print = JasperFillManager.fillReport(rutaReporte+"rpt_project.jasper", map, conexionDB.getConnection());
 		    		JRPdfExporter exporter = new JRPdfExporter();
 		    	    final ByteArrayOutputStream output=new ByteArrayOutputStream();
@@ -59,12 +60,13 @@ public class Reportes {
 		    	    		e.setType(Embedded.TYPE_BROWSER);
 		    	    		e.setSizeFull();
 		    	    		e.setSource(resource); 
-		    	    	Window w = new Window("Parte Diario");
+		    	    	Window w = new Window("Informe trazabilidad");
 		    	    		w.setSizeFull();
 		    	    		w.setWidth(w.getWidth()-8,Unit.PERCENTAGE);
 		                    w.setHeight(w.getHeight()-8,Unit.PERCENTAGE);
 		    	    		w.center();
 		    	    		w.setContent(e);
+		    	    		w.setResizable(false);
 		    	    		UI.getCurrent().addWindow(w);   
 		    	} catch (JRException | IOException ex) {
 		            ex.printStackTrace();

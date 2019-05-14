@@ -74,11 +74,11 @@ public class VwTrazabilidad extends Panel {
 	private String nombreUsuario = VaadinSession.getCurrent().getAttribute("NOMBRE_PERSONA").toString();
 	@SuppressWarnings("unchecked")
 	private List<Rol> roles = (List<Rol>) VaadinSession.getCurrent().getAttribute("TIPO_USUARIO");
-	
+	 
 	public VwTrazabilidad(VwProyectos vwproyectos, Proyecto proyecto) {
 		this.proyecto = proyecto;
 		this.vwproyectos = vwproyectos;
-		setCaption("Gestión de trazabilidad de producto");
+		setCaption("Gestión de trazabilidad de producto");  
 		setIcon(VaadinIcons.FILE_PROCESS);
 		//setSizeFull();
 		//addStyleName("v-scrollable");

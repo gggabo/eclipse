@@ -207,13 +207,13 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 				if(prop.getProyecto().getEstadoProyecto().equals("EJECUCIÓN")) {
 					tr.mainMenu.getItems().get(1).setVisible(true);   
 				}else { 
-					tr.mainMenu.getItems().get(1).setVisible(false); 
+					tr.mainMenu.getItems().get(1).setVisible(false);  
 				} 
 				mainLayout.addComponent(tr);
 			});
-			   
+			    
 			p.getPrintButton().addClickListener(e->{ 
-				reportes.generarInformeProyecto(prop.getProyecto().getIdProyecto());
+				reportes.generarInformeProyecto(prop.getProyecto().getIdProyecto(), prop.getProyecto().getCodigo());
 			});
 			 
 			if(prop.getProyecto().getEstadoProyecto().equals("EJECUCIÓN")) {

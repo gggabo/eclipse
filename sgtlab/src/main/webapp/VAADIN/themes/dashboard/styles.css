@@ -15401,17 +15401,17 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .dashboard .valo-menu-title {
-	background-color: #19e11f;
-	background-image: -webkit-linear-gradient(top, #1b87e3 2%, #166ed5 98%);
-	background-image: linear, to bottom, #1be32a 2%, #16d51c 98%;
+	background-color: #4e8c66;
+	background-image: -webkit-linear-gradient(top, #4e8c66 2%, #4e8c66 98%);
+	background-image: linear, to bottom, #4e8c66 2%, #4e8c66 98%;
 }
 
 .dashboard .v-panel-caption {
-	border-bottom: 1px solid #5491de;
-	background-image: -webkit-linear-gradient(top, #5491de 2%, #5491de 98%);
-	background-image: linear, to bottom, #5491de 2%, #5491de 98%;
+	border-bottom: 1px solid #4e8c66;
+	background-image: -webkit-linear-gradient(top, #4e8c66 2%, #4e8c66 98%);
+	background-image: linear, to bottom, #4e8c66 2%, #4e8c66 98%;
 	color: #ffffff;
-	box-shadow: inset 0 1px 0 #5491de, inset 0 -1px 0 #5491de;
+	box-shadow: inset 0 1px 0 #4e8c66, inset 0 -1px 0 #4e8c66;
 }
 
 .dashboard .v-panel-proyecto-integrador .v-panel {
@@ -15425,7 +15425,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .dashboard .v-window-header {
 	color: #fff;
-	background: #38a3ff;
+	background: #4e8c66;
 	font-weight: bold;
 }
 
