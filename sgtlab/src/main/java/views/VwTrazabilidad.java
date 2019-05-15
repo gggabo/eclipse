@@ -119,13 +119,13 @@ public class VwTrazabilidad extends Panel {
 			}
 		});	
 		
-		mainMenu.addItem("Imprimir", VaadinIcons.PRINT, new Command() {
+		/*mainMenu.addItem("Imprimir", VaadinIcons.PRINT, new Command() {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
 				//buildUIProyect(); 
 			}
-		});	 
+		});*/	 
 		
 		mainMenu.addItem("Actualizar", VaadinIcons.REFRESH, new Command() {
 			private static final long serialVersionUID = 1L;
