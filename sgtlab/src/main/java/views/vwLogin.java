@@ -126,7 +126,7 @@ public class vwLogin extends CssLayout implements Serializable {
         login.setClickShortcut(ShortcutAction.KeyCode.ENTER);
         login.addStyleName(ValoTheme.BUTTON_FRIENDLY);
 
-        forgotPassword.addClickListener(new Button.ClickListener() {
+      /*  forgotPassword.addClickListener(new Button.ClickListener() {
 
 			private static final long serialVersionUID = 1L;
 
@@ -135,7 +135,7 @@ public class vwLogin extends CssLayout implements Serializable {
                 showNotification(new Notification("Hint: Try anything"));
             }
         });
-        forgotPassword.addStyleName(ValoTheme.BUTTON_LINK);
+        forgotPassword.addStyleName(ValoTheme.BUTTON_LINK);*/
         
         
         
