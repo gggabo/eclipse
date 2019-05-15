@@ -233,6 +233,8 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 						ProyectoController.update(prjUp);
 						p.getEstadoProyecto().addStyleName("v-label-revisado");	
 						p.getEstadoProyecto().setValue("FINALIZADO");
+						p.getEndButton().setVisible(false);
+						p.getEditButton().setVisible(false);
 		    			message.normalMessage("Proyecto finalizado");
 		    		},ButtonOption.caption("Si"))
 		    		.withCancelButton(ButtonOption.caption("No"))

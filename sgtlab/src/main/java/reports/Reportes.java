@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.VaadinService;
@@ -116,4 +117,213 @@ public class Reportes {
 		         }   
 		    }
 	
+	     public void generarInformeReactivos(long idLaboratorio){
+		    	final Map<String, Object> map = new HashMap<String, Object>();                
+		    	map.put("IN_IDLABORATORIO",idLaboratorio);
+			try {   JasperPrint print = JasperFillManager.fillReport(rutaReporte+"rpt_inventario_reactivos.jasper", map, conexionDB.getConnection());
+		    		JRPdfExporter exporter = new JRPdfExporter();
+		    	    final ByteArrayOutputStream output=new ByteArrayOutputStream();
+		    	  
+		    	    exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
+		    	    exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, output);
+		    	    exporter.exportReport();
+		    	    output.flush();
+		    	    output.close(); 
+		    	    StreamResource.StreamSource source = new StreamResource.StreamSource() {
+						private static final long serialVersionUID = 1L;
+
+										public InputStream getStream() { 
+		    	                           byte[] b = null;
+		    	                            b=output.toByteArray();
+		    	                        return new ByteArrayInputStream(b);
+		    	                        }
+		    	                };
+		    	    	StreamResource resource = new StreamResource(source, "Inventario_reactivos-"+generador.generarCodigoReportes()+".pdf");
+		    	    		resource.setMIMEType("application/pdf");
+		    	    	Embedded e = new Embedded();
+		    	    		e.setMimeType("application/pdf");
+		    	    		e.setType(Embedded.TYPE_BROWSER);
+		    	    		e.setSizeFull();
+		    	    		e.setSource(resource); 
+		    	    	Window w = new Window("Inventario laboratorio");
+		    	    		w.setIcon(VaadinIcons.OPEN_BOOK);
+		    	    		w.setSizeFull();
+		    	    		w.setWidth(w.getWidth()-8,Unit.PERCENTAGE);
+		                    w.setHeight(w.getHeight()-8,Unit.PERCENTAGE);
+		    	    		w.center();
+		    	    		w.setContent(e);
+		    	    		w.setResizable(false);
+		    	    		UI.getCurrent().addWindow(w);   
+		    	} catch (JRException | IOException ex) {
+		            ex.printStackTrace();
+		         }   
+		    }
+	     
+	     public void generarInformeEquipos(long idLaboratorio){
+		    	final Map<String, Object> map = new HashMap<String, Object>();                
+		    	map.put("IN_IDLABORATORIO",idLaboratorio);
+			try {   JasperPrint print = JasperFillManager.fillReport(rutaReporte+"rpt_inventario_equipos.jasper", map, conexionDB.getConnection());
+		    		JRPdfExporter exporter = new JRPdfExporter();
+		    	    final ByteArrayOutputStream output=new ByteArrayOutputStream();
+		    	  
+		    	    exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
+		    	    exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, output);
+		    	    exporter.exportReport();
+		    	    output.flush();
+		    	    output.close(); 
+		    	    StreamResource.StreamSource source = new StreamResource.StreamSource() {
+						private static final long serialVersionUID = 1L;
+
+										public InputStream getStream() { 
+		    	                           byte[] b = null;
+		    	                            b=output.toByteArray();
+		    	                        return new ByteArrayInputStream(b);
+		    	                        }
+		    	                };
+		    	    	StreamResource resource = new StreamResource(source, "Inventario_equipos-"+generador.generarCodigoReportes()+".pdf");
+		    	    		resource.setMIMEType("application/pdf");
+		    	    	Embedded e = new Embedded();
+		    	    		e.setMimeType("application/pdf");
+		    	    		e.setType(Embedded.TYPE_BROWSER);
+		    	    		e.setSizeFull();
+		    	    		e.setSource(resource); 
+		    	    	Window w = new Window("Inventario laboratorio");
+		    	    		w.setIcon(VaadinIcons.OPEN_BOOK);
+		    	    		w.setSizeFull();
+		    	    		w.setWidth(w.getWidth()-8,Unit.PERCENTAGE);
+		                    w.setHeight(w.getHeight()-8,Unit.PERCENTAGE);
+		    	    		w.center();
+		    	    		w.setContent(e);
+		    	    		w.setResizable(false);
+		    	    		UI.getCurrent().addWindow(w);   
+		    	} catch (JRException | IOException ex) {
+		            ex.printStackTrace();
+		         }   
+		    }
+	     
+	     public void generarInformeEquiposOU(long idLaboratorio){
+		    	final Map<String, Object> map = new HashMap<String, Object>();                
+		    	map.put("IN_IDLABORATORIO",idLaboratorio);
+			try {   JasperPrint print = JasperFillManager.fillReport(rutaReporte+"rpt_inventario_equiposOU.jasper", map, conexionDB.getConnection());
+		    		JRPdfExporter exporter = new JRPdfExporter();
+		    	    final ByteArrayOutputStream output=new ByteArrayOutputStream();
+		    	  
+		    	    exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
+		    	    exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, output);
+		    	    exporter.exportReport();
+		    	    output.flush();
+		    	    output.close(); 
+		    	    StreamResource.StreamSource source = new StreamResource.StreamSource() {
+						private static final long serialVersionUID = 1L;
+
+										public InputStream getStream() { 
+		    	                           byte[] b = null;
+		    	                            b=output.toByteArray();
+		    	                        return new ByteArrayInputStream(b);
+		    	                        }
+		    	                };
+		    	    	StreamResource resource = new StreamResource(source, "Inventario_equipos-"+generador.generarCodigoReportes()+".pdf");
+		    	    		resource.setMIMEType("application/pdf");
+		    	    	Embedded e = new Embedded();
+		    	    		e.setMimeType("application/pdf");
+		    	    		e.setType(Embedded.TYPE_BROWSER);
+		    	    		e.setSizeFull();
+		    	    		e.setSource(resource); 
+		    	    	Window w = new Window("Inventario laboratorio");
+		    	    		w.setIcon(VaadinIcons.OPEN_BOOK);
+		    	    		w.setSizeFull();
+		    	    		w.setWidth(w.getWidth()-8,Unit.PERCENTAGE);
+		                    w.setHeight(w.getHeight()-8,Unit.PERCENTAGE);
+		    	    		w.center();
+		    	    		w.setContent(e);
+		    	    		w.setResizable(false);
+		    	    		UI.getCurrent().addWindow(w);   
+		    	} catch (JRException | IOException ex) {
+		            ex.printStackTrace();
+		         }   
+		    }
+	     
+	     public void generarInformeMateriales(long idLaboratorio){
+		    	final Map<String, Object> map = new HashMap<String, Object>();                
+		    	map.put("IN_IDLABORATORIO",idLaboratorio);
+			try {   JasperPrint print = JasperFillManager.fillReport(rutaReporte+"rpt_inventario_materiales.jasper", map, conexionDB.getConnection());
+		    		JRPdfExporter exporter = new JRPdfExporter();
+		    	    final ByteArrayOutputStream output=new ByteArrayOutputStream();
+		    	  
+		    	    exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
+		    	    exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, output);
+		    	    exporter.exportReport();
+		    	    output.flush();
+		    	    output.close(); 
+		    	    StreamResource.StreamSource source = new StreamResource.StreamSource() {
+						private static final long serialVersionUID = 1L;
+
+										public InputStream getStream() { 
+		    	                           byte[] b = null;
+		    	                            b=output.toByteArray();
+		    	                        return new ByteArrayInputStream(b);
+		    	                        }
+		    	                };
+		    	    	StreamResource resource = new StreamResource(source, "Inventario_materiales-"+generador.generarCodigoReportes()+".pdf");
+		    	    		resource.setMIMEType("application/pdf");
+		    	    	Embedded e = new Embedded();
+		    	    		e.setMimeType("application/pdf");
+		    	    		e.setType(Embedded.TYPE_BROWSER);
+		    	    		e.setSizeFull();
+		    	    		e.setSource(resource); 
+		    	    	Window w = new Window("Inventario laboratorio");
+		    	    		w.setIcon(VaadinIcons.OPEN_BOOK);
+		    	    		w.setSizeFull();
+		    	    		w.setWidth(w.getWidth()-8,Unit.PERCENTAGE);
+		                    w.setHeight(w.getHeight()-8,Unit.PERCENTAGE);
+		    	    		w.center();
+		    	    		w.setContent(e);
+		    	    		w.setResizable(false);
+		    	    		UI.getCurrent().addWindow(w);   
+		    	} catch (JRException | IOException ex) {
+		            ex.printStackTrace();
+		         }   
+		    }
+	     
+	     public void generarInformeMediosCultivo(long idLaboratorio){
+		    	final Map<String, Object> map = new HashMap<String, Object>();                
+		    	map.put("IN_IDLABORATORIO",idLaboratorio);
+			try {   JasperPrint print = JasperFillManager.fillReport(rutaReporte+"rpt_inventario_medios_cultivo.jasper", map, conexionDB.getConnection());
+		    		JRPdfExporter exporter = new JRPdfExporter();
+		    	    final ByteArrayOutputStream output=new ByteArrayOutputStream();
+		    	  
+		    	    exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
+		    	    exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, output);
+		    	    exporter.exportReport();
+		    	    output.flush();
+		    	    output.close(); 
+		    	    StreamResource.StreamSource source = new StreamResource.StreamSource() {
+						private static final long serialVersionUID = 1L;
+
+										public InputStream getStream() { 
+		    	                           byte[] b = null;
+		    	                            b=output.toByteArray();
+		    	                        return new ByteArrayInputStream(b);
+		    	                        }
+		    	                };
+		    	    	StreamResource resource = new StreamResource(source, "Inventario_medios_cultivo-"+generador.generarCodigoReportes()+".pdf");
+		    	    		resource.setMIMEType("application/pdf");
+		    	    	Embedded e = new Embedded();
+		    	    		e.setMimeType("application/pdf");
+		    	    		e.setType(Embedded.TYPE_BROWSER);
+		    	    		e.setSizeFull();
+		    	    		e.setSource(resource); 
+		    	    	Window w = new Window("Inventario laboratorio");
+		    	    		w.setIcon(VaadinIcons.OPEN_BOOK);
+		    	    		w.setSizeFull();
+		    	    		w.setWidth(w.getWidth()-8,Unit.PERCENTAGE);
+		                    w.setHeight(w.getHeight()-8,Unit.PERCENTAGE);
+		    	    		w.center();
+		    	    		w.setContent(e);
+		    	    		w.setResizable(false);
+		    	    		UI.getCurrent().addWindow(w);   
+		    	} catch (JRException | IOException ex) {
+		            ex.printStackTrace();
+		         }   
+		    } 
 }

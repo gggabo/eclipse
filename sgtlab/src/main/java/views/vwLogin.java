@@ -107,8 +107,8 @@ public class vwLogin extends CssLayout implements Serializable {
         vForm.addComponent(login = new Button("Iniciar sesión")); 
         login.setWidth("100%");
         
-        vForm.addComponent(forgotPassword = new Button("Olvidé mi clave?"));
-        forgotPassword.setWidth("100%");
+       /* vForm.addComponent(forgotPassword = new Button("Olvidé mi clave?"));
+        forgotPassword.setWidth("100%");*/
 
         login.setDisableOnClick(true);
         login.addClickListener(new Button.ClickListener() {

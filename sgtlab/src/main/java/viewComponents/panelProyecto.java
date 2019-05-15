@@ -12,11 +12,9 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.themes.ValoTheme;
 
 import fi.jasoft.qrcode.QRCode;
-import utils.message;
 
 public class panelProyecto extends Panel implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -30,7 +28,6 @@ public class panelProyecto extends Panel implements Serializable {
 	private Label footerText = new Label("Opciones");
 	private VerticalLayout layoutComponent = new VerticalLayout();
 	private FormLayout form = new FormLayout();
-	private FormLayout form2 = new FormLayout();
 	private Label nombreProyecto = new Label();
 	private Label usuariosProyecto = new Label();
 	private QRCode qr = new QRCode("Código");

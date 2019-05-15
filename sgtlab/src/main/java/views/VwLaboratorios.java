@@ -59,6 +59,7 @@ import models.Reactivo;
 import models.Rol;
 import models.Unidad;
 import models.Usuario;
+import reports.Reportes;
 import utils.UploadImage;
 import utils.dialogWindow;
 import utils.message;
@@ -79,6 +80,8 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		addStyleName("custom-margin-layout");
 	}
 
+	private Reportes reportes = new Reportes();
+	
 	public VerticalLayout mainLayout = new VerticalLayout();
 	public Panel pnlPrincipal = new Panel();
 	public FormLayout mainFrm;
@@ -319,6 +322,15 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 				reactivoAction = "guardar";
 			}
 		});
+		
+		mainMenuRectivo.addItem("Imprimir inventario", VaadinIcons.PRINT, new Command() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void menuSelected(MenuItem selectedItem) {
+				reportes.generarInformeReactivos(cmbLaboratorio.getValue().getIdLaboratorio());
+			}
+		});
 
 		filterReactivotxt.setPlaceholder("Buscar por codigo o nombre");
 		filterReactivotxt.setValueChangeMode(ValueChangeMode.LAZY);
@@ -432,6 +444,19 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 				newEditEquipo(null);
 				pnlComponente.setVisible(false);
 				equipoAction = "guardar";
+			}
+		});
+		
+		mainMenuEquipo.addItem("Imprimir inventario", VaadinIcons.PRINT, new Command() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void menuSelected(MenuItem selectedItem) {
+				if(cmbLaboratorio.getValue().getIdLaboratorio() != 3) {
+					reportes.generarInformeEquipos(cmbLaboratorio.getValue().getIdLaboratorio());
+				}else {
+					reportes.generarInformeEquiposOU(cmbLaboratorio.getValue().getIdLaboratorio());
+				}
 			}
 		});
 
@@ -637,6 +662,15 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 			}
 		});
 
+		mainMenuMaterial.addItem("Imprimir inventario", VaadinIcons.PRINT, new Command() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void menuSelected(MenuItem selectedItem) {
+				reportes.generarInformeMateriales(cmbLaboratorio.getValue().getIdLaboratorio());
+			}
+		});
+		
 		filterMaterialtxt.setPlaceholder("Buscar por codigo o nombre");
 		filterMaterialtxt.setValueChangeMode(ValueChangeMode.LAZY);
 		filterMaterialtxt.setSizeFull();
@@ -744,6 +778,15 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 				codigoMedioCultivo.setReadOnly(false);
 				newEditMedioCultivo(null);
 				MedioCultivoAction = "guardar";
+			}
+		});
+		
+		mainMenuMedioCultivo.addItem("Imprimir inventario", VaadinIcons.PRINT, new Command() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void menuSelected(MenuItem selectedItem) {
+				reportes.generarInformeMediosCultivo(cmbLaboratorio.getValue().getIdLaboratorio());
 			}
 		});
 
