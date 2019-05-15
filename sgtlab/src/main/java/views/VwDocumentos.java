@@ -65,7 +65,9 @@ public class VwDocumentos extends VerticalLayout implements View, Serializable {
 		
 		llenarDatos();
 		setEvents();
-		
+		if(!isAdmin) {
+			toolbar.setVisible(false);
+		}
 		addStyleName("custom-margin-layout");
 	}
 	

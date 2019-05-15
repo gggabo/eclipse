@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
@@ -11,9 +12,11 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.themes.ValoTheme;
 
 import fi.jasoft.qrcode.QRCode;
+import utils.message;
 
 public class panelProyecto extends Panel implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -31,6 +34,7 @@ public class panelProyecto extends Panel implements Serializable {
 	private Label nombreProyecto = new Label();
 	private Label usuariosProyecto = new Label();
 	private QRCode qr = new QRCode("Código");
+	private Button btnImpQr = new Button();
 	private Label estadoProyecto = new Label();
 
 	public panelProyecto() {
@@ -84,9 +88,20 @@ public class panelProyecto extends Panel implements Serializable {
 		lb1.setStyleName(ValoTheme.LABEL_COLORED);
         form.addComponent(lb1);
         
+        btnImpQr.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
+        btnImpQr.addStyleName(ValoTheme.BUTTON_SMALL);
+        btnImpQr.setIcon(VaadinIcons.PRINT);
+        
+        VerticalLayout vl = new VerticalLayout();
+        vl.setSpacing(false);
+        vl.addComponents(qr,btnImpQr);
+        vl.setComponentAlignment(btnImpQr,Alignment.TOP_CENTER);
+        
         qr.setCaption("Codigo");
         qr.setWidth("120px");
         qr.setHeight("120px");
+
+        btnImpQr.addStyleName("v-button-qr");
         
         estadoProyecto.addStyleName("v-label-esperando-revision");
 		estadoProyecto.setCaption("Estado");
@@ -97,9 +112,9 @@ public class panelProyecto extends Panel implements Serializable {
 		form.addComponents(nombreProyecto,usuariosProyecto, estadoProyecto);
 		form.setSpacing(true);
 		
-		form2.addComponent(qr);
+		//form2.addComponent(qr);
 		
-		hl.addComponents(form,qr);
+		hl.addComponents(form,vl);
 		
 		layoutComponent.setSpacing(false);
 		layoutComponent.setMargin(false);
@@ -137,6 +152,17 @@ public class panelProyecto extends Panel implements Serializable {
 
 	public Label getNombreProyecto() {
 		return nombreProyecto;
+	}
+
+
+	
+	public Button getBtnImpQr() {
+		return btnImpQr;
+	}
+
+
+	public void setBtnImpQr(Button btnImpQr) {
+		this.btnImpQr = btnImpQr;
 	}
 
 

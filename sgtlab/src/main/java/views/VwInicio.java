@@ -101,9 +101,9 @@ public class VwInicio extends VerticalLayout implements View, Serializable {
 		filteringProject.addComponents(filtertxtProject,clearFilterProject);
 		filteringProject.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
 		
-		gridProyecto.setRowHeight(35.00); 
+		gridProyecto.setRowHeight(40.00); 
 		gridProyecto.addColumn(Proyecto -> Proyecto.getProyecto().getCodigo()).setCaption("CODIGO").setId("CODIGO");
-		gridProyecto.addColumn(Proyecto -> Proyecto.getProyecto().getTema()).setCaption("TEMA").setId("TEMA");
+		gridProyecto.addColumn(Proyecto -> Proyecto.getProyecto().getTema()).setCaption("TEMA").setId("TEMA").setExpandRatio(0);
 		
 		gridProyecto.setHeight("300px");
 		gridProyecto.setSelectionMode(SelectionMode.NONE);
@@ -131,7 +131,7 @@ public class VwInicio extends VerticalLayout implements View, Serializable {
 		pnlProyectos.setContent(proyectoLayout);
 		pnlProyectos.setHeight("400px");
 		
-		gridNotificacion.setRowHeight(70.00);
+		gridNotificacion.setRowHeight(100.00); 
 		gridNotificacion.setHeaderVisible(false);
 		//gridNotificacion.addColumn(Notificacion -> Notificacion.getIdNotificacion()).setCaption("NOTIFICACION").setId("NOTIFICACION");
 		gridNotificacion.addComponentColumn(Notificacion -> {

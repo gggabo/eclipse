@@ -15418,6 +15418,10 @@ div.v-layout.v-horizontal.v-widget {
 	padding-bottom: 5px;
 }
 
+.dashboard .v-button-qr {
+	top: -17px;
+}
+
 .dashboard .v-window-closebox {
 	color: #fff;
 	background: #ff6363;

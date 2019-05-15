@@ -22,6 +22,7 @@ import net.sf.jasperreports.engine.export.JRPdfExporter;
 import services.conexionDB;
 import utils.classGeneradorCodigo;
  
+@SuppressWarnings("deprecation")
 public class Reportes {
 	
 	//public void generarInformeProyecto(long idProyecto) {	
@@ -30,12 +31,54 @@ public class Reportes {
 	    private String rutaReporte = basepath + "/REPORTES/";
 	    //private CallableStatement st; 
 		//private ResultSet rs ;
-	     @SuppressWarnings("deprecation") 
-		public void generarInformeProyecto(long idProyecto, String cod){
+	     public void generarInformeProyecto(long idProyecto, String cod){
 		    	final Map<String, Object> map = new HashMap<String, Object>();                
 		    	map.put("IN_IDPROYECTO",idProyecto);
 		    	map.put("IN_CODIGO",cod);
 			try {   JasperPrint print = JasperFillManager.fillReport(rutaReporte+"rpt_project.jasper", map, conexionDB.getConnection());
+		    		JRPdfExporter exporter = new JRPdfExporter();
+		    	    final ByteArrayOutputStream output=new ByteArrayOutputStream();
+		    	  
+		    	    exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
+		    	    exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, output);
+		    	    exporter.exportReport();
+		    	    output.flush();
+		    	    output.close(); 
+		    	    StreamResource.StreamSource source = new StreamResource.StreamSource() {
+						private static final long serialVersionUID = 1L;
+
+										public InputStream getStream() { 
+		    	                           byte[] b = null;
+		    	                            b=output.toByteArray();
+		    	                        return new ByteArrayInputStream(b);
+		    	                        }
+		    	                };
+		    	    	StreamResource resource = new StreamResource(source, "Informe Proyecto-"+generador.generarCodigoReportes()+".pdf");
+		    	    		resource.setMIMEType("application/pdf");
+		    	    	Embedded e = new Embedded();
+		    	    		e.setMimeType("application/pdf");
+		    	    		e.setType(Embedded.TYPE_BROWSER);
+		    	    		e.setSizeFull();
+		    	    		e.setSource(resource); 
+		    	    	Window w = new Window("Informe trazabilidad");
+		    	    		w.setSizeFull();
+		    	    		w.setWidth(w.getWidth()-8,Unit.PERCENTAGE);
+		                    w.setHeight(w.getHeight()-8,Unit.PERCENTAGE);
+		    	    		w.center();
+		    	    		w.setContent(e);
+		    	    		w.setResizable(false);
+		    	    		UI.getCurrent().addWindow(w);   
+		    	} catch (JRException | IOException ex) {
+		            ex.printStackTrace();
+		         }   
+		    }
+	     
+	     
+	     public void generarInformeProyectoQR(long idProyecto, String cod){
+		    	final Map<String, Object> map = new HashMap<String, Object>();                
+		    	map.put("IN_IDPROYECTO",idProyecto);
+		    	map.put("IN_CODIGO",cod);
+			try {   JasperPrint print = JasperFillManager.fillReport(rutaReporte+"rpt_projectqr.jasper", map, conexionDB.getConnection());
 		    		JRPdfExporter exporter = new JRPdfExporter();
 		    	    final ByteArrayOutputStream output=new ByteArrayOutputStream();
 		    	  

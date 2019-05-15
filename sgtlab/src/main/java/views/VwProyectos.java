@@ -200,6 +200,10 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 			String qr = prop.getProyecto().getCodigo(); 
 			p.getQr().setValue(qr);
 			
+			p.getBtnImpQr().addClickListener(e->{
+				reportes.generarInformeProyectoQR(prop.getProyecto().getIdProyecto(), prop.getProyecto().getCodigo());
+			});
+			
 			//TRAZABILIDAD
 			p.getOkButton().addClickListener(e ->{
 				mainLayout.removeComponent(pnlPrincipal);
