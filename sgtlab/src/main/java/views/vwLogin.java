@@ -112,7 +112,7 @@ public class vwLogin extends CssLayout implements Serializable {
         forgotPassword.setWidth("100%");*/
 
         login.setDisableOnClick(true);
-        login.addClickListener(new Button.ClickListener() {
+        login.addClickListener(new Button.ClickListener() { 
 			private static final long serialVersionUID = 1L;
 
 			@Override
