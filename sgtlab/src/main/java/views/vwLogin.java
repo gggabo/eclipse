@@ -5,7 +5,7 @@ import java.io.Serializable;
 import com.example.sgtlab.MainUI;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.server.Page;
+//import com.vaadin.server.Page;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Alignment;
@@ -15,7 +15,7 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
+//import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -32,7 +32,7 @@ public class vwLogin extends CssLayout implements Serializable {
 	private TextField username;
     private PasswordField password;
     private Button login;
-    private Button forgotPassword;
+   // private Button forgotPassword;
 	
    /* public ctrlLogin cLogin = new ctrlLogin();
     public vwPrincipal vwprincipal;*/
@@ -82,12 +82,13 @@ public class vwLogin extends CssLayout implements Serializable {
 		logo.setWidth("70px");
 		
 		Label lblHeader = new Label("<P ALIGN='justify'>Sistema de control de trazabilidad de materiales de laboratorio</p>",ContentMode.HTML);
-		lblHeader.setWidth("200px");
+		lblHeader.setWidth("160px");
+		lblHeader.addStyleName(ValoTheme.LABEL_SMALL);
 		
-		hHeader.addComponents(logo,lblHeader);
+		hHeader.addComponents(logo,lblHeader); 
 		 
 		vForm.addComponent(hHeader);
-		vForm.addComponent(username = new TextField("Usuario"));
+		vForm.addComponent(username = new TextField("Usuario")); 
 		
 		username.setWidth("100%");
         username.setIcon(VaadinIcons.USER);
@@ -155,12 +156,12 @@ public class vwLogin extends CssLayout implements Serializable {
         return loginInformation;
     }
 
-    private void showNotification(Notification notification) {
+    /*private void showNotification(Notification notification) {
         // keep the notification visible a little while after moving the
         // mouse, or until clicked
         notification.setDelayMsec(2000);
         notification.show(Page.getCurrent());
-    }
+    }*/
 	
     private void login() {
     	
