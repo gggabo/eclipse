@@ -68,7 +68,8 @@ public class Reportes {
 		    	    		w.center();
 		    	    		w.setContent(e);
 		    	    		w.setResizable(false);
-		    	    		UI.getCurrent().addWindow(w);   
+		    	    		UI.getCurrent().addWindow(w);
+		    	    		conexionDB.desconectar();
 		    	} catch (JRException | IOException ex) {
 		            ex.printStackTrace();
 		         }   
@@ -111,7 +112,8 @@ public class Reportes {
 		    	    		w.center();
 		    	    		w.setContent(e);
 		    	    		w.setResizable(false);
-		    	    		UI.getCurrent().addWindow(w);   
+		    	    		UI.getCurrent().addWindow(w);  
+		    	    		conexionDB.desconectar();
 		    	} catch (JRException | IOException ex) {
 		            ex.printStackTrace();
 		         }   
@@ -154,6 +156,7 @@ public class Reportes {
 		    	    		w.setContent(e);
 		    	    		w.setResizable(false);
 		    	    		UI.getCurrent().addWindow(w);   
+		    	    		conexionDB.desconectar();
 		    	} catch (JRException | IOException ex) {
 		            ex.printStackTrace();
 		         }   
@@ -195,7 +198,8 @@ public class Reportes {
 		    	    		w.center();
 		    	    		w.setContent(e);
 		    	    		w.setResizable(false);
-		    	    		UI.getCurrent().addWindow(w);   
+		    	    		UI.getCurrent().addWindow(w); 
+		    	    		conexionDB.desconectar();
 		    	} catch (JRException | IOException ex) {
 		            ex.printStackTrace();
 		         }   
@@ -238,6 +242,7 @@ public class Reportes {
 		    	    		w.setContent(e);
 		    	    		w.setResizable(false);
 		    	    		UI.getCurrent().addWindow(w);   
+		    	    		conexionDB.desconectar();
 		    	} catch (JRException | IOException ex) {
 		            ex.printStackTrace();
 		         }   
@@ -279,7 +284,8 @@ public class Reportes {
 		    	    		w.center();
 		    	    		w.setContent(e);
 		    	    		w.setResizable(false);
-		    	    		UI.getCurrent().addWindow(w);   
+		    	    		UI.getCurrent().addWindow(w);  
+		    	    		conexionDB.desconectar();
 		    	} catch (JRException | IOException ex) {
 		            ex.printStackTrace();
 		         }   
@@ -321,7 +327,8 @@ public class Reportes {
 		    	    		w.center();
 		    	    		w.setContent(e);
 		    	    		w.setResizable(false);
-		    	    		UI.getCurrent().addWindow(w);   
+		    	    		UI.getCurrent().addWindow(w);  
+		    	    		conexionDB.desconectar();
 		    	} catch (JRException | IOException ex) {
 		            ex.printStackTrace();
 		         }   
