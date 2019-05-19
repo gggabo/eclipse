@@ -24,6 +24,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import controllers.LoginController;
 import de.steinwedel.messagebox.ButtonOption;
 import de.steinwedel.messagebox.MessageBox;
+import utils.message;
 
 
 public class vwLogin extends CssLayout implements Serializable {
@@ -32,7 +33,7 @@ public class vwLogin extends CssLayout implements Serializable {
 	private TextField username;
     private PasswordField password;
     private Button login;
-   // private Button forgotPassword;
+    private Button forgotPassword;
 	
    /* public ctrlLogin cLogin = new ctrlLogin();
     public vwPrincipal vwprincipal;*/
@@ -108,8 +109,8 @@ public class vwLogin extends CssLayout implements Serializable {
         vForm.addComponent(login = new Button("Iniciar sesión")); 
         login.setWidth("100%");
         
-       /* vForm.addComponent(forgotPassword = new Button("Olvidé mi clave?"));
-        forgotPassword.setWidth("100%");*/
+        vForm.addComponent(forgotPassword = new Button("Descargar app Android"));
+        forgotPassword.setWidth("100%");
 
         login.setDisableOnClick(true);
         login.addClickListener(new Button.ClickListener() { 
@@ -127,16 +128,17 @@ public class vwLogin extends CssLayout implements Serializable {
         login.setClickShortcut(ShortcutAction.KeyCode.ENTER);
         login.addStyleName(ValoTheme.BUTTON_FRIENDLY);
 
-      /*  forgotPassword.addClickListener(new Button.ClickListener() {
+        forgotPassword.addClickListener(new Button.ClickListener() {
 
 			private static final long serialVersionUID = 1L;
 
 			@Override
             public void buttonClick(Button.ClickEvent event) {
-                showNotification(new Notification("Hint: Try anything"));
+				message.normalMessage("Función no implementada");
+                //showNotification(new Notification("Hint: Try anything"));
             }
         });
-        forgotPassword.addStyleName(ValoTheme.BUTTON_LINK);*/
+        forgotPassword.addStyleName(ValoTheme.BUTTON_LINK);
         
         
         
