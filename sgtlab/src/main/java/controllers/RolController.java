@@ -50,6 +50,17 @@ public class RolController implements Serializable {
 		
 	}
 	
-	
+	/*static Rol rol;
+	public static List<Laboratorio> getAllLabsByRol(long idLab) {		
+		JPAService.runInTransaction(em ->{
+			rol = em.find(Rol.class, idLab);
+			rol.getLaboratorios().size();
+			
+			return null;
+			
+		}); 
 		
+		return rol.getLaboratorios();
+	}
+		*/
 }

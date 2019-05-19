@@ -31,18 +31,28 @@ public class Rol implements Serializable {
 	@ManyToMany(mappedBy = "roles", cascade = {CascadeType.ALL }, fetch = FetchType.EAGER)
 	private List<Usuario> usuarios = new ArrayList<>();
 	
-	
+	/*@ManyToMany()
+	@JoinTable(name = "TBL_ROL_LABORATORIO", joinColumns= @JoinColumn(name = "ID_ROL"), 
+	inverseJoinColumns = @JoinColumn(name ="ID_LABORATORIO"))
+	private List<Laboratorio> laboratorios = new ArrayList<>();
+	*/
 	public Rol() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	
 
 	public Rol(String nombre, List<Usuario> usuarios) {
 		super();
 		this.nombre = nombre;
 		this.usuarios = usuarios;
 	}
+
+	/*public List<Laboratorio> getLaboratorios() {
+		return laboratorios;
+	}
+
+	public void setLaboratorios(List<Laboratorio> laboratorios) {
+		this.laboratorios = laboratorios;
+	}*/
 
 
 

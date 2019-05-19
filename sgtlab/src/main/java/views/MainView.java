@@ -48,8 +48,13 @@ public class MainView extends HorizontalLayout implements Serializable {
 					menuAdd.add("inicio");
 				}
 				if(!menuAdd.contains("proyectos")) {
-					menu.addView(proyectos, "proyectos", "Proyectos", VaadinIcons.NOTEBOOK);
+					menu.addView(proyectos, "proyectos", "Mis proyectos", VaadinIcons.NOTEBOOK);
 					menuAdd.add("proyectos");
+				}
+				
+				if(!menuAdd.contains("admin_proyectos")) {
+					menu.addView(new VwProyectosAll(), "admin_proyectos", "Todos los proyectos", VaadinIcons.NOTEBOOK);
+					menuAdd.add("admin_proyectos");
 				}
 				
 				if(!menuAdd.contains("usuarios")) {
@@ -67,6 +72,27 @@ public class MainView extends HorizontalLayout implements Serializable {
 					menuAdd.add("documentos");
 				}
 
+			}else if(rol.getIdRol()==4) {//RESPONSABLE LABORATORIO
+				if(!menuAdd.contains("inicio")) {
+					menu.addView(new VwInicio(proyectos), "inicio", "Inicio", VaadinIcons.HOME);
+					menuAdd.add("inicio");
+				}
+				
+				if(!menuAdd.contains("proyectos")) {
+					menu.addView(proyectos, "proyectos", "Proyectos", VaadinIcons.NOTEBOOK);
+					menuAdd.add("proyectos");
+				}
+				
+				if(!menuAdd.contains("laboratorios")) {
+					menu.addView(new VwLaboratorios(), "laboratorios", "Laboratorios", VaadinIcons.FLASK);
+					menuAdd.add("laboratorios");
+				}
+				
+				if(!menuAdd.contains("documentos")) {
+					menu.addView(new VwDocumentos(), "documentos", "Documentos", VaadinIcons.COPY_O);
+					menuAdd.add("documentos");
+				}
+				
 			}else if(rol.getIdRol()==2) {//DOCENTE
 				if(!menuAdd.contains("inicio")) {
 					menu.addView(new VwInicio(proyectos), "inicio", "Inicio", VaadinIcons.HOME);
@@ -77,10 +103,10 @@ public class MainView extends HorizontalLayout implements Serializable {
 					menuAdd.add("proyectos");
 				}
 				
-				if(!menuAdd.contains("laboratorios")) {
+				/*if(!menuAdd.contains("laboratorios")) {
 					menu.addView(new VwLaboratorios(), "laboratorios", "Laboratorios", VaadinIcons.FLASK);
 					menuAdd.add("laboratorios");
-				}
+				}*/
 				
 				if(!menuAdd.contains("documentos")) {
 					menu.addView(new VwDocumentos(), "documentos", "Documentos", VaadinIcons.COPY_O);

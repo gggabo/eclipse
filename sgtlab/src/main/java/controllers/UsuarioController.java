@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import models.Laboratorio;
 import models.Usuario;
 import services.JPAService;
 
@@ -90,6 +91,19 @@ public class UsuarioController implements Serializable {
 			
 			return query.getResultList();
 		});
+	}
+
+	static Usuario usuario;
+	public static List<Laboratorio> getAllLabsByRol(long idUser) {		
+		JPAService.runInTransaction(em ->{
+			usuario = em.find(Usuario.class, idUser);
+			usuario.getLaboratorios().size();
+			
+			return null;
+			
+		}); 
+		
+		return usuario.getLaboratorios();
 	}
 	
 }

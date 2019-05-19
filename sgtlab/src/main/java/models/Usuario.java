@@ -76,6 +76,11 @@ public class Usuario implements Serializable {
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Notificacion>  notificaciones = new ArrayList<>();
 	
+	@ManyToMany()
+	@JoinTable(name = "TBL_USUARIO_LABORATORIO", joinColumns= @JoinColumn(name = "ID_USUARIO"), 
+	inverseJoinColumns = @JoinColumn(name ="ID_LABORATORIO"))
+	private List<Laboratorio> laboratorios = new ArrayList<>();
+	
 	@Column(name = "ESTADO") 
 	private int estado; 
 
@@ -97,6 +102,16 @@ public class Usuario implements Serializable {
 		this.nombre_usuario = nombre_usuario;
 		this.clave = clave;
 		this.estado = estado;
+	}
+
+	
+	
+	public List<Laboratorio> getLaboratorios() {
+		return laboratorios;
+	}
+
+	public void setLaboratorios(List<Laboratorio> laboratorios) {
+		this.laboratorios = laboratorios;
 	}
 
 	public String getCedula() {

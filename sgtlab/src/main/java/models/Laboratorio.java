@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -41,6 +42,9 @@ public class Laboratorio implements Serializable {
 	@OneToMany(mappedBy = "laboratorio", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<MedioCultivo>  mediosCultivos = new ArrayList<>();
 	
+	@ManyToMany(mappedBy = "laboratorios", cascade = {CascadeType.ALL })
+	private List<Usuario> usuarios = new ArrayList<>();
+	
 	public Laboratorio() {
 		// TODO Auto-generated constructor stub
 	}
@@ -49,6 +53,24 @@ public class Laboratorio implements Serializable {
 		super();
 		this.nombre = nombre;
 		this.descripcion = descripcion;
+	}
+	
+	
+	
+	/*public List<Rol> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<Rol> roles) {
+		this.roles = roles;
+	}*/
+
+	public List<Usuario> getUsuarios() {
+		return usuarios;
+	}
+
+	public void setUsuarios(List<Usuario> usuarios) {
+		this.usuarios = usuarios;
 	}
 
 	public long getIdLaboratorio() {
@@ -166,5 +188,36 @@ public class Laboratorio implements Serializable {
 			medioCultivo.setLaboratorio(null);
 		}
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (idLaboratorio ^ (idLaboratorio >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Laboratorio other = (Laboratorio) obj;
+		if (idLaboratorio != other.idLaboratorio)
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Laboratorio [idLaboratorio=" + idLaboratorio + ", nombre=" + nombre + "]";
+	}
+
+
+	
+	
 
 }

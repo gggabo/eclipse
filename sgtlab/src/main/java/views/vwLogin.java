@@ -81,7 +81,7 @@ public class vwLogin extends CssLayout implements Serializable {
 		Image logo = new Image(null,new ThemeResource("images/LOGOHEADER.png"));
 		logo.setWidth("70px");
 		
-		Label lblHeader = new Label("<P ALIGN='justify'>Sistema de control de trazabilidad de materiales de laboratorio</p>",ContentMode.HTML);
+		Label lblHeader = new Label("<P ALIGN='justify'>Sistema de Gestión de Trazabilidad, Laboratorios UTM</p>",ContentMode.HTML);
 		lblHeader.setWidth("160px");
 		lblHeader.addStyleName(ValoTheme.LABEL_SMALL);
 		

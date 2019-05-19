@@ -16,6 +16,7 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -50,6 +51,7 @@ import controllers.MaterialController;
 import controllers.MedioCultivoController;
 import controllers.ReactivoController;
 import controllers.UnidadController;
+import controllers.UsuarioController;
 import models.Componente;
 import models.Equipo;
 import models.Laboratorio;
@@ -67,7 +69,10 @@ import utils.uploadXls;
 
 public class VwLaboratorios extends VerticalLayout implements View, Serializable {
 	private static final long serialVersionUID = 1L;
-
+	public long idUsuario = (long) VaadinSession.getCurrent().getAttribute("ID_USUARIO");
+	@SuppressWarnings("unchecked")
+	private List<Rol> roles = (List<Rol>) VaadinSession.getCurrent().getAttribute("TIPO_USUARIO");
+	
 	public VwLaboratorios() {
 		addComponent(buildUI());
 		setCss();
@@ -1310,7 +1315,6 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 	}
 
 	private void cargarDatosPrincipales() {
-		listLab = LabotatorioController.findAll();
 		createMenu(); 
 
 		listUnidad = UnidadController.findAll();
@@ -1485,6 +1489,35 @@ public class VwLaboratorios extends VerticalLayout implements View, Serializable
 		 */
 
 		// while(iteratorLab.hasNext()) {
+	    boolean isAdmin = false;
+		Iterator<Rol> iteratorRol = roles.iterator();
+		Rol rol; 
+		while(iteratorRol.hasNext()) {
+			rol = iteratorRol.next();
+			if(rol.getIdRol()==4) {
+				listLab = UsuarioController.getAllLabsByRol(idUsuario);
+			}
+			
+			if(rol.getIdRol()==1) {
+				isAdmin = true;
+			}
+			
+		}  
+		
+		if(isAdmin) listLab = LabotatorioController.findAll();
+
+		if(listLab.isEmpty()) {
+			toolbarReactivo.setVisible(false);
+			toolbarMedioCultivo.setVisible(false);
+			toolbarMaterial.setVisible(false);
+			toolbarEquipos.setVisible(false);
+		}else{
+			toolbarReactivo.setVisible(true);
+			toolbarMedioCultivo.setVisible(true);
+			toolbarMaterial.setVisible(true);
+			toolbarEquipos.setVisible(true);
+		}
+		
 		cmbLaboratorio.setItems(listLab);
 		cmbLaboratorio.setItemCaptionGenerator(Laboratorio::getNombre);
 		if (listLab.size() > 0) {

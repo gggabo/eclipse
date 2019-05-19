@@ -60,10 +60,10 @@ import utils.dialogWindow;
 import utils.message;
 import viewComponents.panelProyecto;
 
-public class VwProyectos extends VerticalLayout implements View, Serializable {
+public class VwProyectosAll extends VerticalLayout implements View, Serializable {
 	private static final long serialVersionUID = -5759789185491799696L;
 	
-	public static final String VIEW_NAME = "proyectos";
+	public static final String VIEW_NAM = "proyectosAll";
 	public long idUsuario = (long) VaadinSession.getCurrent().getAttribute("ID_USUARIO");
 	private String nombreUsuario = VaadinSession.getCurrent().getAttribute("NOMBRE_PERSONA").toString();
 	
@@ -80,7 +80,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 	
 	private Reportes reportes = new Reportes();
 	
-	 public VwProyectos() {
+	 public VwProyectosAll() {
 		 addComponent(buildUI());
 		 addStyleName("custom-margin-layout");
 		 initUI();
@@ -138,7 +138,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		proyectoLayout.addComponents(toolbar, filteringProject, buildUIProyect(""));
 		proyectoLayout.setMargin(false);
 		
-		pnlPrincipal.setCaption("Gestión de proyectos");
+		pnlPrincipal.setCaption("Administrador de todos los proyectos del sistema");
 		pnlPrincipal.setIcon(VaadinIcons.SUITCASE);
 		pnlPrincipal.setContent(proyectoLayout);
 		pnlPrincipal.setHeight("600px");
@@ -165,7 +165,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 			layoutProyectos.removeAllComponents();
 		}
 		
-		List<ProyectoParticipante> pp = ProyectoController.getProyectoByUser(idUsuario,search);
+		List<ProyectoParticipante> pp = ProyectoController.getAllProject(search);
 		Iterator<ProyectoParticipante> iteratorPp = pp.iterator();
 		 
 		
@@ -207,7 +207,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 			//TRAZABILIDAD
 			p.getOkButton().addClickListener(e ->{
 				mainLayout.removeComponent(pnlPrincipal);
-				VwTrazabilidad tr = new VwTrazabilidad(this, prop.getProyecto()); 
+				VwTrazabilidadAll tr = new VwTrazabilidadAll(this, prop.getProyecto()); 
 				if(prop.getProyecto().getEstadoProyecto().equals("EJECUCIÓN")) {
 					tr.mainMenu.getItems().get(1).setVisible(true);   
 				}else { 

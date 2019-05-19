@@ -33,7 +33,7 @@ public class MainUI extends UI {
     	Responsive.makeResponsive(this);
     	addStyleName(ValoTheme.UI_WITH_MENU);
     	setLocale(vaadinRequest.getLocale());
-    	getPage().setTitle("SGTLAB");
+    	getPage().setTitle("SGT");
     	
     	//setContent(new vwLogin(MainUI.this));
     	

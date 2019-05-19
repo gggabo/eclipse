@@ -2,6 +2,7 @@ package views;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import com.vaadin.data.Binder;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.shared.ui.ValueChangeMode;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -27,12 +29,15 @@ import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.TwinColSelect;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
+import controllers.LabotatorioController;
 import controllers.RolController;
 import controllers.UsuarioController;
+import models.Laboratorio;
 import models.Rol;
 import models.Usuario;
 import utils.UploadImage;
@@ -89,6 +94,11 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 	public Grid<Usuario> gridUsuarioImport = new Grid<>();
 	public List<Usuario> listUsuariosImport = new ArrayList<>();
 	
+	public TwinColSelect<Laboratorio> twLaboratorio = new TwinColSelect<>();
+	public List<Laboratorio> listLabs = new ArrayList<>();
+	public List<Laboratorio> listLabsTw = new ArrayList<>();
+	
+	
 	public Component buildUI() {
 				
 		toolbar.setWidth("100%");
@@ -110,7 +120,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 			}
 		});		
 		
-		mainMenu.addItem("Imprimir", VaadinIcons.PRINT, null);		
+	//	mainMenu.addItem("Imprimir", VaadinIcons.PRINT, null);		
 		
 		mainMenu.addItem("Importar usuarios", VaadinIcons.INSERT, new Command() {
 			private static final long serialVersionUID = 1L;
@@ -151,7 +161,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		gridUsuario.addComponentColumn(Usuario -> {
 	 
 			Button b = new Button("Editar");
-			b.addClickListener(clickb ->{ 
+			b.addClickListener(clickb ->{  
 				userNewEdit(Usuario);
 				cedula.setValue(Usuario.getCedula());
 				apellido_paterno.setValue(Usuario.getApellido_paterno());
@@ -166,8 +176,21 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 				
 				listGridRol.addAll(Usuario.getRoles());
 				
+				listLabsTw.addAll(UsuarioController.getAllLabsByRol(Usuario.getId()));
+				HashSet<Laboratorio> labsSelect = new HashSet<Laboratorio>(listLabsTw);
+				
+				twLaboratorio.setValue(labsSelect);
+				
+				Iterator<Rol> rolIterator = listGridRol.iterator(); 
+				Rol r; 
+				while(rolIterator.hasNext()) {
+					r=rolIterator.next();
+					if(r.getIdRol()==4) { 
+						twLaboratorio.setVisible(true);
+					}
+				}
+				
 				gridRol.setItems(listGridRol);
-	
 				accion = "modificar";
 				
 			});
@@ -232,6 +255,10 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 			Button b = new Button();
 			b.addClickListener(clickb2 ->{
 				listGridRol.remove(Rol);
+				if(Rol.getIdRol()==4) {
+					twLaboratorio.setVisible(false);
+					twLaboratorio.clear();
+				}
 				gridRol.setItems(listGridRol);
 			});
 			b.setStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
@@ -241,7 +268,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		}).setStyleGenerator(Rol -> "v-align-left");
 		
 		gridRol.setSelectionMode(SelectionMode.NONE);
-		gridRol.setWidth("160px"); 
+		gridRol.setWidth("200px"); 
 		gridRol.setHeight("100px");
 		
 		gridUsuarioImport.addColumn(Usuario::getCedula).setCaption("CÉDULA/DNI");
@@ -265,6 +292,8 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 	public void userNewEdit(Usuario user) {
 		limpiar(); 
 		
+		dialogWindow dialogWindow = new dialogWindow("Ingreso de usuarios", VaadinIcons.USERS);
+		
 		btnAddRol.setHeight("24px");
 		btnAddRol.addClickListener(e->{
 			if(cmbRol.getValue()==null) {
@@ -272,11 +301,11 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 				return;
 			}
 			addRol();
-			
+			dialogWindow.center();
 		});
 		
 		
-		cmbRol.setWidth("130px");
+		cmbRol.setWidth("160px");
 		
 		layoutRol.addComponents(cmbRol,btnAddRol);
 		layoutRol.setMargin(false);
@@ -295,15 +324,23 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		
 		VerticalLayout layoutUpload = new VerticalLayout();
 		layoutUpload.addComponents(uploadField, gridRol);
+		layoutUpload.setComponentAlignment(uploadField, Alignment.MIDDLE_CENTER);
 		layoutUpload.setCaption("Foto de perfil (Max 3Mb)");
 		layoutUpload.setSpacing(true);
 		layoutUpload.setMargin(false);
+		
+		twLaboratorio.setRows(4);
+		twLaboratorio.setWidth("530px");
 		
 		HorizontalLayout layoutFormImg = new HorizontalLayout();
 		layoutFormImg.setStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
 		layoutFormImg.addComponents(mainFrm,layoutUpload);
 		
-		dialogWindow dialogWindow = new dialogWindow("Ingreso de usuarios", VaadinIcons.USERS);
+		VerticalLayout vl = new VerticalLayout();
+		vl.addComponents(layoutFormImg, twLaboratorio);
+		vl.setMargin(false);
+		vl.setSpacing(false);
+		
 		dialogWindow.getOkButton().addClickListener(new ClickListener() {	
 			private static final long serialVersionUID = 1L;
 
@@ -318,7 +355,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 						message.warringMessage("Hay errores en los campos de texto");
 						return;
 					}
-
+					
 					if(UsuarioController.DBcontainsUser(cedula.getValue())) {
 						message.warringMessage("El usuario ya se encuentra registrado");
 						return;
@@ -328,6 +365,10 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 							nombre_dos.getValue().toUpperCase().trim(), apellido_paterno.getValue().toUpperCase().trim(), 
 							apellido_materno.getValue().toUpperCase().trim(),correo.getValue().trim(), telefono.getValue().trim(), 
 							uploadField.getValue(),nombre_usuario.getValue().toLowerCase().trim(), DigestUtils.sha1Hex(clave.getValue().trim()),1);
+					
+					List<Laboratorio> lab = new ArrayList<>(twLaboratorio.getValue());
+					
+					user.setLaboratorios(lab);
 					
 					us.setRoles(listGridRol);
 					
@@ -346,7 +387,10 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 					if(!clave.getValue().isEmpty()) {
 						user.setClave(DigestUtils.sha1Hex(clave.getValue().trim()));
 					}
-										
+					
+					List<Laboratorio> lab = new ArrayList<>(twLaboratorio.getValue());
+					user.setLaboratorios(lab);
+					
 					user.setRoles(listGridRol);
 					
 					UsuarioController.update(user);
@@ -364,7 +408,7 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		});
 		
 		dialogWindow.setResponsive(true);
-		dialogWindow.addComponentBody(layoutFormImg); 
+		dialogWindow.addComponentBody(vl); 
 		UI.getCurrent().addWindow(dialogWindow);
 	}
 	
@@ -436,11 +480,13 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		listUsuarios = UsuarioController.findAll();
 		gridUsuario.setItems(listUsuarios);
 		
-		
-		
 		listRol = RolController.findAll();
 		cmbRol.setItems(listRol);
 	    cmbRol.setItemCaptionGenerator(Rol::getNombre);
+	    
+	    listLabs = LabotatorioController.findAll();
+	    twLaboratorio.setItems(listLabs);
+	    twLaboratorio.setItemCaptionGenerator(Laboratorio::getNombre);
 		
 	} 
 	
@@ -457,20 +503,23 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		}
 		if(!c) {
 			listGridRol.add(rol);
+			if(rol.getIdRol()==4) {
+				twLaboratorio.setVisible(true);
+			}
 			gridRol.setItems(listGridRol);
 		}
 		
 	}
 	
 	private void setPlaceHolder() {
-		nombre_uno.setPlaceholder("Freddy");
+		nombre_uno.setPlaceholder("Kevin");
 		nombre_dos.setPlaceholder("Rodrigo");
-		apellido_paterno.setPlaceholder("Sánchez");
+		apellido_paterno.setPlaceholder("Bravo");
 		apellido_materno.setPlaceholder("Moreira");
 		correo.setPlaceholder("usuario@mail.com"); 
 		telefono.setPlaceholder("09999999999");
 		cedula.setPlaceholder("1313253658");
-		nombre_usuario.setPlaceholder("fsanchez1234");
+		nombre_usuario.setPlaceholder("kbravo1234");
 		clave.setPlaceholder("123456789");	
 	}
 	
@@ -500,7 +549,9 @@ public class VwUsuarios extends VerticalLayout implements View, Serializable{
 		cmbRol.setValue(null);
 		listGridRol.clear();
 		gridRol.setItems(listGridRol);
-		
+		twLaboratorio.setVisible(false);
+		twLaboratorio.clear();
+		listLabsTw.clear();
 	}
 	
 	Binder<Usuario> validator = new Binder<>();
