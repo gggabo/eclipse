@@ -217,7 +217,7 @@ public class VwMenu extends CssLayout implements Serializable {
 		public void menuSelected(MenuItem selectedItem) {
 			if(selectedItem == cs ){
 				UI.getCurrent().getPage().setLocation(
-						"/sgtlab/");
+						"/SGT/");
 				//vaciarMenu();
 				UI.getCurrent().getSession().close();
 				//JPAUtil.shutdown();
