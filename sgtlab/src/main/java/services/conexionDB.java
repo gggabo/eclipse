@@ -13,8 +13,8 @@ public class conexionDB {
 	static String driver= "com.mysql.jdbc.Driver";
 	static String server= "jdbc:mysql://"+Nombre_Server+Puerto+"/";
 	static String bd= "db_sgtlab";
-	static String user= "root";
-	static String password= "123456";
+	static String user= "sgtroot";
+	static String password= "sgtutm001";
 	
 	static Connection connection = null;
 	
