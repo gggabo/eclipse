@@ -118,6 +118,49 @@ public class Reportes {
 		            ex.printStackTrace();
 		         }   
 		    }
+	     
+	     public void generarInformeProyectoQR2(long idProyecto, String cod){
+		    	final Map<String, Object> map = new HashMap<String, Object>();                
+		    	map.put("IN_IDPROYECTO",idProyecto);
+		    	map.put("IN_CODIGO",cod);
+			try {   JasperPrint print = JasperFillManager.fillReport(rutaReporte+"rpt_projectqr2.jasper", map, conexionDB.getConnection());
+		    		JRPdfExporter exporter = new JRPdfExporter();
+		    	    final ByteArrayOutputStream output=new ByteArrayOutputStream();
+		    	  
+		    	    exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
+		    	    exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, output);
+		    	    exporter.exportReport();
+		    	    output.flush();
+		    	    output.close();  
+		    	    StreamResource.StreamSource source = new StreamResource.StreamSource() {
+						private static final long serialVersionUID = 1L;
+
+										public InputStream getStream() { 
+		    	                           byte[] b = null;
+		    	                            b=output.toByteArray();
+		    	                        return new ByteArrayInputStream(b);
+		    	                        }
+		    	                };
+		    	    	StreamResource resource = new StreamResource(source, "Informe Proyecto-"+generador.generarCodigoReportes()+".pdf");
+		    	    		resource.setMIMEType("application/pdf");
+		    	    	Embedded e = new Embedded();
+		    	    		e.setMimeType("application/pdf");
+		    	    		e.setType(Embedded.TYPE_BROWSER);
+		    	    		e.setSizeFull();
+		    	    		e.setSource(resource); 
+		    	    	Window w = new Window("Informe trazabilidad");
+		    	    		w.setSizeFull();
+		    	    		w.setWidth(w.getWidth()-8,Unit.PERCENTAGE);
+		                    w.setHeight(w.getHeight()-8,Unit.PERCENTAGE);
+		    	    		w.center();
+		    	    		w.setContent(e);
+		    	    		w.setResizable(false);
+		    	    		UI.getCurrent().addWindow(w);  
+		    	    		conexionDB.desconectar();
+		    	} catch (JRException | IOException ex) {
+		            ex.printStackTrace();
+		         }   
+		    }
 	
 	     public void generarInformeReactivos(long idLaboratorio){
 		    	final Map<String, Object> map = new HashMap<String, Object>();                

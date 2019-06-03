@@ -32,6 +32,7 @@ public class panelProyecto extends Panel implements Serializable {
 	private Label usuariosProyecto = new Label();
 	private QRCode qr = new QRCode("Código");
 	private Button btnImpQr = new Button();
+	private Button btnImpQr2 = new Button();
 	private Label estadoProyecto = new Label();
 
 	public panelProyecto() {
@@ -88,17 +89,24 @@ public class panelProyecto extends Panel implements Serializable {
         btnImpQr.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
         btnImpQr.addStyleName(ValoTheme.BUTTON_SMALL);
         btnImpQr.setIcon(VaadinIcons.PRINT);
+        btnImpQr2.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
+        btnImpQr2.addStyleName(ValoTheme.BUTTON_SMALL);
+        btnImpQr2.setIcon(VaadinIcons.QRCODE);
         
+        HorizontalLayout hlQr = new HorizontalLayout();
+        hlQr.setSpacing(false); 
+        hlQr.addComponents(btnImpQr,btnImpQr2);
         VerticalLayout vl = new VerticalLayout();
         vl.setSpacing(false);
-        vl.addComponents(qr,btnImpQr);
-        vl.setComponentAlignment(btnImpQr,Alignment.TOP_CENTER);
+        vl.addComponents(qr,hlQr);
+        vl.setComponentAlignment(hlQr,Alignment.TOP_CENTER);
         
         qr.setCaption("Codigo");
         qr.setWidth("120px");
         qr.setHeight("120px");
 
         btnImpQr.addStyleName("v-button-qr");
+        btnImpQr2.addStyleName("v-button-qr");
         
         estadoProyecto.addStyleName("v-label-esperando-revision");
 		estadoProyecto.setCaption("Estado");
@@ -126,6 +134,16 @@ public class panelProyecto extends Panel implements Serializable {
 	}
 		
 	
+	public Button getBtnImpQr2() {
+		return btnImpQr2;
+	}
+
+
+	public void setBtnImpQr2(Button btnImpQr2) {
+		this.btnImpQr2 = btnImpQr2;
+	}
+
+
 	public void addComponentBody(Component c) {
 		layoutComponent.addComponent(c);
 	}

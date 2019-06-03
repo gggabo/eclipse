@@ -128,7 +128,7 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 		
 		filtertxtProject.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
 		filtertxtProject.setIcon(VaadinIcons.SEARCH);
-		filtertxtProject.setPlaceholder("Buscar por codigo");
+		filtertxtProject.setPlaceholder("Buscador");
 		filtertxtProject.setWidth("100%");
 		filtertxtProject.setValueChangeMode(ValueChangeMode.LAZY);
 		filteringProject.addComponents(filtertxtProject,clearFilterProject);
@@ -202,6 +202,10 @@ public class VwProyectos extends VerticalLayout implements View, Serializable {
 			
 			p.getBtnImpQr().addClickListener(e->{
 				reportes.generarInformeProyectoQR(prop.getProyecto().getIdProyecto(), prop.getProyecto().getCodigo());
+			});
+			
+			p.getBtnImpQr2().addClickListener(e->{
+				reportes.generarInformeProyectoQR2(prop.getProyecto().getIdProyecto(), prop.getProyecto().getCodigo());
 			});
 			
 			//TRAZABILIDAD

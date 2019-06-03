@@ -93,18 +93,18 @@ public class ProyectoController implements Serializable {
 	@SuppressWarnings("unchecked")
 	public static List<ProyectoParticipante> getProyectoByUser(long idUser, String busc){
 		return JPAService.runInTransaction(em->{
-			Query query = em.createQuery("select pp from ProyectoParticipante pp where pp.proyecto.codigo LIKE ?1 and pp.usuario.id =?2 and pp.proyecto.estado = 1 ORDER BY proyecto.idProyecto DESC");
+			Query query = em.createQuery("select pp from ProyectoParticipante pp where (pp.proyecto.codigo LIKE ?1 or pp.usuario.Cedula LIKE ?1 or pp.proyecto.tema LIKE ?1) and pp.usuario.id =?2 and pp.proyecto.estado = 1 ORDER BY proyecto.idProyecto DESC");
 			query.setParameter(1,"%" + busc + "%");
 			query.setParameter(2,idUser);
 			
-			return query.getResultList();  
+			return query.getResultList();   
 		});
 	}
 	
 	@SuppressWarnings("unchecked")
 	public static List<ProyectoParticipante> getAllProject(String busc){
 		return JPAService.runInTransaction(em->{
-			Query query = em.createQuery("select pp from ProyectoParticipante pp where pp.proyecto.codigo LIKE ?1 and pp.proyecto.estado = 1 GROUP BY proyecto.idProyecto ORDER BY proyecto.idProyecto DESC");
+			Query query = em.createQuery("select pp from ProyectoParticipante pp where (pp.proyecto.codigo LIKE ?1 or pp.usuario.Cedula LIKE ?1 or pp.proyecto.tema LIKE ?1) and pp.proyecto.estado = 1 GROUP BY proyecto.idProyecto ORDER BY proyecto.idProyecto DESC");
 			query.setParameter(1,"%" + busc + "%");
 			
 			return query.getResultList();  
