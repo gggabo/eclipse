@@ -14,7 +14,7 @@ public class ComponenteController implements Serializable {
 
 	public static void save (Componente componente) {
 		JPAService.runInTransaction(em ->{
-			em.persist(componente);
+			em.persist(componente); 
 			return null;
 		});
 	}
