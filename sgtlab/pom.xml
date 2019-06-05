@@ -121,14 +121,6 @@
     <version>6.8.0</version>
 </dependency>
 
-<dependency>
-    <groupId>com.fuentes.jasper</groupId>
-    <artifactId>fuentes-jasperPDF</artifactId>
-    <version>1.0</version>
-    <scope>system</scope>
-    <systemPath>${project.basedir}/src/main/resources/fuentes.jar</systemPath>
-</dependency>
-	
 	<dependency>
     <groupId>org.apache.poi</groupId>
     <artifactId>poi</artifactId>
