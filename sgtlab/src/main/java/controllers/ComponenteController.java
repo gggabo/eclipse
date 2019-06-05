@@ -8,7 +8,7 @@ import javax.persistence.Query;
 import models.Componente;
 import models.Equipo;
 import services.JPAService;
-
+ 
 public class ComponenteController implements Serializable {
 	private static final long serialVersionUID = 1L;
 
