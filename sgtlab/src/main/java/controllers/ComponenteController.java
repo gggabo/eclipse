@@ -13,7 +13,7 @@ public class ComponenteController implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public static void save (Componente componente) {
-		JPAService.runInTransaction(em ->{
+		JPAService.runInTransaction(em ->{ 
 			em.persist(componente); 
 			return null;
 		});
