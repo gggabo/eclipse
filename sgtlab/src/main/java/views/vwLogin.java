@@ -134,7 +134,7 @@ public class vwLogin extends CssLayout implements Serializable {
 
 			@Override
             public void buttonClick(Button.ClickEvent event) {
-				message.normalMessage("Función no implementada");
+				//message.normalMessage("Función no implementada");
 				getUI().getPage().open("https://1drv.ms/u/s!AlVNK94rpQ4400WV0dAViMuGQZHl", "_blank");
                 //showNotification(new Notification("Hint: Try anything"));
             }

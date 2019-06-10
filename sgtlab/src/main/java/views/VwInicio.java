@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.vaadin.event.MouseEvents.ClickEvent;
+import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.shared.ui.ValueChangeMode;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -36,6 +39,7 @@ public class VwInicio extends VerticalLayout implements View, Serializable {
 	public long idUsuario = (long) VaadinSession.getCurrent().getAttribute("ID_USUARIO");
 	private HorizontalLayout header = new HorizontalLayout();
 	private Image imgHeader = new Image(null, new ThemeResource("images/logo_header_titulo.png"));
+	private Image imgApp = new Image(null, new ThemeResource("images/app.png"));
 	private Label lbtRol = new Label("",ContentMode.HTML);
 	@SuppressWarnings("unchecked")
 	private List<Rol> roles = (List<Rol>) VaadinSession.getCurrent().getAttribute("TIPO_USUARIO");
@@ -63,7 +67,22 @@ public class VwInicio extends VerticalLayout implements View, Serializable {
 		header.setSizeFull();
 		header.setExpandRatio(h, 1);
 		
-		addComponents(header, buildUI());
+		Label lb = new Label("<marquee>DESCARGA LA APP ANDROID DE CONSULTA</marquee>", ContentMode.HTML);
+		lb.addStyleName(ValoTheme.LABEL_COLORED);
+		
+		addComponents(header, imgApp,buildUI());
+		setComponentAlignment(imgApp, Alignment.BOTTOM_CENTER);
+		setSpacing(false);
+		
+		imgApp.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void click(ClickEvent event) {
+				// TODO Auto-generated method stub
+				getUI().getPage().open("https://1drv.ms/u/s!AlVNK94rpQ4400WV0dAViMuGQZHl", "_blank");
+			}
+		});
 		
 		llenarDatos();
 		setEvents();
